@@ -1,0 +1,12 @@
+Métricas
+-----------------------------------
+
+Support
+lift and confidence
+Leverage and conviction
+
+
+Sugestões
+-----------------------------------
+
+- Filtros por: ano, cliente
