@@ -1,4 +1,0 @@
-api/get_token
-api/import_csv
-api/recommendation/load_model
-api/

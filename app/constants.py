@@ -1,0 +1,11 @@
+MIN_BIN_COUNT = 50
+MIN_SUPPORT_THRES = 0.008
+MIN_THRESHOLD = 0.5
+SAMPLE_COUNT = 3
+
+DATASET_PKL_FILEPATH = 'datasets.pkl'
+ANALYSIS_PKL_FILEPATH = 'analysis_data.pkl'
+PRODUCT_GRAPH_PKL_FILEPATH = 'product_graphs.pkl'
+NEIGHBORS_PKL_FILEPATH = 'neighbors.pkl'
+METRICS_PKL_FILEPATH = 'metrics.pkl'
+DESCRIPTIONS_PKL_FILEPATH = 'descriptions.pkl' 
