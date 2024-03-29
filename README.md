@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Fapi
 
 This is a minimal repository for a FastAPI app instance with postgres database:
