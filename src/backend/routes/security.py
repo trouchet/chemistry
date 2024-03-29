@@ -1,8 +1,7 @@
 from fastapi import APIRouter
 from datetime import timedelta
 
-from app.services.jwt import create_access_token
-from app.models import Token
+from services.jwt import create_access_token
 
 router = APIRouter()
 

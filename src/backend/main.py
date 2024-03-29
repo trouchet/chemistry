@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from app.routes import recommendation, security
+from routes import recommendation, security
 
 # Initialize the app
 app = FastAPI()
