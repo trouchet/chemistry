@@ -6,9 +6,6 @@ clean-logs: # Add a rule to remove log info
 	rm -fr build/ dist/ .eggs/
 	find . -name '*.log' -o -name '*.log' -exec rm -fr {} +
 
-clean-pyc: # Add a rule to remove pyc files
-	find . -name '*.pyc' -o -name '*.pyo' -o -name '*~' -exec rm -rf {} +
-
 clean-test: # remove test and coverage artifacts
 	rm -fr .tox/ .testmondata* .coverage coverage.* htmlcov/ .pytest_cache
 
@@ -29,13 +26,13 @@ stop-webapp:
 	docker rm $(CONTAINER_NAME)	
 
 test: ## Add a rule to test the application
-	poetry run coverage run --rcfile=.coveragerc -m pytest --ignore=src/migrations
+	poetry run coverage run --rcfile=.coveragerc -m pytest -s
 
-watch: env ## run tests on watchdog mode
-	ptw . -- pytest --ignore=src/migrations
+watch: ## run tests on watchdog mode
+	ptw -- --cov=. --cov-report=term-missing --cov-config=pytest.ini -s
 
-report: clean test ## Add a rule to generate coverage report
-	coverage report --omit="src/migrations/*" --show-missing
+report: test ## Add a rule to generate coverage report
+	coverage report --omit="tests/*,src/main.py,*/__init__.py,*/constants.py" --show-missing --capture=no
 
 ps: ## Add a rule to list containers
 	docker ps -a
