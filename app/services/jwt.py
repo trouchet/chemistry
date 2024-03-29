@@ -11,13 +11,13 @@ ALGORITHM = environ.get('ALGORITHM')
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def verify_password(plain_password, hashed_password):
+def verify_password(plain_password, hashed_password) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
-def get_password_hash(password):
+def get_password_hash(password) -> str:
     return pwd_context.hash(password)
 
-def get_user(db, username: str):
+def get_user(db, username: str) -> dict:
     if username in db:
         user_dict = db[username]
         return user_dict

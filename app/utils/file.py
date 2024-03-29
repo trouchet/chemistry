@@ -1,9 +1,7 @@
-import os
+from os import path, makedirs
 
 def get_filename(filename: str):
-    filename_ = filename.split('/')[-1]
-    
-    return filename_
+    return path.basename(filename)
 
 def extend_filename(filename: str, token: str, delimiter: str = '.'):
     extension = filename.split(delimiter)[-1]
@@ -16,7 +14,7 @@ def extend_filename(filename: str, token: str, delimiter: str = '.'):
 def create_folder(directory_name: str):
     from os import path
     if not path.exists(directory_name):
-        os.makedirs(directory_name)
+        makedirs(directory_name)
         print(f"Directory '{directory_name}' created!")
     else:
         print(f"Directory '{directory_name}' already exists.")

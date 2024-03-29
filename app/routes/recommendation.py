@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.core.recommendation.models import RecommendationResponse, \
     BasketRequest
 
-recommendation_router = APIRouter()
+router = APIRouter()
 
 # Sample product recommendation logic
 def recommend_product(basket):
@@ -13,8 +13,8 @@ def recommend_product(basket):
     else:
         return []
 
-@recommendation_router.post(
-    "/recommendation/basket", 
+@router.post(
+    "/basket", 
     response_model=RecommendationResponse, 
     status_code=200
 )

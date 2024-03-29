@@ -1,8 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from app.core.recommendation.models import RecommendationResponse, BasketRequest
-from app.services.
+from app.routes import recommendation, security
 
 # Initialize the app
 app = FastAPI()
@@ -11,9 +10,8 @@ app = FastAPI()
 scheduler = BackgroundScheduler()
 scheduler.start()
 
-@app.get("/")
-async def read_root():
-    return {"message": "Hello World"}
+app.include_router(security.router, prefix="/api/", tags=["users"])
+app.include_router(recommendation.router, prefix="/api/recommendation", tags=["items"])
 
 # Handle validation errors
 @app.exception_handler(HTTPException)

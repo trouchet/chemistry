@@ -1,10 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from app.services.jwt import create_access_token, authenticate_user
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter
+from datetime import timedelta
 
+from app.services.jwt import create_access_token
 from app.models import Token
 
-jwt_router = APIRouter()
+router = APIRouter()
 
-# Fill here with the necessary jwt utils and routes
+@router.post("/token")
+async def get_access_token():
+    # Assume this is the data you want to encode in the token
+    data = {"username": "example_user"}
+
+    # Generate an access token with a 30-minute expiration
+    access_token = create_access_token(data, timedelta(minutes=30))
+
+    # Return the access token in the response
+    return {"access_token": access_token, "token_type": "bearer"}
