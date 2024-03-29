@@ -83,13 +83,7 @@ def get_k_best_arbitrary_neighbors(
             return {}
 
     all_suggestions = list(
-        set(
-            flatten_list(
-                [
-                    list(get_best_neighbor(item_id).keys()) for item_id in order
-                ]
-            )
-        )
+        set(flatten_list([list(get_best_neighbor(item_id).keys()) for item_id in order]))
     )
     
     suggestions = all_suggestions[:n_suggestions]
@@ -111,13 +105,7 @@ def get_k_best_random_neighbors(
             return {}
 
     all_suggestions = list(
-        set(
-            flatten_list(
-                [
-                    list(get_best_neighbor(item_id).keys()) for item_id in order
-                ]
-            )
-        )
+        set(flatten_list([list(get_best_neighbor(item_id).keys()) for item_id in order]))
     )
     
     suggestions = sample(all_suggestions, n_suggestions)
@@ -131,8 +119,6 @@ def get_k_best_support_based_neighbors(
     n_suggestions: dict,
     n_best_neighbors: int,
 ):
-    sets_total = len(neighbors_.keys())
-    
     n_best_neighbors = get_n_best_neighbors(neighbors_, n_best_neighbors)
 
     def get_best_neighbor(item_id: str):
@@ -143,10 +129,7 @@ def get_k_best_support_based_neighbors(
 
     count_dict = defaultdict()
     for neighbor_id, count in flatten_list(
-        [
-            list(get_best_neighbor(item_id).items()) 
-            for item_id in order
-        ]
+        [ list(get_best_neighbor(item_id).items()) for item_id in order ]
     ):
         try:
             count_dict[neighbor_id] = max(count_dict[neighbor_id], count)
@@ -155,7 +138,7 @@ def get_k_best_support_based_neighbors(
     
     suggestion = [
         best_neighbor_j
-        for best_neighbor_j, count_j in sorted(
+        for best_neighbor_j, _ in sorted(
             count_dict.items(), 
             key=lambda x: x[1], 
             reverse=True
@@ -239,13 +222,13 @@ def get_association_rules(
     percentile_X = quantile(len_sets, set_size_confidence)
     confidence_data = list(filter(lambda x: len(x) < percentile_X, all_sets_list))
     
-    # Preparação dos dados
+    # Data transform
     te = TransactionEncoder()
     te_ary = te.fit(confidence_data).transform(confidence_data)
 
     df_encoded = pd.DataFrame(te_ary, columns=te.columns_)
     
-    # Aplicando o algoritmo Apriori
+    # Apriori algorithm: https://en.wikipedia.org/wiki/Apriori_algorithm
     frequent_itemsets = apriori(df_encoded, min_support=min_support_, use_colnames=True)
     
     # Geração de Regras de Associação

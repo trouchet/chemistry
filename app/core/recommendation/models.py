@@ -11,7 +11,7 @@ from utils.dataframe import listify_items, get_descriptions
 
 from constants import N_SUGGESTIONS_DEFAULT, \
     N_BEST_NEIGHBORS_DEFAULT, \
-    DEFAULT_RECOMMENDATION_ALGO
+    RECOMMENDATION_ALGO_DEFAULT
 
 # Request model
 class BasketRequest(BaseModel):
@@ -55,7 +55,7 @@ class SVRecommender(object):
     def suggest(
         self, 
         order: list, 
-        method: str = DEFAULT_RECOMMENDATION_ALGO
+        method: str = RECOMMENDATION_ALGO_DEFAULT
     ):
         if(len(self.neighbors_dict) == 0):
             error_message = 'You must run method \'_update_neighbors\' before running \'suggest\''
