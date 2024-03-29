@@ -1,27 +1,20 @@
-# SV - Recomendação de produto
+<<<<<<< HEAD
+# Fapi
 
-## Introdução 
+This is a minimal repository for a FastAPI app instance with postgres database:
 
-Este repositório possui 3 módulos principais:
+## Get started
 
-1. Postgres database;
-2. FastAPI web-app;
-
-## Como começar
-
-Cada projeto possui seus arquivos de instalação. 
-
-Para projetos em Python, o arquivo `requirements.txt` possui dependências necessárias para o projeto. 
+For installation of packages on file `requirements.txt`, run the command on terminal according to your operational system. 
 
 1. Window/Linux/MacOSs: 
-    a. Navegue até a pasta do arquivo `requirements.txt`; 
-    b. Instale com comando `pip install -r requirements.txt`.
+    a. Navigate to folder of file `requirements.txt`; 
+    b. Install with command `pip install -r requirements.txt`.
 
 2. API references
-    Ferramentas: 
-    	- FastAPI: https://fastapi.tiangolo.com/
-    	- Airflow: https://airflow.apache.org/
+    Tools: FastAPI: https://fastapi.tiangolo.com/
+    	
 
-## Build e Testes
+## Build and Tests
 
-Em construção
+Under construction
