@@ -2,6 +2,22 @@ CONTAINER_NAME := myapi-container
 
 .PHONY: build run-webapp stop ps host
 
+clean-logs: # Add a rule to remove log info
+	rm -fr build/ dist/ .eggs/
+	find . -name '*.log' -o -name '*.log' -exec rm -fr {} +
+
+clean-pyc: # Add a rule to remove pyc files
+	find . -name '*.pyc' -o -name '*.pyo' -o -name '*~' -exec rm -rf {} +
+
+clean-test: # remove test and coverage artifacts
+	rm -fr .tox/ .testmondata* .coverage coverage.* htmlcov/ .pytest_cache
+
+clean-cache: # remove test and coverage artifacts
+	find . -name '*cache*' -exec rm -rf {} +
+
+clean: clean-logs clean-pyc clean-test clean-cache ## Add a rule to remove unnecessary assets
+	docker system prune --volumes -f
+
 build:
 	docker build -t myapi .
 
