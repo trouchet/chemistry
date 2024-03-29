@@ -1,7 +1,7 @@
 import pandas as pd
 
-from app.core.recommendation.extract_transform import get_sets_count_per_items_dict
-from utils.dataframe import get_unique_elements
+from src.backend.core.recommendation.extract_transform import get_sets_count_per_items_dict
+from src.backend.utils.dataframe import get_unique_elements
 
 def get_items_support(
     sets_count_dict: dict, 

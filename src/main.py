@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from routes import recommendation, security
+from src.routes import recommendation, security
 
 # Initialize the app
 app = FastAPI()
@@ -10,8 +10,12 @@ app = FastAPI()
 scheduler = BackgroundScheduler()
 scheduler.start()
 
-app.include_router(security.router, prefix="/api/", tags=["users"])
+app.include_router(security.router, prefix="/api", tags=["users"])
 app.include_router(recommendation.router, prefix="/api/recommendation", tags=["items"])
+
+@app.get('/')
+async def hello_world():
+    return {"message": "Hello World"}
 
 # Handle validation errors
 @app.exception_handler(HTTPException)

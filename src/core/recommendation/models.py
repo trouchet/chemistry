@@ -3,13 +3,16 @@ import pandas as pd
 from pydantic import BaseModel
 from typing import List
 
-from algorithms import  get_k_best_arbitrary_neighbors, \
-    get_k_best_support_based_neighbors, get_k_best_random_neighbors
-from extract_transform import get_sets_count_per_items_dict, \
+from src.core.recommendation.algorithms import  \
+    get_k_best_arbitrary_neighbors, \
+    get_k_best_support_based_neighbors, \
+    get_k_best_random_neighbors
+from .extract_transform import get_sets_count_per_items_dict, \
     get_items_neighbors_count
-from utils.dataframe import listify_items, get_descriptions
+from src.utils.dataframe import listify_items, get_descriptions
 
-from constants import N_SUGGESTIONS_DEFAULT, \
+from src.core.recommendation.constants import \
+    N_SUGGESTIONS_DEFAULT, \
     N_BEST_NEIGHBORS_DEFAULT, \
     RECOMMENDATION_ALGO_DEFAULT
 

@@ -1,6 +1,4 @@
 import pandas as pd
-import polars as pl
-import numpy as np
 from numpy import unique
 from os import path, listdir  
 from timy import timer
@@ -39,6 +37,14 @@ def get_unique_elements(
 ):
     return list(unique(list(df_[column_label])))
 
+def read_data_from_file(filepath: str, sets_column: str, items_column: str) -> pd.DataFrame:
+    df = pd.read_excel(filepath)
+    df = df.dropna()
+    relevant_columns = [sets_column, items_column]
+    filtered_df = df.groupby(relevant_columns).first().reset_index()
+    return filtered_df
+
+
 def read_data_to_dataframe_gen(
     data_folder_: str,
     sets_column: str,
@@ -51,19 +57,8 @@ def read_data_to_dataframe_gen(
         if filename.split('.')[-1] == extension
     ]
     
-    dfs = []
     for filepath in filepaths:
-        df_ = pd.read_excel(filepath)
-        df_ = df_.dropna()
-
-        df_p = pl.from_pandas(df_)
-
-        # Group by 'pedi_id' and 'prod_id', and select the first occurrence of each group
-        relevant_columns = [sets_column, items_column]
-        filtered_df = df_p.group_by(relevant_columns).first()
-
-        df_ = filtered_df.to_pandas()        
-        
+        df_ = read_data_from_file(filepath, sets_column, items_column)
         yield filepath, df_
 
 @timer()

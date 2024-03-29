@@ -1,4 +1,3 @@
-import os
 import pickle
 import dill
 import cloudpickle
@@ -9,6 +8,7 @@ def invert_dict(dict_: dict):
     new_dict = dict()
     
     for key, value in dict_.items():
+        
         if(isinstance(value, list)):
             for el in value:
                 new_dict_key = list(new_dict.keys())

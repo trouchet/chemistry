@@ -1,5 +1,4 @@
 import pandas as pd
-import polars as pl
 from numpy import unique, quantile
 from random import sample 
 from collections import defaultdict
@@ -7,10 +6,10 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, association_rules
 
 from timy import timer
-from utils.native import flatten_list
-from utils.dataframe import listify_items
-from utils.file import create_folder, extend_filename
-from utils.constants import NEIGHBORS_COUNT_DEFAULT, MIN_SET_SIZE_CONFIDENCE
+from src.utils.native import flatten_list
+from src.utils.dataframe import listify_items
+from src.utils.file import create_folder, extend_filename
+from src.utils.constants import NEIGHBORS_COUNT_DEFAULT, MIN_SET_SIZE_CONFIDENCE
 
 
 def get_sets_count_per_items(
@@ -146,46 +145,6 @@ def get_k_best_support_based_neighbors(
     ][:n_suggestions]
 
     return list(set(suggestion) - set(order))
-
-def get_neighbors_count_per_item(
-    df: pl.DataFrame, 
-    sets_column: str, 
-    item_column: str
-):
-    # Group by 'prod_id' and collect a list of 'pedi_id' for each group
-    grouped = df.group_by(item_column).agg(sets_column)
-    
-    # Create an empty DataFrame to store the product co-occurrence counts
-    final_df_cols = {
-        item_column: str,
-        "neighbors": str, 
-        "count": int
-    }
-    count_df = pl.DataFrame(schema=final_df_cols, orient='col')
-    
-    # Iterate over each group
-    for prod_id, pedi_ids in grouped.rows():
-        
-        # Filter the DataFrame to rows with pedi_ids in the current group
-        filtered_df = df.filter(pl.col(sets_column).is_in(pedi_ids))
-        
-        # Calculate co-occurrence counts for each pedi_id in the group
-        cooccurrence_counts = filtered_df.group_by(item_column)\
-                                         .count()\
-                                         .filter(pl.col(item_column) != prod_id)
-        
-        # Reshape the co-occurrence counts for each pedi_id into separate rows
-        cooccurrence_tuples = [
-            (prod_id, row[0], row[1]) 
-            for row in cooccurrence_counts.rows()
-        ]
-        
-        # Append co-occurrence counts for the current group to the result DataFrame
-        this_prod_df = pl.DataFrame(cooccurrence_tuples, schema=final_df_cols)
-        
-        count_df = pl.concat([count_df, this_prod_df])
-
-    return count_df
 
 def get_frequent_items_and_rules_dict(
     filename_: str,

@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
+import jwt
 
 from os import environ
 
@@ -28,4 +28,3 @@ def create_access_token(data: dict, expires_delta: timedelta):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-

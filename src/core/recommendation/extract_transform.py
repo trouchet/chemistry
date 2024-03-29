@@ -2,7 +2,7 @@ from collections import defaultdict
 import pandas as pd
 from random import sample 
 
-from utils.dataframe import listify_items, get_unique_elements
+from src.utils.dataframe import listify_items, get_unique_elements
 
 def get_items_sample(
     df_: pd.DataFrame,
