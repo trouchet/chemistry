@@ -1,48 +1,42 @@
-$ContainerName = "myapi-container"
+$CONTAINER_NAME = "myapi-container"
 
-# .\Makefile.ps1 build
-function Build-Image {
-    docker build -t myapi .
-}
+# Clean logs
+Remove-Item -Path "build\", "dist\", ".eggs\" -Force -Recurse
+Get-ChildItem -Path "." -Filter "*.log" -Recurse | Remove-Item -Force
 
-#.\Makefile.ps1 run-webapp
-function Run-WebApp {
-    docker run -d --name $ContainerName -p 8000:8000 myapi
-}
+# Clean test artifacts
+Remove-Item -Path ".tox\", ".testmondata*", ".coverage", "coverage.*", "htmlcov\", ".pytest_cache\" -Force -Recurse
 
-# .\Makefile.ps1 stop-webapp
-function Stop-WebApp {
-    docker stop $ContainerName
-    docker rm $ContainerName
-}
+# Clean cache
+Get-ChildItem -Path "." -Filter "*cache*" -Recurse | Remove-Item -Force -Recurse
 
-# .\Makefile.ps1 ps
-function Show-RunningContainers {
-    docker ps
-}
+# Docker clean
+docker system prune --volumes -f
 
-# .\Makefile.ps1 host
-function Start-Host {
-    docker-compose up
-}
+# Build Docker image
+docker build -t myapi .
 
-# Define available commands
-$Commands = @{
-    "build"        = { Build-Image }
-    "run-webapp"   = { Run-WebApp }
-    "stop-webapp"  = { Stop-WebApp }
-    "ps"           = { Show-RunningContainers }
-    "host"         = { Start-Host }
-}
+# Run Docker container
+docker run -d --name $CONTAINER_NAME -p 8000:8000 myapi
 
-# Parse arguments and execute corresponding function
-if ($args.Count -gt 0) {
-    $Command = $args[0]
-    if ($Commands.ContainsKey($Command)) {
-        & $Commands[$Command]
-    } else {
-        Write-Host "Unknown command: $Command"
-    }
-} else {
-    Write-Host "Usage: .\script.ps1 [build | run-webapp | stop-webapp | ps | host]"
-}
+# Stop Docker container
+docker stop $CONTAINER_NAME
+docker rm $CONTAINER_NAME
+
+# Run tests
+poetry run coverage run --rcfile=.coveragerc -m pytest -s
+
+# Watch tests
+ptw -- --cov=. --cov-report=term-missing --cov-config=pytest.ini -s
+
+# Generate coverage report
+poetry run coverage report --omit="tests/*,src/main.py,*/__init__.py,*/constants.py" --show-missing --capture=no
+
+# List containers
+docker ps -a
+
+# Docker compose up
+# $(DOCKER_COMPOSE) up
+
+# Docker compose down
+# $(DOCKER_COMPOSE) down
