@@ -12,10 +12,20 @@ clean-test: # remove test and coverage artifacts
 clean-cache: # remove test and coverage artifacts
 	find . -name '*cache*' -exec rm -rf {} +
 
+sanitize:
+	docker system prune --volumes -f
+	docker images --filter 'dangling=true' -q --no-trunc | xargs -r docker rmi
+
 clean: clean-logs clean-pyc clean-test clean-cache ## Add a rule to remove unnecessary assets
 	docker system prune --volumes -f
 
-build:
+create-env: ## Add a rule to create a virtual environment
+	pip install virtualenv
+	virtualenv venv
+	@echo "Run 'source venv/bin/activate' to activate the virtual environment"
+	@echo "Run 'deactivate' to deactivate the virtual environment"
+
+build: sanitize ## Add a rule to build the application	
 	docker build -t myapi .
 
 run-webapp:
@@ -26,13 +36,16 @@ stop-webapp:
 	docker rm $(CONTAINER_NAME)	
 
 test: ## Add a rule to test the application
-	poetry run coverage run --rcfile=.coveragerc -m pytest -s
+	poetry run coverage run --rcfile=.coveragerc -m pytest
 
-watch: ## run tests on watchdog mode
-	ptw -- --cov=. --cov-report=term-missing --cov-config=pytest.ini -s
+ptw-watch: ## run tests on watchdog mode
+	ptw --quiet --spool 200 --clear --nobeep --config pytest.ini --ext=.py --onfail="echo Tests failed, fix the issues" -v
+
+script-watch: ## run tests on watchdog mode
+	./scripts/watch_tests.sh
 
 report: test ## Add a rule to generate coverage report
-	coverage report --omit="tests/*,src/main.py,*/__init__.py,*/constants.py" --show-missing --capture=no
+	coverage report --omit="tests/*,src/main.py,*/__init__.py,*/constants.py" --show-missing
 
 ps: ## Add a rule to list containers
 	docker ps -a
