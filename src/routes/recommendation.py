@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.core.recommendation.models import RecommendationResponse, \
+from src.models import RecommendationResponse, \
     BasketRequest
 
 router = APIRouter()
