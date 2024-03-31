@@ -1,6 +1,9 @@
-import pytest
+from fastapi.testclient import TestClient
 import pandas as pd
 from unittest.mock import patch
+import pytest
+
+from src.app_factory import create_app
 
 @pytest.fixture
 def sample_dict():
@@ -43,3 +46,10 @@ def mock_read_data_to_dataframe_gen():
     with patch('src.utils.dataframe.read_data_to_dataframe_gen') as mock_gen:
         yield mock_gen
 
+@pytest.fixture
+def test_app():
+    return create_app(0)
+
+@pytest.fixture
+def client(test_app):
+    return TestClient(test_app)
