@@ -1,28 +1,26 @@
-from fastapi import FastAPI, HTTPException
+
 from apscheduler.schedulers.background import BackgroundScheduler
+from uvicorn import run
+from os import getenv 
 
-from src.routes import recommendation, security
-
-# Initialize the app
-app = FastAPI()
+from src.app_factory import create_app
 
 # Initialize the scheduler
 scheduler = BackgroundScheduler()
 scheduler.start()
 
-app.include_router(security.router, prefix="/api", tags=["users"])
-app.include_router(recommendation.router, prefix="/api/recommendation", tags=["items"])
+# Get the number of applications from the environment variable
+APPS_COUNT = 1 # int(getenv("APPS_COUNT", 1))
 
-@app.get('/')
-async def hello_world():
-    return {"message": "Hello World"}
+# Create a list to store the FastAPI applications
+apps = []
 
-# Handle validation errors
-@app.exception_handler(HTTPException)
-async def validation_exception_handler(request, exc):
-    return {"detail": exc.detail}
+# Create and append the FastAPI applications to the list
+# for i in range(APPS_COUNT):
+#    apps.append(create_app(i))
+app = create_app(0)
 
-# Handle unexpected errors
-@app.exception_handler(Exception)
-async def generic_exception_handler(request, exc):
-    return {"detail": "Internal server error"}
+# Run the applications
+# if __name__ == "__main__":
+#    for i, app in enumerate(apps, start=1):
+#        run(app, host="0.0.0.0", port=8000 + i)
