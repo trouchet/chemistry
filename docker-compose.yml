@@ -2,7 +2,7 @@
 
   services:
     postgres:
-      image: postgres:latest
+      image: postgres:13
       environment:
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -38,12 +38,6 @@
         - '--config.file=/etc/prometheus/prometheus.yml'
         - '--web.enable-lifecycle'
 
-    grafana:
-      image: grafana/grafana
-      ports:
-        - "3000:3000"
-      depends_on:
-        - prometheus
 
   volumes:
     postgres_data:

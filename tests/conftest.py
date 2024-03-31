@@ -2,8 +2,11 @@ from fastapi.testclient import TestClient
 import pandas as pd
 from unittest.mock import patch
 import pytest
+import os
 
 from src.app_factory import create_app
+from src.core.recommendation.models import SVRecommender
+
 
 @pytest.fixture
 def sample_dict():
@@ -48,8 +51,51 @@ def mock_read_data_to_dataframe_gen():
 
 @pytest.fixture
 def test_app():
-    return create_app(0)
+    return create_app()
 
 @pytest.fixture
 def client(test_app):
     return TestClient(test_app)
+
+@pytest.fixture
+def sample_data():
+    return {'a': 1, 'b': [2, 3, 4], 'c': {'d': 5, 'e': 6}}
+
+@pytest.fixture
+def pkl_filepath(tmp_path):
+    return os.path.join(tmp_path, 'test.pkl')
+
+@pytest.fixture
+def dill_filepath(tmp_path):
+    return os.path.join(tmp_path, 'test.dill')
+
+@pytest.fixture
+def cloudpickle_filepath(tmp_path):
+    return os.path.join(tmp_path, 'test_cloudpickle.pkl') 
+
+@pytest.fixture
+def sv_recommender():
+    df = pd.read_csv('tests/sample_orders.csv')
+    recommender = SVRecommender(
+        df,
+        sets_column='order_id',
+        items_column='item_id',
+        description_column='description'
+    )
+    recommender._update_neighbors()
+    return recommender 
+
+@pytest.fixture
+def sample_dataframe():
+    data = {
+        'order_id': [1, 1, 2, 2, 3],
+        'item_id': ['A', 'B', 'A', 'B', 'C']
+    }
+    return pd.DataFrame(data)
+
+@pytest.fixture
+def simple_dataframe():
+    data = {
+        'column_name': ['A', 'B', 'C', 'D', 'E']
+    }
+    return pd.DataFrame(data)

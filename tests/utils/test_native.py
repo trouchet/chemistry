@@ -8,7 +8,6 @@ from src.utils.native import invert_dict, \
     load_cloudpickle, dump_cloudpickle
 
 def test_invert_dict(mangled_sample_dict):
-    print(mangled_sample_dict)
     with pytest.raises(ValueError) as e:
         invert_dict(mangled_sample_dict)
     
@@ -36,22 +35,6 @@ def test_sum_dicts():
         {'c': 5, 'd': 6}
     ]
     assert sum_dicts(dict_list) == {'a': 1, 'b': 5, 'c': 9, 'd': 6}
-
-@pytest.fixture
-def sample_data():
-    return {'a': 1, 'b': [2, 3, 4], 'c': {'d': 5, 'e': 6}}
-
-@pytest.fixture
-def pkl_filepath(tmp_path):
-    return os.path.join(tmp_path, 'test.pkl')
-
-@pytest.fixture
-def dill_filepath(tmp_path):
-    return os.path.join(tmp_path, 'test.dill')
-
-@pytest.fixture
-def cloudpickle_filepath(tmp_path):
-    return os.path.join(tmp_path, 'test_cloudpickle.pkl')
 
 def test_pickle_functions(sample_data, pkl_filepath):
     dump_pickle(sample_data, pkl_filepath)

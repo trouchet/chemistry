@@ -1,9 +1,8 @@
 from fastapi.testclient import TestClient
 import pytest
 
-from src.app_factory import create_app
+from src.app import app
 
-app = create_app(0)
 client = TestClient(app)
 
 def test_read_root():
