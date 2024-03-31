@@ -100,15 +100,15 @@ def get_sets_to_items_dict(
     df_: pd.DataFrame,
     sets_column: str,
     items_column: str
-):    
-    # Group by 'order_id' and aggregate 'product_id' into a list
-    result = listify_items(df_, sets_column, items_column)
-
+):
+    # Group by 'sets_column' and aggregate 'items_column' into a list
+    result = df_.groupby(sets_column)[items_column].agg(list).reset_index()
+    
     # Convert to list of lists
-    products_per_order = result[['items_list']].values.tolist()
-    orders_id = list(result[sets_column])
+    items_per_sets = result[[items_column]].values.tolist()
+    sets_id = list(result[sets_column])
     
     return {
-        order_id: list(unique(lst[0]))
-        for order_id, lst in zip(orders_id, products_per_order) 
+        set_id: list(set_items[0])
+        for set_id, set_items in zip(sets_id, items_per_sets) 
     }

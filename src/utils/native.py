@@ -6,20 +6,19 @@ from timy import timer
 
 def invert_dict(dict_: dict):
     new_dict = dict()
-    
-    for key, value in dict_.items():
-        
-        if(isinstance(value, list)):
-            for el in value:
-                new_dict_key = list(new_dict.keys())
-                if(el in new_dict_key):
-                    new_dict[el].append(key)
-                else:
-                    new_dict[el] = [key]
 
-        else:
+    for value in dict_.values():
+        if(not isinstance(value, list)):
             emsg = 'All values must be lists!'
             raise ValueError(emsg)
+
+    for key, value in dict_.items():
+        for el in value:
+            new_dict_key = list(new_dict.keys())
+            if(el in new_dict_key):
+                new_dict[el].append(key)
+            else:
+                new_dict[el] = [key]
 
     return new_dict
 

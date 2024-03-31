@@ -53,7 +53,8 @@ def get_k_best_random_neighbors(
         set(flatten_list([list(get_best_neighbor(item_id).keys()) for item_id in order]))
     )
     
-    suggestions = sample(all_suggestions, n_suggestions)
+    suggestions = all_suggestions if len(all_suggestions) <= n_suggestions \
+                else sample(all_suggestions, n_suggestions)
     
     return list(set(suggestions) - set(order))
 

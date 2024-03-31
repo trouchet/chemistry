@@ -13,13 +13,11 @@ async def health_check():
 
 @router.get("/info")
 async def info():
-    try:
-        with open("pyproject.toml", "r") as f:
-            config = toml.load(f)
-        return {
-            "name": config["tool"]["poetry"]["name"],
-            "version": config["tool"]["poetry"]["version"],
-            "description": config["tool"]["poetry"]["description"]
-        }
-    except Exception as e:
-        return {"error": str(e)}
+    with open("pyproject.toml", "r") as f:
+        config = toml.load(f)
+    
+    return {
+        "name": config["tool"]["poetry"]["name"],
+        "version": config["tool"]["poetry"]["version"],
+        "description": config["tool"]["poetry"]["description"]
+    }
