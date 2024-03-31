@@ -26,7 +26,7 @@ create-env: ## Add a rule to create a virtual environment
 	@echo "Run 'deactivate' to deactivate the virtual environment"
 
 build: sanitize ## Add a rule to build the application	
-	docker build -t myapi .
+	docker-compose build --no-cache
 
 run-webapp:
 	docker run -d --name $(CONTAINER_NAME) -p 8000:8000 myapi
@@ -37,6 +37,11 @@ stop-webapp:
 
 test: ## Add a rule to test the application
 	poetry run coverage run --rcfile=.coveragerc -m pytest
+
+generate-minimal-requirements:
+	pip-compile --output-file=requirements-minimal.txt requirements.txt
+	grep -B1 '# via -r requirements.txt' requirements-minimal.txt | grep -v '\-\-' | cut -d'#' -f1 | sed -e 's/^[[:space:]]*//' -e 's/ //' | tr -s '\n' > requirements.txt
+	rm requirements-minimal.txt
 
 ptw-watch: ## run tests on watchdog mode
 	ptw --quiet --spool 200 --clear --nobeep --config pytest.ini --ext=.py --onfail="echo Tests failed, fix the issues" -v
@@ -51,8 +56,8 @@ ps: ## Add a rule to list containers
 	docker ps -a
 
 up: ## Add a rule to docker up containers
-	$(DOCKER_COMPOSE) up
+	docker-compose up -d
 
 down: ## Add a rule to docker down containers
-	$(DOCKER_COMPOSE) down
+	docker-compose down
 

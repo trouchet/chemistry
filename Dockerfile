@@ -1,37 +1,25 @@
-# Stage 1: Build (non-root user)
+# Use python base image
+FROM python:3.9-slim
 
-FROM python:3.9 AS builder
+# Create non-root user
+RUN adduser --disabled-password appuser
 
 # Set working directory
 WORKDIR /app
 
-# Copy dependencies
-COPY requirements.txt .
-
-# Install dependencies as non-root user
-RUN adduser --disabled-password --shell /bin/bash appuser && \
-    chown -R appuser:appuser . && \
-    su - appuser -c "pip install --no-cache-dir -r requirements.txt prometheus_client"
-
-# Copy application code
+# Copy application code and requirements
 COPY . .
 
-# Stage 2: Run (non-root user)
+# Install dependencies
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-FROM python:3.9-slim  # Use slim image for smaller size
-
-# Copy dependencies from build stage
-COPY --from=builder /app .
-
-# Set working directory and user
-WORKDIR /app
+# Switch to non-root user
 USER appuser
 
-# Get APP_COUNTS from .env file (optional)
-ARG APP_COUNTS
-
-# Expose ports dynamically based on APP_COUNTS
-EXPOSE $((8000 + 0))-$((8000 + APP_COUNTS - 1))
+# Get APP_COUNTS from environment
+# Use default value if not set
+ENV APP_COUNTS ${APP_COUNTS:-1}
 
 # Run each app individually
-CMD ["bash", "-c", "for ((i=1; i <= $APP_COUNTS; i++)); do uvicorn src.main:create_app $i --host 0.0.0.0 --port $((8000 + i)) & done && wait"]
+CMD ["/usr/local/bin/uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
