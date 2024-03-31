@@ -1,7 +1,5 @@
 from timy import timer
 import pandas as pd
-from pydantic import BaseModel
-from typing import List
 
 from src.core.recommendation.algorithms import  \
     get_k_best_arbitrary_neighbors, \
@@ -16,16 +14,7 @@ from src.core.recommendation.constants import \
     N_BEST_NEIGHBORS_DEFAULT, \
     RECOMMENDATION_ALGO_DEFAULT
 
-# Request model
-class BasketRequest(BaseModel):
-    basket: List[str]
-
-# Response model
-class RecommendationResponse(BaseModel):
-    recommendation: str
-
 class SVRecommender(object):
-
     def __init__(
         self, 
         df_: pd.DataFrame,
@@ -55,7 +44,7 @@ class SVRecommender(object):
         self.neighbors = get_items_neighbors_count(self.data_dataframe, self.__sets_column, self.__items_column)
  
     @timer()
-    def suggest(
+    def recommend(
         self, 
         order: list, 
         method: str = RECOMMENDATION_ALGO_DEFAULT
@@ -85,7 +74,6 @@ class SVRecommender(object):
             return get_k_best_support_based_neighbors(
                 order, 
                 self.neighbors_dict, 
-                self.orders_per_product_dict, 
                 self.n_suggestions, 
                 self.n_best_neighbors
             )
