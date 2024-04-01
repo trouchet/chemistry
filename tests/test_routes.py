@@ -9,7 +9,6 @@ def test_token_endpoint(client):
 def test_recommend_product_valid(client, mock_get_client_data):
     basket_request = {"basket": ["apple", "banana"]}
     response = client.post("/api/recommendati   on/basket", json=basket_request)
-    print(response.json())
     
     assert response.status_code == 200
     assert "recommendation" in response.json()
