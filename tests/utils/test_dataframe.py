@@ -36,12 +36,12 @@ def test_read_data_to_dataframe_gen(tmpdir):
         assert "sets_column" in df_.columns
         assert "items_column" in df_.columns
 
-def test_listify_items(sample_df):
+def test_listify_items(sample_dataframe):
     expected_result = [['a', 'b'], ['c', 'd'], ['e', 'f']]
-    result = listify_items(sample_df, 'sets_column', 'items_column')
+    result = listify_items(sample_dataframe, 'order_id', 'item_id')
     assert result == expected_result
 
-def test_get_descriptions(sample_df):
+def test_get_descriptions(sample_dataframe):
     expected_result = {
         'a': 'desc_a', 
         'b': 'desc_b', 
@@ -51,37 +51,37 @@ def test_get_descriptions(sample_df):
         'f': 'desc_f'
     }
 
-    result = get_descriptions(sample_df, 'items_column', 'description_column')
+    result = get_descriptions(sample_dataframe, 'item_id', 'description')
     
     assert result == expected_result
 
-def test_get_years(sample_df):
+def test_get_years(sample_dataframe):
     expected_result = [2022, 2023, 2024]
-    result = get_years(sample_df, 'date_column')
+    result = get_years(sample_dataframe, 'purchase_date')
     assert result == expected_result
 
-def test_get_unique_elements(sample_df):
+def test_get_unique_elements(sample_dataframe):
     expected_result = ['a', 'b', 'c', 'd', 'e', 'f']
-    result = get_unique_elements(sample_df, 'items_column')
+    result = get_unique_elements(sample_dataframe, 'item_id')
     assert result == expected_result
 
-def test_read_data_from_file(sample_df):
+def test_read_data_from_file(sample_dataframe):
     filepath = 'sample_file.xlsx'
-    sets_column = 'sets_column'
-    items_column = 'items_column'
+    sets_column = 'order_id'
+    items_column = 'item_id'
     
     with patch('pandas.read_excel') as mock_read_excel:
-        mock_read_excel.return_value = sample_df
+        mock_read_excel.return_value = sample_dataframe
         result = read_data_from_file(filepath, sets_column, items_column)
     
-    assert result.equals(sample_df)
+    assert result.equals(sample_dataframe)
 
 def test_read_data_to_dataframe_gen_folder_not_found():
     with patch('os.listdir') as mock_listdir:
         mock_listdir.side_effect = FileNotFoundError
-        data_folder = 'data_folder'
-        sets_column = 'sets_column'
-        items_column = 'items_column'
+        data_folder = 'purchase_date'
+        sets_column = 'order_id'
+        items_column = 'item_id'
         extension = 'xlsx'
         
         gen = read_data_to_dataframe_gen(data_folder, sets_column, items_column, extension)
@@ -90,8 +90,8 @@ def test_read_data_to_dataframe_gen_folder_not_found():
 
 def test_read_data_to_dataframe(mock_read_data_to_dataframe_gen):
     data_folder = 'data_folder'
-    sets_column = 'sets_column'
-    items_column = 'items_column'
+    sets_column = 'order_id'
+    items_column = 'items_id'
     extension = 'xlsx'
 
     # Call the function

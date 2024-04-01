@@ -7,7 +7,9 @@ from timy import timer
 def invert_dict(dict_: dict):
     new_dict = dict()
 
+    # Validate input
     for value in dict_.values():
+        
         if(not isinstance(value, list)):
             emsg = 'All values must be lists!'
             raise ValueError(emsg)

@@ -1,5 +1,4 @@
 import pandas as pd
-from numpy import unique, quantile
 from random import sample 
 from collections import defaultdict
 from mlxtend.preprocessing import TransactionEncoder
@@ -8,105 +7,77 @@ from mlxtend.frequent_patterns import apriori, association_rules
 from timy import timer
 
 from src.core.recommendation.utils import get_n_best_neighbors
-from src.utils.native import flatten_list
+from src.core.recommendation.constants import AVAILABLE_METHODS, \
+    DEFAULT_MIN_SUPPORT, \
+    DEFAULT_MIN_THRESHOLD
 from src.utils.dataframe import listify_items
-from src.utils.file import create_folder, extend_filename
-from src.utils.constants import MIN_SET_SIZE_CONFIDENCE
 
-def get_k_best_arbitrary_neighbors(
+from src.utils.native import flatten_list
+
+def get_k_best_neighbors(
     order: list,
     neighbors: dict,
+    method: str,
     n_suggestions: dict,
     n_best_neighbors: int,
 ):
     n_best_neighbors = get_n_best_neighbors(neighbors, n_best_neighbors)
 
     def get_best_neighbor(item_id: str):
-        try:
-            return n_best_neighbors[item_id]
-        except KeyError:
-            return {}
+        return n_best_neighbors.get(item_id, {})
 
     all_suggestions = list(
-        set(flatten_list([list(get_best_neighbor(item_id).keys()) for item_id in order]))
+        set(
+            flatten_list([list(get_best_neighbor(item_id).keys()) for item_id in order])
+        )
     )
-    
-    suggestions = all_suggestions[:n_suggestions]
-    
-    return list(set(suggestions) - set(order))
 
-def get_k_best_random_neighbors(
-    order: list,
-    neighbors: dict,
-    n_suggestions: dict,
-    n_best_neighbors: int,
-):
-    n_best_neighbors = get_n_best_neighbors(neighbors, n_best_neighbors)
-
-    def get_best_neighbor(item_id: str):
-        try:
-            return n_best_neighbors[item_id]
-        except KeyError:
-            return {}
-
-    all_suggestions = list(
-        set(flatten_list([list(get_best_neighbor(item_id).keys()) for item_id in order]))
-    )
+    if(method == 'arbitrary'):
+        suggestions = all_suggestions[:n_suggestions]
     
-    suggestions = all_suggestions if len(all_suggestions) <= n_suggestions \
+    elif(method == 'random'):
+        suggestions = all_suggestions if len(all_suggestions) <= n_suggestions \
                 else sample(all_suggestions, n_suggestions)
     
+    elif(method == 'support'):
+        count_dict = defaultdict()
+        
+        neighbors_count = flatten_list([ 
+            list(get_best_neighbor(item_id).items()) for item_id in order 
+        ])
+        
+        for neighbor_id, count in neighbors_count:
+            count_value = max(count_dict.get(neighbor_id, 0), count)
+            count_dict[neighbor_id] = count_value
+        
+        suggestions = [
+            best_neighbor_j
+            for best_neighbor_j, _ in sorted(
+                count_dict.items(), 
+                key=lambda x: x[1], 
+                reverse=True
+            )
+        ]
+    else:
+        raise ValueError(f'Available methods: {AVAILABLE_METHODS}')
+
     return list(set(suggestions) - set(order))
 
-def get_k_best_support_based_neighbors(
-    order: list,
-    neighbors_: dict,
-    n_suggestions: dict,
-    n_best_neighbors: int,
-):
-    n_best_neighbors = get_n_best_neighbors(neighbors_, n_best_neighbors)
-
-    def get_best_neighbor(item_id: str):
-        try:
-            return n_best_neighbors[item_id]
-        except KeyError:
-            return {}
-
-    count_dict = defaultdict()
-    for neighbor_id, count in flatten_list(
-        [ list(get_best_neighbor(item_id).items()) for item_id in order ]
-    ):
-        try:
-            count_dict[neighbor_id] = max(count_dict[neighbor_id], count)
-        except KeyError:
-            count_dict[neighbor_id] = count            
-    
-    suggestion = [
-        best_neighbor_j
-        for best_neighbor_j, _ in sorted(
-            count_dict.items(), 
-            key=lambda x: x[1], 
-            reverse=True
-        )
-    ][:n_suggestions]
-
-    return list(set(suggestion) - set(order))
-
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## Under construction
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 def get_frequent_items_and_rules_dict(
-    filename_: str,
     df_: pd.DataFrame, 
+    sets_column: str,
+    items_column: str,
     min_support_: float, 
     min_threshold_: float
 ):
     frequent_itemsets, rules = get_association_rules(
-        df_, min_support_, min_threshold_
+        df_, sets_column, items_column, 
+        min_support_, min_threshold_
     )
 
-    if(not rules.empty):
-        create_folder('rules')
-        new_filename = extend_filename(filename_, rules)
-        rules.to_excel(new_filename)
-    
     return {
         'frequent_itemsets': frequent_itemsets,
         'association_rules': rules
@@ -115,20 +86,13 @@ def get_frequent_items_and_rules_dict(
 @timer()
 def get_association_rules(
     df_: pd.DataFrame, sets_column: str, items_column: str,
-	min_support_=0.001,	min_threshold_=0.05, set_size_confidence=MIN_SET_SIZE_CONFIDENCE
+	min_support_=DEFAULT_MIN_SUPPORT, min_threshold_=DEFAULT_MIN_THRESHOLD
 ):
     all_sets_list = listify_items(df_, sets_column, items_column)
-    len_map = lambda x: len(x)
-    len_sets = list(
-        map(len_map, listify_items(df_, sets_column, items_column))
-    )
-    
-    percentile_X = quantile(len_sets, set_size_confidence)
-    confidence_data = list(filter(lambda x: len(x) < percentile_X, all_sets_list))
-    
+
     # Data transform
     te = TransactionEncoder()
-    te_ary = te.fit(confidence_data).transform(confidence_data)
+    te_ary = te.fit(all_sets_list).transform(all_sets_list)
 
     df_encoded = pd.DataFrame(te_ary, columns=te.columns_)
     

@@ -7,7 +7,7 @@ from src.utils.native import invert_dict, \
     load_dill, dump_dill, \
     load_cloudpickle, dump_cloudpickle
 
-def test_invert_dict(mangled_sample_dict):
+def test_invert_dict_failed(mangled_sample_dict):
     with pytest.raises(ValueError) as e:
         invert_dict(mangled_sample_dict)
     

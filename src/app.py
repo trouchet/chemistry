@@ -5,7 +5,6 @@ from fastapi.responses import JSONResponse
 from src.app_factory import create_app
 
 # Get the number of applications from the environment variable
-APPS_COUNT = 1 # int(getenv("APPS_COUNT", 1))
 app = create_app()
 
 # exception handler for authjwt
