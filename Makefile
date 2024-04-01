@@ -49,8 +49,9 @@ ptw-watch: ## run tests on watchdog mode
 script-watch: ## run tests on watchdog mode
 	./scripts/watch_tests.sh
 
+OMIT_PATHS := "tests/*,src/main.py,src/app.py,*/__init__.py,*/constants.py"
 report: test ## Add a rule to generate coverage report
-	coverage report --omit="tests/*,src/main.py,*/__init__.py,*/constants.py" --show-missing
+	coverage report --omit=$(OMIT_PATHS) --show-missing
 
 ps: ## Add a rule to list containers
 	docker ps -a
