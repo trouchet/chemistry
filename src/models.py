@@ -1,22 +1,27 @@
 from pydantic import BaseModel
+from typing import Optional
 
-'''
 from os import environ
-from fastapi_jwt_auth import AuthJWT
 
+# JWT Secret and Algorithm
 JWT_SECRET = str(environ.get('JWT_SECRET'))
 JWT_ALGORITHM = str(environ.get('JWT_ALGORITHM')) 
     
-# in production you can use Settings management
+# In production, you can use Settings management
 # from pydantic to get secret key from .env
 class Settings(BaseModel):
     authjwt_secret_key: str = JWT_SECRET
-
-# callback to get your configuration
-@AuthJWT.load_config
-def get_config():
-    return Settings()
-'''
+    authjwt_algorithm: str = JWT_ALGORITHM
 
 class User(BaseModel):
     username: str
+    password: str
+
+# Request model
+class Basket(BaseModel):
+    items: str
+    algorithm: Optional[str] = None
+
+# Response model
+class Recommendation(BaseModel):
+    items: str

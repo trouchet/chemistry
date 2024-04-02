@@ -1,9 +1,11 @@
 from os import getcwd
-from fastapi import APIRouter, Body
-from src.logging import logging
+from fastapi import APIRouter
 
-from src.core.recommendation.models import SVRecommender
+from src.logging import logging
 from src.utils.dataframe import read_data_from_file
+from src.core.recommendation.models import SVRecommender
+from src.models import Basket
+
 
 router = APIRouter()
 
@@ -22,44 +24,23 @@ def get_client_data():
     
     return sets_column, items_column, description_column, df
 
-from pydantic import BaseModel
-
-class Item(BaseModel):
-    name: str
-    description: str
-    price: float
-    tax: float
-
-@router.post("/items/")
-async def create_item(item: Item):
-    item_dict = item.dict()
-
-    if item.tax:
-        price_with_tax = item.price + item.tax
-        item_dict.update({"price_with_tax": price_with_tax})
-    
-    return item_dict
-
-from typing import List
-
-# Request model
-class BasketRequest(BaseModel):
-    basket: str
-
-# Response model
-class RecommendationResponse(BaseModel):
-    recommendation: str
 
 @router.post("/basket")
 async def recommend_product(
-    request: BasketRequest = Body(...)
+    request: Basket
 ):
     sets_col, items_col, description_col, df  = get_client_data()
     
     recommender = SVRecommender(df, sets_col, items_col, description_col)
     recommender._update_neighbors()
 
-    basket = list(request.basket)
+    try:
+        basket = list(basket.items)
+    except Exception as e:
+        logging.error(e)
+
+        return {"error": "Invalid basket items. It must be a serialized list!"}
+    
     recommendation = recommender.recommend(basket)
 
     logging.debug(recommendation)
