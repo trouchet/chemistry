@@ -11,7 +11,6 @@ from src.core.recommendation.constants import AVAILABLE_METHODS, \
     DEFAULT_MIN_SUPPORT, \
     DEFAULT_MIN_THRESHOLD
 from src.utils.dataframe import listify_items
-
 from src.utils.native import flatten_list
 
 def get_k_best_neighbors(
@@ -63,9 +62,6 @@ def get_k_best_neighbors(
 
     return list(set(suggestions) - set(order))
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
-## Under construction
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 def get_frequent_items_and_rules_dict(
     df_: pd.DataFrame, 
     sets_column: str,
