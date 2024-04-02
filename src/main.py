@@ -4,11 +4,11 @@ from uvicorn import run
 from src.app import app
 from src.scheduler import scheduler
 
-# Start the scheduler
-scheduler.start()
-
 # Start Prometheus logging metrics
 Instrumentator().instrument(app).expose(app)
+
+# # Start the scheduler
+# scheduler.start()
 
 # Run the applications
 if __name__ == "__main__":

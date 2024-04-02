@@ -16,8 +16,7 @@ sanitize:
 	docker system prune --volumes -f
 	docker images --filter 'dangling=true' -q --no-trunc | xargs -r docker rmi
 
-clean: clean-logs clean-pyc clean-test clean-cache ## Add a rule to remove unnecessary assets
-	docker system prune --volumes -f
+clean: clean-logs clean-test clean-cache sanitize ## Add a rule to remove unnecessary assets
 
 create-env: ## Add a rule to create a virtual environment
 	pip install virtualenv
@@ -31,6 +30,13 @@ build: sanitize ## Add a rule to build the application
 run-webapp:
 	docker run -d --name $(CONTAINER_NAME) -p 8000:8000 myapi
 
+search: ## Add a rule to search for a token in the code
+	grep -rnw . \
+	--exclude-dir=venv \
+	--exclude-dir=.git \
+	--exclude=poetry.lock \
+	-e "$(token)"
+
 stop-webapp:	
 	docker stop $(CONTAINER_NAME)
 	docker rm $(CONTAINER_NAME)	
@@ -40,7 +46,10 @@ test: ## Add a rule to test the application
 
 generate-minimal-requirements:
 	pip-compile --output-file=requirements-minimal.txt requirements.txt
-	grep -B1 '# via -r requirements.txt' requirements-minimal.txt | grep -v '\-\-' | cut -d'#' -f1 | sed -e 's/^[[:space:]]*//' -e 's/ //' | tr -s '\n' > requirements.txt
+	grep -B1 '# via -r requirements.txt' requirements-minimal.txt | \
+		grep -v '\-\-' | cut -d'#' -f1 | \
+		sed -e 's/^[[:space:]]*//' -e 's/ //' | \
+		tr -s '\n' > requirements.txt
 	rm requirements-minimal.txt
 
 ptw-watch: ## run tests on watchdog mode
@@ -61,4 +70,3 @@ up: ## Add a rule to docker up containers
 
 down: ## Add a rule to docker down containers
 	docker-compose down
-
