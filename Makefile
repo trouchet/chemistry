@@ -62,6 +62,9 @@ OMIT_PATHS := "tests/*,src/main.py,src/app.py,*/__init__.py,*/constants.py"
 report: test ## Add a rule to generate coverage report
 	coverage report --omit=$(OMIT_PATHS) --show-missing
 
+logs: ## Add a rule to show logs
+	docker logs -f api-backend-app-1
+
 ps: ## Add a rule to list containers
 	docker ps -a
 
