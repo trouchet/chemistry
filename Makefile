@@ -27,8 +27,8 @@ create-env: ## Add a rule to create a virtual environment
 build: sanitize ## Add a rule to build the application	
 	docker-compose build --no-cache
 
-run-webapp:
-	docker run -d --name $(CONTAINER_NAME) -p 8000:8000 myapi
+run:
+	uvicorn src.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
 
 search: ## Add a rule to search for a token in the code
 	grep -rnw . \
@@ -36,10 +36,6 @@ search: ## Add a rule to search for a token in the code
 	--exclude-dir=.git \
 	--exclude=poetry.lock \
 	-e "$(token)"
-
-stop-webapp:	
-	docker stop $(CONTAINER_NAME)
-	docker rm $(CONTAINER_NAME)	
 
 test: ## Add a rule to test the application
 	poetry run coverage run --rcfile=.coveragerc -m pytest
@@ -70,6 +66,8 @@ ps: ## Add a rule to list containers
 
 up: ## Add a rule to docker up containers
 	docker-compose up -d
+
+restart: down build up ## Add a rule to docker restart containers
 
 down: ## Add a rule to docker down containers
 	docker-compose down

@@ -20,7 +20,7 @@
           APPS_COUNT: ${APPS_COUNT:-1}  # Use 1 as default if APPS_COUNT is not set
       ports:
         - "8000:8000"
-      depends_on:
+      depends_on: 
         - postgres
       environment:
         DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
