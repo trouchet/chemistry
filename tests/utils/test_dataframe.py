@@ -22,11 +22,14 @@ def test_read_data_to_dataframe_gen(tmpdir):
     # Write some test data to the Excel files
     data1 = {"sets_column": [1, 2, 3], "items_column": ['a', 'b', 'c']}
     data2 = {"sets_column": [4, 5, 6], "items_column": ['d', 'e', 'f']}
+    
     pd.DataFrame(data1).to_excel(file1, index=False)
     pd.DataFrame(data2).to_excel(file2, index=False)
 
     # Test the function
-    results = list(read_data_to_dataframe_gen(str(data_folder), "sets_column", "items_column"))
+    sets_column = "sets_column"
+    items_column = "items_column"
+    results = list(read_data_to_dataframe_gen(str(data_folder), sets_column, items_column))
 
     # Check if the results are as expected
     assert len(results) == 2
@@ -75,6 +78,18 @@ def test_read_data_from_file(sample_dataframe):
         result = read_data_from_file(filepath, sets_column, items_column)
     
     assert result.equals(sample_dataframe)
+
+    filepath = 'sample_file.csv'
+    
+    with patch('pandas.read_csv') as mock_read_excel:
+        mock_read_excel.return_value = sample_dataframe
+        result = read_data_from_file(filepath, sets_column, items_column)
+
+    assert result.equals(sample_dataframe)
+
+    filepath = 'sample_file.txt'
+    with pytest.raises(ValueError):
+        read_data_from_file(filepath, sets_column, items_column)
 
 def test_read_data_to_dataframe_gen_folder_not_found():
     with patch('os.listdir') as mock_listdir:

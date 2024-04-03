@@ -1,0 +1,14 @@
+order_id,item_id,description
+1,apple,Description of apple
+1,banana,Description of banana
+1,orange,Description of orange
+2,banana,Description of banana
+2,orange,Description of orange
+2,grape,Description of grape
+3,apple,Description of apple
+3,banana,Description of banana
+3,grape,Description of grape
+4,apple,Description of apple
+4,grape,Description of grape
+5,banana,Description of banana
+5,orange,Description of orange

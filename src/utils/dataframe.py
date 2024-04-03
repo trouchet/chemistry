@@ -38,7 +38,16 @@ def get_unique_elements(
     return list(unique(list(df_[column_label])))
 
 def read_data_from_file(filepath: str, sets_column: str, items_column: str) -> pd.DataFrame:
-    df = pd.read_excel(filepath)
+    get_extension = lambda x: x.split('.')[-1]
+    extension = get_extension(filepath)
+
+    if extension == 'xlsx':
+        df = pd.read_excel(filepath)
+    elif extension == 'csv':
+        df = pd.read_csv(filepath)
+    else:
+        raise ValueError(f'Unsupported extension: {extension}')
+    
     df = df.dropna()
     relevant_columns = [sets_column, items_column]
     filtered_df = df.groupby(relevant_columns).first().reset_index()

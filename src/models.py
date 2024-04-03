@@ -1,7 +1,9 @@
-from pydantic import BaseModel
-from typing import Optional
-
+from pydantic import BaseModel, Field
+from typing import Optional, List
 from os import environ
+
+from src.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT, \
+    RECOMMENDATION_ALGO_DEFAULT
 
 # JWT Secret and Algorithm
 JWT_SECRET = str(environ.get('JWT_SECRET'))
@@ -19,9 +21,10 @@ class User(BaseModel):
 
 # Request model
 class Basket(BaseModel):
-    items: str
-    algorithm: Optional[str] = None
+    items: List[str] = Field(default=[])
+    algorithm: Optional[str] = RECOMMENDATION_ALGO_DEFAULT
+    horizon: Optional[int] = N_BEST_NEIGHBORS_DEFAULT
 
 # Response model
 class Recommendation(BaseModel):
-    items: str
+    items: Optional[List[str]] = []
