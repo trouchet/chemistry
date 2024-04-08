@@ -43,11 +43,13 @@ class SVRecommender(object):
 
     def _update_neighbors(self):
         self.neighbors_dict = get_items_neighbors_count(
-            self.data_dataframe, self.__sets_column, self.__items_column)
+            self.data_dataframe, self.__sets_column, self.__items_column
+        )
  
     @timer()
     def recommend(
-        self, order: list, method: str = RECOMMENDATION_ALGO_DEFAULT
+        self, order: list, 
+        method: str = RECOMMENDATION_ALGO_DEFAULT
     ):
         if(len(self.neighbors_dict) == 0):
             error_message = 'You must run method \'_update_neighbors\' before running \'recommend\''

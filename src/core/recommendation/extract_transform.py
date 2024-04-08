@@ -48,9 +48,7 @@ def get_items_neighbors_count(
     
     for item_id in item_ids:
         set_list_with_item_id = [
-            set_list 
-            for set_list in sets_list
-            if item_id in set_list
+            set_list for set_list in sets_list if item_id in set_list
         ]
 
         for set_list in set_list_with_item_id:
@@ -62,7 +60,7 @@ def get_items_neighbors_count(
             
 
     return {
-        key: value
-        for key, value in item_neighbors.items()
-        if len(value) != 0
+        item_id: dict(neighbors)
+        for item_id, neighbors in item_neighbors.items()
+        if len(neighbors) != 0
     }
