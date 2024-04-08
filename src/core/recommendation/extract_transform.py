@@ -9,6 +9,10 @@ def get_items_sample(
     column: str,
     sample_count: int
 ):
+    '''
+    Get a sample of items from a DataFrame column.
+    '''
+
     item_ids = get_unique_elements(df_, column)
     return list(sample(item_ids, sample_count))
 
@@ -17,6 +21,10 @@ def get_sets_count_per_items_dict(
     sets_column: str,
     items_column: str
 ):
+    '''
+    Get the count of sets per item.
+    '''
+    
     result = df_.groupby(items_column)[sets_column].count().reset_index()
     result_dict = result.set_index(items_column)[sets_column].to_dict()
 
@@ -27,6 +35,10 @@ def get_items_neighbors_count(
     sets_column: str,
     items_column: str
 ):
+    '''
+    Get the count of neighbors per item.
+    '''
+
     item_ids = get_unique_elements(df_, items_column)
     sets_list = listify_items(df_, sets_column, items_column)
 

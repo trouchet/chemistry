@@ -57,6 +57,7 @@ def get_k_best_neighbors(
                 reverse=True
             )
         ]
+    
     else:
         raise ValueError(f'Available methods: {AVAILABLE_METHODS}')
 

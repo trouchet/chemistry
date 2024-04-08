@@ -4,12 +4,24 @@ from src.core.recommendation.extract_transform import get_sets_count_per_items_d
 from src.utils.dataframe import get_unique_elements
 
 def get_items_support(
-    sets_count_dict: dict, 
+    sets_count_dict: dict,
     sets_total: int
 ):
     return {
-        item_id: sets_count/sets_total
-        for item_id, sets_count in sets_count_dict.items()
+        item_id: count/sets_total 
+        for item_id, count in sets_count_dict.items()
+    }
+
+def get_items_neighbors_support(
+    item_to_neighbors_dict: dict, 
+    sets_total: int
+):    
+    return {
+        item_id: {
+            neighbor_id: neighbor_count/sets_total
+            for neighbor_id, neighbor_count in neighbors.items()
+        }
+        for item_id, neighbors in item_to_neighbors_dict.items()
     }
 
 # Confidence(A→B) = Probability(A & B) / Support(A)
@@ -17,16 +29,15 @@ def get_items_confidence(
     item_to_neighbors_dict: dict,
     items_support_dict: dict,
     sets_total: int
-):    
+):
+    '''
+    P(B_given_A) = P(A and B) / P(A)
+    '''
     
-    neighbors_support_dict = {
-        item_id: {
-            neighbor_id: neighbor_count/sets_total
-            for neighbor_id, neighbor_count in neighbors.items()
-        }
-        for item_id, neighbors in item_to_neighbors_dict.items()
-    }
-    
+    neighbors_support_dict = get_items_neighbors_support(
+        item_to_neighbors_dict, sets_total
+    )
+
     return {
         item_id: {
             neighbor_id: neighbor_support/items_support_dict[item_id]
@@ -50,32 +61,39 @@ def get_items_lift(
 
 def get_association_metrics(
     df_: pd.DataFrame,
-    neighbors: dict,
+    neighbors_dict: dict,
     sets_column: str, 
     items_column: str
 ):
+    '''
+    Lift: P(B_given_A) / P(B)
+    '''
     sets_count_dict = get_sets_count_per_items_dict(df_, sets_column, items_column)
     sets_total = len(get_unique_elements(df_, sets_column))
     
-    items_support = get_items_support(sets_count_dict, sets_total)
-    items_confidence = get_items_confidence(neighbors, items_support, sets_total)
-    items_lift = get_items_lift(items_support, items_confidence)
+    items_support_dict = get_items_support(sets_count_dict, sets_total)
+    neighbors_support_dict = get_items_neighbors_support (df_, sets_column, items_column)
+    neighbors_confidence_dict = get_items_confidence(neighbors_dict, items_support_dict, sets_total)
+    neighbors_lift_dict = get_items_lift(items_support_dict, neighbors_confidence_dict)
 
-    # TODO: 
-    # Leverage: P(A and B) - P(A) * P(B)
-    # Conviction: P(A and B) / (P(A) * P(B))
-    # zhang_metric: Zhang(A -> B) = P(B_given_A) - P(B)
+    # TODO:
+    # [x] Support: P(A and B)
+    # [x] Confidence: P(B_given_A) = P(A and B) / P(A)
+    # [x] Lift: P(B_given_A) / P(B) 
+    # [ ] Leverage: P(A and B) - P(A) * P(B)
+    # [ ] Conviction: (1 - P(B)) / (1 - P(B_given_A))
 
     return {
         item_id: {
             'support': item_support,
             'neighbors': {
                 neighbor_id: {
-                    'confidence': neighbor_confidence,
-                    'lift': items_lift[item_id][neighbor_id]
+                    'support': neighbor_support,
+                    'confidence': neighbors_confidence_dict[item_id][neighbor_id],
+                    'lift': neighbors_lift_dict[item_id][neighbor_id]
                 } 
-                for neighbor_id, neighbor_confidence in items_confidence[item_id].items()
+                for neighbor_id, neighbor_support in neighbors_support_dict[item_id].items()
             }
         }
-        for item_id, item_support in items_support.items()
+        for item_id, item_support in items_support_dict.items()
     }

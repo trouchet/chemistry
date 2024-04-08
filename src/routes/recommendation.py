@@ -9,8 +9,13 @@ from src.models import Basket, Recommendation
 
 router = APIRouter()
 
-# NOTE: Replace this function by database query or any source data loading 
-def get_client_data():
+is_demo = True
+
+def demo_client_data():
+    '''
+    This function is a demo data loader.
+    '''
+
     # Data file path
     filename = 'orders_sample.csv'
 
@@ -20,8 +25,30 @@ def get_client_data():
     datapath = getcwd() + '/data/' + filename
     
     df = read_data_from_file(datapath, sets_column, items_column)
-    
+
     return sets_column, items_column, description_column, df
+
+def SV_client_data():
+    '''
+    This function should be replaced by a database query or 
+    any other source data loading.
+    '''
+
+    # Data file path
+    sets_column = 'pedi_id'
+    items_column = 'prod_id'
+    description_column = 'prod_descricao'
+    
+    filename = 'sv_sample.xlsx'
+    datapath = getcwd() + '/data/' + filename
+    
+    df = read_data_from_file(datapath, sets_column, items_column)
+
+    return sets_column, items_column, description_column, df
+
+# NOTE: Replace this function by database query or any source data loading 
+def get_client_data():
+    return demo_client_data() if is_demo else SV_client_data()
 
 @router.post("/basket")
 async def recommend_product(
