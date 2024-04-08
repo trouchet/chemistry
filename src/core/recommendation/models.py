@@ -55,29 +55,20 @@ class SVRecommender(object):
         
         if(method == 'k_best_arbitrary'):
             return get_k_best_neighbors(
-                order, 
-                self.neighbors_dict, 
-                'arbitrary',
-                self.n_suggestions, 
-                self.n_best_neighbors
+                'arbitrary', order, self.neighbors_dict, 
+                self.n_suggestions, self.n_best_neighbors
             )
         
         elif(method == 'k_best_random'):
             return get_k_best_neighbors(
-                order, 
-                self.neighbors_dict,
-                'random',  
-                self.n_suggestions, 
-                self.n_best_neighbors
+                'random', order, self.neighbors_dict,   
+                self.n_suggestions, self.n_best_neighbors
             )
         
         elif(method == 'k_best_support'):
             return get_k_best_neighbors(
-                order, 
-                self.neighbors_dict,
-                'support', 
-                self.n_suggestions, 
-                self.n_best_neighbors
+                'support', order, self.neighbors_dict,  
+                self.n_suggestions, self.n_best_neighbors
             )
 
         else:

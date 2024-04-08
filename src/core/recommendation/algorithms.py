@@ -14,9 +14,9 @@ from src.utils.dataframe import listify_items
 from src.utils.native import flatten_list
 
 def get_k_best_neighbors(
+    method: str,
     order: list,
     neighbors: dict,
-    method: str,
     n_suggestions: dict,
     n_best_neighbors: int,
 ):
