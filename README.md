@@ -1,4 +1,4 @@
-# Fapi
+# ApI
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-3.7%20|%203.8%20|%203.9-blue)](https://www.python.org/downloads/)
 [![FastAPI Version](https://img.shields.io/badge/FastAPI-0.68.1-blue)](https://fastapi.tiangolo.com/)
