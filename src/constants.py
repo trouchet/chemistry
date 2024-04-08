@@ -1,11 +1,7 @@
 # Description: Constants used in the project
 
-# Minimum number of bins for the histogram
-MIN_BIN_COUNT = 50
+# Time horizon to check for item metrics
+DEFAULT_AGE = 12
 
-# Default minimum support threshold
-MIN_SUPPORT_THRES = 0.008
-
-# Default minimum threshold for the association rules
-MIN_THRESHOLD = 0.5
-
+# Array with valid age months
+VALID_AGE_MONTHS = [6, 12, 24, 36]  
