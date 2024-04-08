@@ -2,6 +2,8 @@ CONTAINER_NAME := myapi-container
 
 .PHONY: build run-webapp stop ps host
 
+OMIT_PATHS := "tests/*,src/main.py,src/app.py,*/__init__.py,*/constants.py"
+
 define PRINT_HELP_PYSCRIPT
 import re, sys
 
@@ -68,12 +70,10 @@ ptw-watch: ## Run tests on watchdog mode. Usage: make ptw-watch
 	ptw --quiet --spool 200 --clear --nobeep \
 	--config pytest.ini --ext=.py \
 	--onfail="echo Tests failed, fix the issues" \
-	--runner "coverage report --omit=$(OMIT_PATHS) --show-missing"
-
+	
 script-watch: ## Run tests on watchdog mode. Usage: make script-watch
 	./scripts/watch_tests.sh
 
-OMIT_PATHS := "tests/*,src/main.py,src/app.py,*/__init__.py,*/constants.py"
 report: test ## Generate coverage report. Usage: make report
 	coverage report --omit=$(OMIT_PATHS) --show-missing
 
