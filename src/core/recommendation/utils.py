@@ -73,7 +73,7 @@ def get_n_best_neighbors(
                     key=lambda x: x[1], 
                     reverse=True
                 )[:max_count]
-            ] 
+            ]
         )
         for neighbor_id in neighbors
     }

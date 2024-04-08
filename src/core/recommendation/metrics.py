@@ -80,8 +80,8 @@ def get_association_metrics(
     # [x] Support: P(A and B)
     # [x] Confidence: P(B_given_A) = P(A and B) / P(A)
     # [x] Lift: P(B_given_A) / P(B) 
-    # [ ] Leverage: P(A and B) - P(A) * P(B)
-    # [ ] Conviction: (1 - P(B)) / (1 - P(B_given_A))
+    # [x] Leverage: P(A and B) - P(A) * P(B)
+    # [x] Conviction: (1 - P(B)) / (1 - P(B_given_A))
 
     return {
         item_id: {
@@ -90,7 +90,11 @@ def get_association_metrics(
                 neighbor_id: {
                     'support': neighbor_support,
                     'confidence': neighbors_confidence_dict[item_id][neighbor_id],
-                    'lift': neighbors_lift_dict[item_id][neighbor_id]
+                    'lift': neighbors_lift_dict[item_id][neighbor_id],
+                    'leverage': neighbors_support_dict[item_id][neighbor_id] - \
+                                items_support_dict[item_id]*items_support_dict[neighbor_id],
+                    'conviction': (1 - items_support_dict[neighbor_id])/ \
+                                (1 - neighbors_confidence_dict[item_id][neighbor_id])
                 } 
                 for neighbor_id, neighbor_support in neighbors_support_dict[item_id].items()
             }
