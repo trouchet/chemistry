@@ -2,12 +2,14 @@ import pandas as pd
 from random import sample 
 from collections import defaultdict
 from mlxtend.preprocessing import TransactionEncoder
-from mlxtend.frequent_patterns import apriori, association_rules
+from mlxtend.frequent_patterns import \
+    apriori, association_rules
 
 from timy import timer
 
 from src.core.recommendation.utils import get_n_best_neighbors
-from src.core.recommendation.constants import AVAILABLE_METHODS, \
+from src.core.recommendation.constants import \
+    AVAILABLE_METHODS, \
     DEFAULT_MIN_SUPPORT, \
     DEFAULT_MIN_THRESHOLD
 from src.utils.dataframe import listify_items
