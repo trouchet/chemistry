@@ -104,34 +104,28 @@ class SVRecommender(object):
         self.n_best_neighbors = n_best_neighbors
 
     def _update_neighbors(self):
-        self.neighbors_dict = get_items_neighbors_count(
+        neighbors = get_items_neighbors_count(
             self.data_dataframe, self.__sets_column, self.__items_column
         )
- 
+        
+        self.neighbors_dict = neighbors
+
     @timer()
     def recommend(
         self, order: list, 
         method: str = RECOMMENDATION_ALGO_DEFAULT
-    ):
+    ):  
+        logging.info(f'Running recommendation with method: {method}')
+        self._update_neighbors()
+
+        # Empty dataframe or without neighbors
         if(len(self.neighbors_dict) == 0):
-            error_message = 'You must run method \'_update_neighbors\' before running \'recommend\''
-            raise ValueError(error_message)
+            return []
         
-        if(method == 'k_best_arbitrary'):
+        # Get the best neighbors
+        if(method in AVAILABLE_METHODS):
             return get_k_best_neighbors(
-                'arbitrary', order, self.neighbors_dict, 
-                self.n_suggestions, self.n_best_neighbors
-            )
-        
-        elif(method == 'k_best_random'):
-            return get_k_best_neighbors(
-                'random', order, self.neighbors_dict,   
-                self.n_suggestions, self.n_best_neighbors
-            )
-        
-        elif(method == 'k_best_support'):
-            return get_k_best_neighbors(
-                'support', order, self.neighbors_dict,  
+                method, order, self.neighbors_dict, 
                 self.n_suggestions, self.n_best_neighbors
             )
 

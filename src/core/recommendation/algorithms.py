@@ -27,11 +27,8 @@ def get_k_best_neighbors(
     def get_best_neighbor(item_id: str):
         return n_best_neighbors.get(item_id, {})
 
-    all_suggestions = list(
-        set(
-            flatten_list([list(get_best_neighbor(item_id).keys()) for item_id in order])
-        )
-    )
+    best_neighbors = [ list(get_best_neighbor(item_id).keys()) for item_id in order ]
+    all_suggestions = list(set(flatten_list(best_neighbors)))
 
     if(method == 'arbitrary'):
         suggestions = all_suggestions[:n_suggestions]
@@ -43,14 +40,13 @@ def get_k_best_neighbors(
     elif(method == 'support'):
         count_dict = defaultdict()
         
-        neighbors_count = flatten_list([ 
-            list(get_best_neighbor(item_id).items()) for item_id in order 
-        ])
-        
+        neighbors_count_items = [ list(get_best_neighbor(item_id).items()) for item_id in order ]
+        neighbors_count = flatten_list(neighbors_count_items)
+
         for neighbor_id, count in neighbors_count:
             count_value = max(count_dict.get(neighbor_id, 0), count)
             count_dict[neighbor_id] = count_value
-        
+
         suggestions = [
             best_neighbor_j
             for best_neighbor_j, _ in sorted(
@@ -104,3 +100,4 @@ def get_association_rules(
     )
     
     return frequent_itemsets, rules
+
