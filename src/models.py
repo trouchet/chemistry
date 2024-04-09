@@ -1,9 +1,5 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List
+from pydantic import BaseModel
 from os import environ
-
-from src.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT, \
-    RECOMMENDATION_ALGO_DEFAULT
 
 # JWT Secret and Algorithm
 JWT_SECRET = str(environ.get('JWT_SECRET'))

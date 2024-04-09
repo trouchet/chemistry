@@ -4,11 +4,12 @@ from unittest.mock import patch
 import pytest
 import os
 
+from src.core.recommendation.models import Basket
 from src.app_factory import create_app
 from src.core.recommendation.models import SVRecommender
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
-## samples
+## Samples
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 @pytest.fixture
 def sample_dataframe():

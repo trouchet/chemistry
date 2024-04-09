@@ -1,4 +1,4 @@
-from src.routes.recommendation import get_client_data
+from src.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT
 
 '''
 # TO FIX: Add authentication to the API
@@ -9,56 +9,43 @@ def test_token_endpoint(client):
     assert "access_token" in response.json()
 '''
 
-def test_recommend_product_valid(client, mock_get_client_data):
-    basket_request = {"items": ["apple", "banana"]}
-    response = client.post("/api/recommendation/basket", json=basket_request)
+BASKET_ROUTE = "/api/recommendation/basket" 
+def test_recommend_product_valid(client, sample_basket_factory):
+    basket_request = sample_basket_factory(["apple", "banana"]).model_dump()
+    response = client.post(BASKET_ROUTE, json=basket_request)
+
+    assert response.status_code == 200
+    assert "items" in response.json()
+    assert isinstance(response.json()["items"], list)
+
+def test_recommend_product_empty_basket(client, sample_basket_factory):
+    basket_request = sample_basket_factory([]).model_dump()
     
-    assert response.status_code == 200
-    assert "items" in response.json()
-    assert isinstance(response.json()["items"], list)
+    response = client.post(BASKET_ROUTE, json=basket_request)
 
-def test_recommend_product_valid(client, mock_get_client_data):
-    basket_request = {"items": ["apple", "banana"]}
-    response = client.post("/api/recommendation/basket", json=basket_request)
-    assert response.status_code == 200
-    assert "items" in response.json()
-    assert isinstance(response.json()["items"], list)
-
-def test_recommend_product_empty_basket(client, mock_get_client_data):
-    basket_request = {"items": []}
-    response = client.post("/api/recommendation/basket", json=basket_request)
     assert response.status_code == 200
     assert "items" in response.json()
     assert response.json()["items"] == []
 
-def test_get_client_data(mocker):
-    # Mocking read_data_from_file
-    file_alias = 'src.routes.recommendation.read_data_from_file'
-    mocker.patch(file_alias, return_value='mocked_df')
-
-    sets_column, items_column, description_column, df_ = get_client_data()
-
-    assert sets_column == 'order_id'
-    assert items_column == 'item_id'
-    assert description_column == 'description'
-    assert df_ == 'mocked_df'
-
-def test_recommend_product_missing_items(client, mock_get_client_data):
+def test_recommend_product_missing_items(client, sample_basket_factory):
     # Inexistent pear item
-    basket_request = {"items": ["apple", "banana", "grape", "pear"]}
-    response = client.post("/api/recommendation/basket", json=basket_request)
+    basket_request = sample_basket_factory(
+        ["apple", "banana", "grape", "pear"]
+    ).model_dump()
+    response = client.post(BASKET_ROUTE, json=basket_request)
 
     assert response.status_code == 200
     assert "items" in response.json()
     
     # Only items present in the dataframe should be recommended
     items = list(response.json()["items"])
-    assert len(items) <= 3
+    assert len(items) <= N_BEST_NEIGHBORS_DEFAULT
 
-def test_recommend_product_invalid_request(client, mock_get_client_data):
-    response = client.post("/api/recommendation/basket", json={})
+def test_recommend_product_invalid_request(client,):
+    response = client.post(BASKET_ROUTE, json={})
     assert response.status_code == 200
 
     # Test case with invalid basket items
-    response = client.post("/api/recommendation/basket", json={"items": "invalid_data"})
+    invalid_basket = {"company_id": "acme", "items": "invalid_data"}
+    response = client.post(BASKET_ROUTE, json=invalid_basket)
     assert response.status_code == 422

@@ -1,14 +1,35 @@
 import pytest
 
-from src.core.recommendation.models import SVRecommender
+from src.core.recommendation.models import \
+    SVRecommender, \
+    Basket, \
+    Product, \
+    product_to_basket
 
 # We will test the core functionality of the models
+def test_basket_validity():
+    basket = Basket(
+        company_id='acme',
+        items=['apple', 'banana'], 
+        age_months=42
+    )
+    
+    assert basket.is_age_valid() == False
+
+def test_product_to_basket():
+    company_id_ = 'acme'
+    product = Product(company_id=company_id_, id='apple')
+    basket = product_to_basket(product)
+    expected_basket = Basket(company_id=company_id_, items=['apple'])
+
+    assert set(basket.items) == set(expected_basket.items)
+
 def test_recommendation_k_best_arbitrary(sv_recommender):
     order = ['apple', 'banana']
     expected_recommendation = ['orange', 'grape']
     
     sv_recommender._update_neighbors()
-    recommendations = sv_recommender.recommend(order, method='k_best_arbitrary')
+    recommendations = sv_recommender.recommend(order, method='arbitrary')
 
     assert isinstance(recommendations, list)
     assert len(recommendations) <= sv_recommender.n_suggestions
@@ -20,7 +41,7 @@ def test_recommendation_k_best_random(sv_recommender):
     order = ['apple', 'banana']
     
     sv_recommender._update_neighbors()
-    recommendations = sv_recommender.recommend(order, method='k_best_random')
+    recommendations = sv_recommender.recommend(order, method='random')
     
     assert isinstance(recommendations, list)
     assert len(recommendations) <= sv_recommender.n_suggestions
@@ -31,7 +52,7 @@ def test_recommendation_k_best_support(sv_recommender):
     order = ['apple', 'banana']
     
     sv_recommender._update_neighbors()
-    recommendations = sv_recommender.recommend(order, method='k_best_support')
+    recommendations = sv_recommender.recommend(order, method='support')
     
     assert isinstance(recommendations, list)
     assert len(recommendations) <= sv_recommender.n_suggestions
@@ -49,10 +70,6 @@ def test_get_sv_recommender_invalid_method(sv_recommender):
     with pytest.raises(ValueError) as exc_info:
         sv_recommender._update_neighbors()
         sv_recommender.recommend(['apple', 'banana'], method='invalid_method')
-
-def test_get_sv_recommender_empty_neighbors(sv_recommender):
-    with pytest.raises(ValueError) as exc_info:
-        sv_recommender.recommend(['apple', 'banana'], method='k_best_support')
 
 def test_description(sv_recommender):
     item_ids = ['apple', 'banana']

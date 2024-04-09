@@ -36,7 +36,7 @@ def test_get_k_best_neighbors_invalid_method():
         method = 'invalid_method'
         n_suggestions = 2
         n_best_neighbors = 2
-        get_k_best_neighbors(order, neighbors, method, n_suggestions, n_best_neighbors)
+        get_k_best_neighbors(method, order, neighbors, n_suggestions, n_best_neighbors)
     
     assert str(exc_info.value) == f"Available methods: {AVAILABLE_METHODS}"
 
