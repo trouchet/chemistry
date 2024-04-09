@@ -1,13 +1,22 @@
-import sys
 import logging
-import watchdog
+from logstash_formatter import LogstashFormatterV1
+from logging.handlers import SocketHandler
 
-# Configure logging to write to stderr
-logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
+from os import environ
+from dotenv import load_dotenv
 
-# Create a logger for the watchdog module
-watchdog_logger = logging.getLogger('watchdog')
+load_dotenv()
 
-# Set the logging level for the watchdog logger
-watchdog_logger.setLevel(logging.ERROR)
+LOGSTASH_HOST = environ.get('LOGSTASH_HOST')
+LOGSTASH_PORT = environ.get('LOGSTASH_PORT')
 
+# Configure the root logger
+logger = logging.getLogger('gunicorn.error')
+
+# Configure a handler to send logs to Logstash
+handler = SocketHandler(LOGSTASH_HOST, int(LOGSTASH_PORT))
+
+formatter = LogstashFormatterV1()
+handler.setFormatter(formatter)
+
+logger.addHandler(handler)

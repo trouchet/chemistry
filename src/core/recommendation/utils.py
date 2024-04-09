@@ -1,11 +1,11 @@
 import pandas as pd
 from collections import defaultdict
-from random import sample 
-from numpy import unique
+from random import sample
 
-from src.utils.dataframe import listify_items
 from src.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT
-from src.utils.dataframe import listify_items, get_unique_elements
+from src.utils.dataframe import \
+    listify_items, \
+    get_unique_elements
 
 def get_items_sample(
     df_: pd.DataFrame,

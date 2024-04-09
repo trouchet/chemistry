@@ -1,69 +1,40 @@
-from os import getcwd
 from fastapi import APIRouter, Body
-from ast import literal_eval
 
-from src.logging import logging
-from src.utils.dataframe import read_data_from_file
-from src.core.recommendation.models import SVRecommender
-from src.models import Basket, Recommendation
+from src.core.recommendation.models import product_to_basket
+from src.core.recommendation.models import \
+    Product, Basket, Recommendation, SVRecommender
+from src.utils.routes import get_client_data
 
 router = APIRouter()
 
-is_demo = True
-
-def demo_client_data():
-    '''
-    This function is a demo data loader.
-    '''
-
-    # Data file path
-    filename = 'orders_sample.csv'
-
-    sets_column = 'order_id'
-    items_column = 'item_id'
-    description_column = 'description'
-    datapath = getcwd() + '/data/' + filename
-    
-    df = read_data_from_file(datapath, sets_column, items_column)
-
-    return sets_column, items_column, description_column, df
-
-def SV_client_data():
-    '''
-    This function should be replaced by a database query or 
-    any other source data loading.
-    '''
-
-    # Data file path
-    sets_column = 'pedi_id'
-    items_column = 'prod_id'
-    description_column = 'prod_descricao'
-    
-    filename = 'sv_sample.xlsx'
-    datapath = getcwd() + '/data/' + filename
-    
-    df = read_data_from_file(datapath, sets_column, items_column)
-
-    return sets_column, items_column, description_column, df
-
-# NOTE: Replace this function by database query or any source data loading 
-def get_client_data():
-    return demo_client_data() if is_demo else SV_client_data()
-
-@router.post("/basket")
-async def recommend_product(
-    basket: Basket = Body(default={"items": []})
+@router.post("/items/{item_id}")
+async def recommend_item(
+    product: Product = Body(default={"item_id"}, embed=True)
 ) -> Recommendation:
-    sets_col, items_col, description_col, df  = get_client_data()
-    
-    recommender = SVRecommender(df, sets_col, items_col, description_col)
-    recommender._update_neighbors()
+    item_basket = product_to_basket(product)
+    sets_col, items_col, description_col, df  = get_client_data(item_basket)
 
-    if basket.items:
-        basket_items = basket.dict()['items']
+    recommender = SVRecommender(df, sets_col, items_col, description_col)
+
+    if item_basket.items:
+        basket_items = item_basket.model_dump()['items']
     else:
         return Recommendation(items=[])
 
-    recommendation = recommender.recommend(basket_items)
+    recommendation_items = recommender.recommend(basket_items)
 
-    return Recommendation(items=recommendation)
+    return Recommendation(items=recommendation_items)
+
+@router.post("/basket")
+async def recommend_basket(basket: Basket) -> Recommendation:
+    sets_col, items_col, description_col, df  = get_client_data(basket)
+
+    recommender = SVRecommender(df, sets_col, items_col, description_col)
+
+    basket_items = basket.model_dump().get('items', [])
+    
+    is_empty_basket = len(basket_items) == 0
+    recommendation_items = [] if is_empty_basket \
+        else recommender.recommend(basket_items)
+    
+    return Recommendation(items=recommendation_items)

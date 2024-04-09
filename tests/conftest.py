@@ -17,12 +17,7 @@ def sample_dataframe():
         'item_id': ['a', 'b', 'c', 'd', 'e', 'f'],
         'description': ['desc_a', 'desc_b', 'desc_c', 'desc_d', 'desc_e', 'desc_f'],
         'purchase_date': [
-            '2022-01-01', 
-            '2022-01-02', 
-            '2023-01-01', 
-            '2023-01-02', 
-            '2024-01-01', 
-            '2024-01-02'
+            '2022-01-01', '2022-01-02', '2023-01-01', '2023-01-02', '2024-01-01', '2024-01-02'
         ]
     })
 
@@ -62,6 +57,21 @@ def recommendation_dataframe():
 @pytest.fixture
 def test_app():
     return create_app()
+
+@pytest.fixture
+def company_id():
+    return 'acme'
+
+@pytest.fixture
+def sample_basket_factory(company_id):
+    def factory(items: list) -> Basket:
+        return Basket(
+            company_id=company_id, 
+            items=items, 
+            is_demo=True
+        )
+    
+    return factory
 
 @pytest.fixture
 def client(test_app):
@@ -147,3 +157,4 @@ def neighbors_data():
 @pytest.fixture
 def order_data():
     return ['item1', 'item2']
+
