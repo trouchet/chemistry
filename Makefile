@@ -1,6 +1,6 @@
 CONTAINER_NAME := myapi-container
 
-.PHONY: build run-webapp stop ps host
+.PHONY: build run stop ps host
 
 OMIT_PATHS := "tests/*,src/main.py,src/app.py,*/__init__.py,*/constants.py"
 
