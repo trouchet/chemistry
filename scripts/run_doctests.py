@@ -49,7 +49,7 @@ def gather_doctests(files: List[str]) -> List[DocTest]:
     return doctests
 
 
-def run_tests(doctests: List[DocTest]) -> None:    
+def run_tests(doctests: List[DocTest]) -> None:
     globs = {}
     for test in doctests:
         try:

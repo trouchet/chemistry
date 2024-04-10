@@ -16,8 +16,11 @@ def listify_items(df_: pd.DataFrame, sets_column: str, items_column: str):
 
 def get_itemsets_with_items(
     df_: pd.DataFrame, items_list: list, sets_column: str, items_column: str
-):
-    mask_map = lambda x: x[items_column].isin(items_list).any()
+):  
+    def mask_map():
+        return x[items_column].isin(items_list).any()
+    
+     = lambda x: 
     return df_.groupby(sets_column).filter(mask_map)
 
 
@@ -40,7 +43,9 @@ def get_unique_elements(df_: pd.DataFrame, column_label: str):
 def read_data_from_file(
     filepath: str, sets_column: str, items_column: str
 ) -> pd.DataFrame:
-    get_extension = lambda x: x.split('.')[-1]
+    def get_extension(word: str):
+        return word.split('.')[-1]
+
     extension = get_extension(filepath)
 
     if extension == 'xlsx':

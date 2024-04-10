@@ -20,6 +20,7 @@ def add(a, b):
     """
     return float(a + b)
 
+
 def generate_random_tokens(
     num_tokens: int = 1, token_length: int = DEFAULT_TOKEN_LENGTH
 ):
