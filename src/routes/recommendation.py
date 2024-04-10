@@ -1,22 +1,23 @@
 from fastapi import APIRouter, Body
 
-from src.core.recommendation.models import product_to_basket
 from src.core.recommendation.models import (
     Product,
     Basket,
     Recommendation,
     SVRecommender,
+    product_to_basket
 )
 from src.utils.routes import get_client_data
 
 router = APIRouter()
 
-
-@router.post("/items/{item_id}")
+@router.post("/item")
 async def recommend_item(
-    product: Product = Body(default={"item_id"}, embed=True)
+    product: Product
 ) -> Recommendation:
+    print(product)
     item_basket = product_to_basket(product)
+
     sets_col, items_col, description_col, df = get_client_data(item_basket)
 
     recommender = SVRecommender(df, sets_col, items_col, description_col)

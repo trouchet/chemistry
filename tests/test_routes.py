@@ -10,8 +10,6 @@ def test_token_endpoint(client):
 '''
 
 BASKET_ROUTE = "/api/recommendation/basket"
-
-
 def test_recommend_product_valid(client, sample_basket_factory):
     basket_request = sample_basket_factory(["apple", "banana"]).model_dump()
     response = client.post(BASKET_ROUTE, json=basket_request)
@@ -56,3 +54,13 @@ def test_recommend_product_invalid_request(
     invalid_basket = {"company_id": "acme", "items": "invalid_data"}
     response = client.post(BASKET_ROUTE, json=invalid_basket)
     assert response.status_code == 422
+
+ITEM_ROUTE = "/api/recommendation/item"
+def test_item_recommendation_valid(client, sample_item_factory):
+    item_request = sample_item_factory("apple").model_dump()
+    
+    response = client.post(ITEM_ROUTE, json=item_request)
+
+    assert response.status_code == 200
+    assert "items" in response.json()
+    assert isinstance(response.json()["items"], list)

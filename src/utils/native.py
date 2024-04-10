@@ -1,9 +1,44 @@
 import pickle
 import dill
 import cloudpickle
-
+from random import sample
 from timy import timer
+from secrets import choice
+from string import ascii_letters, digits
 
+from src.utils.constants import DEFAULT_TOKEN_LENGTH
+
+def get_random_element(arr: list):
+    return sample(arr, 1)[0]
+
+def generate_random_tokens(
+    num_tokens: int = 1, token_length: int = DEFAULT_TOKEN_LENGTH
+):
+    """Generate random tokens.
+
+    Args:
+        num_tokens (int, optional): Number of tokens to generate. Defaults to 1.
+        token_length (int, optional): Length of each token. Defaults to DEFAULT_TOKEN_LENGTH.
+
+    Returns:
+        list: List of generated tokens.
+
+    Examples:
+    >>> len(generate_random_tokens())
+    1
+    >>> len(generate_random_tokens(5))
+    5
+    >>> all(len(token) == DEFAULT_TOKEN_LENGTH for token in generate_random_tokens())
+    True
+    >>> all(len(token) == 10 for token in generate_random_tokens(5, 10))
+    True
+    """
+    tokens = []
+    for _ in range(num_tokens):
+        token = ''.join(choice(ascii_letters + digits) for _ in range(token_length))
+        tokens.append(token)
+
+    return tokens
 
 def invert_dict(dict_: dict):
     new_dict = dict()
@@ -78,7 +113,6 @@ def dump_dill(dump_file: any, dill_filepath: str) -> None:
 def load_cloudpickle(pkl_filepath: str) -> None:
     with open(pkl_filepath, 'rb') as f:
         return cloudpickle.load(f)
-
 
 @timer()
 def dump_cloudpickle(dump_file: any, pkl_filepath: str) -> None:

@@ -13,6 +13,7 @@ def listify_items(df_: pd.DataFrame, sets_column: str, items_column: str):
 
     return list(result['items_list'])
 
+
 def get_itemsets_with_items(
     df_: pd.DataFrame, items_list: list, sets_column: str, items_column: str
 ):
@@ -20,6 +21,7 @@ def get_itemsets_with_items(
         return group[items_column].isin(items_list).any()
 
     return df_.groupby(sets_column).filter(mask_map)
+
 
 def get_descriptions(df_: pd.DataFrame, item_column: str, description_column: str):
     # Drop duplicates based on 'item_column' and keep the first description

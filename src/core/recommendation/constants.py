@@ -11,3 +11,6 @@ DEFAULT_MIN_THRESHOLD = 0.05
 
 # Confidence level for sets
 MIN_SET_SIZE_CONFIDENCE = 0.95
+
+# Mean number of items per itemsets
+MEAN_ITEMS_PER_ITEMSET = 5

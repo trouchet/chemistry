@@ -4,10 +4,11 @@ from unittest.mock import patch
 import pytest
 import os
 
-from src.core.recommendation.models import Basket
 from src.app_factory import create_app
-from src.core.recommendation.models import SVRecommender
-
+from src.core.recommendation.models import \
+    SVRecommender, \
+    Basket, \
+    Product
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## Samples
@@ -105,6 +106,14 @@ def company_id():
 def sample_basket_factory(company_id):
     def factory(items: list) -> Basket:
         return Basket(company_id=company_id, items=items, is_demo=True)
+
+    return factory
+
+
+@pytest.fixture
+def sample_item_factory(company_id):
+    def factory(item: str) -> Basket:
+        return Product(company_id=company_id, id=item, is_demo=True)
 
     return factory
 

@@ -89,7 +89,6 @@ def test_description(sv_recommender):
 
 
 def test_get_sv_recommender_invalid_item(sv_recommender):
-    sv_recommender._update_neighbors()
     descriptions = sv_recommender.describe(['dragon fruit', 'banana'])
 
     assert descriptions == ['', 'Description of banana']

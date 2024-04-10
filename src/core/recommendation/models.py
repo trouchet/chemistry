@@ -18,21 +18,30 @@ from src.core.recommendation.constants import (
 
 from src.constants import VALID_AGE_MONTHS, DEFAULT_AGE
 
-
 # Auxiliar model
-class Resource(BaseModel):
+class CompanyResource(BaseModel):
+    company_id: str = Field(default='demo')
     is_demo: Optional[bool] = True
 
-
 # Request model
-class Product(Resource):
-    company_id: str
+class Product(CompanyResource):
     id: str
 
+# Object Item
+class Item:
+    def __init__(self, identifier: str, value: float):
+        self.identifier = identifier 
+        self.value = value 
+
+    @property
+    def description(self):
+        return f"Description of {self.identifier}"
+
+    def __repr__(self):
+        return f"Item(identifier={self.identifier}, value={self.value})"
 
 # Request model
-class Basket(Resource):
-    company_id: str = Field(default='demo')
+class Basket(CompanyResource):
     items: List[str] = Field(default=[])
     algorithm: Optional[str] = RECOMMENDATION_ALGO_DEFAULT
     neighbors_count: Optional[int] = N_BEST_NEIGHBORS_DEFAULT
@@ -65,18 +74,17 @@ class Basket(Resource):
         """
         return not self.__eq__(other)
 
+def product_to_basket(product: Product) -> Basket:
+    return Basket(
+        company_id=product.company_id, 
+        items=[product.id], 
+        is_demo=product.is_demo
+    )
 
 # Response model
 class Recommendation(BaseModel):
     items: Optional[List[str]] = []
     metadata: Optional[dict] = {}
-
-
-def product_to_basket(product: Product) -> Basket:
-    return Basket(
-        company_id=product.company_id, items=[product.id], is_demo=product.is_demo
-    )
-
 
 class SVRecommender(object):
     def __init__(
