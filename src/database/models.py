@@ -8,6 +8,7 @@ Base = declarative_base()
 # # Create tables if they do not exist
 # Base.metadata.create_all(bind=engine)
 
+
 # Define the database models
 class UserDB(Base):
     __tablename__ = "users"
@@ -16,10 +17,12 @@ class UserDB(Base):
     username = Column(String, unique=True, index=True)
     password = Column(String)
 
+
 class ProviderDB(Base):
     __tablename__ = "providers"
 
     id = Column(Integer, primary_key=True, index=True)
+
 
 class CompanyDB(Base):
     __tablename__ = "companies"
@@ -28,12 +31,14 @@ class CompanyDB(Base):
     provider_id = Column(Integer, ForeignKey('providers.id'))
     provider = relationship("ProviderDB", back_populates="companies")
 
+
 class ClientDB(Base):
     __tablename__ = "clients"
 
     id = Column(Integer, primary_key=True, index=True)
     company_id = Column(Integer, ForeignKey('companies.id'))
     company = relationship("CompanyDB", back_populates="clients")
+
 
 class ProductDB(Base):
     __tablename__ = "products"
@@ -42,6 +47,7 @@ class ProductDB(Base):
     description = Column(String, index=True)
     provider_id = Column(Integer, ForeignKey('providers.id'))
     provider = relationship("ProviderDB", back_populates="products")
+
 
 class TransactionHistoryDB(Base):
     __tablename__ = "transations_history"
@@ -52,6 +58,7 @@ class TransactionHistoryDB(Base):
     client_id = Column(Integer, ForeignKey('clients.id'))
     item_id = Column(Integer, index=True)
 
+
 class RecommendationDB(Base):
     __tablename__ = "recommendations"
 
@@ -59,6 +66,7 @@ class RecommendationDB(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("UserDB", back_populates="recommendations")
     item_id = Column(Integer, index=True)
+
 
 # Define relationships
 ProviderDB.companies = relationship("CompanyDB", back_populates="provider")

@@ -4,9 +4,11 @@ from apscheduler.triggers.interval import IntervalTrigger
 from src.tasks.print_task import print_statement
 from src.logging import logging
 
+
 # Function to be executed as a scheduled task
 def print_statement():
     logging.debug("Scheduled task: Hello, World!")
+
 
 # Initialize the scheduler
 scheduler = BackgroundScheduler()

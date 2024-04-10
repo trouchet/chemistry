@@ -1,52 +1,45 @@
 import pandas as pd
 from numpy import unique
-from os import path, listdir  
+from os import path, listdir
 from timy import timer
 
-def listify_items(
-    df_: pd.DataFrame,
-    sets_column: str,
-    items_column: str
-):
-    result = df_.groupby(sets_column)[items_column] \
-               .apply(list) \
-               .reset_index(name='items_list')
+
+def listify_items(df_: pd.DataFrame, sets_column: str, items_column: str):
+    result = (
+        df_.groupby(sets_column)[items_column]
+        .apply(list)
+        .reset_index(name='items_list')
+    )
 
     return list(result['items_list'])
 
+
 def get_itemsets_with_items(
-    df_: pd.DataFrame,
-    items_list: list,
-    sets_column: str,
-    items_column: str
+    df_: pd.DataFrame, items_list: list, sets_column: str, items_column: str
 ):
     mask_map = lambda x: x[items_column].isin(items_list).any()
     return df_.groupby(sets_column).filter(mask_map)
 
-def get_descriptions(
-    df_: pd.DataFrame,
-    item_column: str,
-    description_column: str
-):
+
+def get_descriptions(df_: pd.DataFrame, item_column: str, description_column: str):
     # Drop duplicates based on 'item_column' and keep the first description
     unique_df = df_.drop_duplicates(subset=item_column, keep='first')
-    
+
     # Create a dictionary mapping items to descriptions
     return dict(zip(unique_df[item_column], unique_df[description_column]))
 
-def get_years(
-    df_: pd.DataFrame,
-    date_column: str
-):
+
+def get_years(df_: pd.DataFrame, date_column: str):
     return list(unique(list(pd.to_datetime(df_[date_column]).dt.year)))
 
-def get_unique_elements(
-    df_: pd.DataFrame,
-    column_label: str
-):
+
+def get_unique_elements(df_: pd.DataFrame, column_label: str):
     return list(unique(list(df_[column_label])))
 
-def read_data_from_file(filepath: str, sets_column: str, items_column: str) -> pd.DataFrame:
+
+def read_data_from_file(
+    filepath: str, sets_column: str, items_column: str
+) -> pd.DataFrame:
     get_extension = lambda x: x.split('.')[-1]
     extension = get_extension(filepath)
 
@@ -56,7 +49,7 @@ def read_data_from_file(filepath: str, sets_column: str, items_column: str) -> p
         df = pd.read_csv(filepath)
     else:
         raise ValueError(f'Unsupported extension: {extension}')
-    
+
     df = df.dropna()
     relevant_columns = [sets_column, items_column]
     filtered_df = df.groupby(relevant_columns).first().reset_index()
@@ -64,30 +57,23 @@ def read_data_from_file(filepath: str, sets_column: str, items_column: str) -> p
 
 
 def read_data_to_dataframe_gen(
-    data_folder_: str,
-    sets_column: str,
-    items_column: str,
-    extension: str = 'xlsx'
+    data_folder_: str, sets_column: str, items_column: str, extension: str = 'xlsx'
 ):
     filepaths = [
-        path.join(data_folder_, filename) 
-        for filename in listdir(data_folder_) 
+        path.join(data_folder_, filename)
+        for filename in listdir(data_folder_)
         if filename.split('.')[-1] == extension
     ]
-    
+
     for filepath in filepaths:
         df_ = read_data_from_file(filepath, sets_column, items_column)
         yield filepath, df_
 
+
 @timer()
 def read_data_to_dataframe(
-    data_folder_: str,
-    sets_column: str,
-    items_column: str,
-    extension: str = 'xlsx'
+    data_folder_: str, sets_column: str, items_column: str, extension: str = 'xlsx'
 ):
     return dict(
-        read_data_to_dataframe_gen(
-            data_folder_, sets_column, items_column, extension
-        )
+        read_data_to_dataframe_gen(data_folder_, sets_column, items_column, extension)
     )

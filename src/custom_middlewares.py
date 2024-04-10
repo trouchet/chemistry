@@ -1,8 +1,3 @@
-from starlette.requests import Request
-from starlette.middleware.base import BaseHTTPMiddleware
-import logging
-from colorama import Fore, Style
-
 '''
 from fastapi.middleware.wsgi import WSGIMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware

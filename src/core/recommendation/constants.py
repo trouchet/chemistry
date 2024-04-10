@@ -7,8 +7,7 @@ AVAILABLE_METHODS = ['arbitrary', 'random', 'support']
 RECOMMENDATION_ALGO_DEFAULT = 'support'
 
 DEFAULT_MIN_SUPPORT = 0.001
-DEFAULT_MIN_THRESHOLD  = 0.05
+DEFAULT_MIN_THRESHOLD = 0.05
 
 # Confidence level for sets
 MIN_SET_SIZE_CONFIDENCE = 0.95
-

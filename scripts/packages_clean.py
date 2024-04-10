@@ -1,5 +1,6 @@
 import re
 
+
 def find_packages_with_comment(requirements_txt):
     """
     Finds packages with the comment '# via -r requirements.txt' in a specified format.
@@ -10,6 +11,7 @@ def find_packages_with_comment(requirements_txt):
             if re.match(pattern, line):
                 package_name = line.split("==")[0].strip()
                 print(package_name)
+
 
 # Example usage
 find_packages_with_comment("requirements-minimal.txt")

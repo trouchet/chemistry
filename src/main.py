@@ -4,6 +4,7 @@ from uvicorn import run
 from src.scheduler import scheduler
 from src.app import app
 
+
 # Start Prometheus logging metrics
 Instrumentator().instrument(app).expose(app)
 

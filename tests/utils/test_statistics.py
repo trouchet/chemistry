@@ -1,7 +1,5 @@
-import pytest
+from src.utils.statistics import get_list_statistics, print_list_statistics
 
-from src.utils.statistics import get_list_statistics, \
-    print_list_statistics
 
 def test_get_list_statistics(sample_list):
     expected_stats = {
@@ -21,12 +19,13 @@ def test_get_list_statistics(sample_list):
         "iqr": 4.5,
         "mad": 2.5,
         "cv": 52.22,
-        "entropy": 1.61
+        "entropy": 1.61,
     }
 
     stats = get_list_statistics(sample_list, precision=2)
     for descrip, value in expected_stats.items():
         assert stats[descrip] == value
+
 
 def test_print_list_statistics(sample_list, capsys):
     print_list_statistics(sample_list)

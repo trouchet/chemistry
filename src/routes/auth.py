@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 router = APIRouter()
 
-TOKEN_EXPIRATION_MINUTES=60
+TOKEN_EXPIRATION_MINUTES = 60
 
 '''
 from fastapi import Depends

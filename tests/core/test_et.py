@@ -1,7 +1,5 @@
-from unittest.mock import patch
-import pytest
-
 from src.core.recommendation.extract_transform import get_items_sample
+
 
 def test_get_items_sample(simplest_dataframe):
     column_name = 'column_name'

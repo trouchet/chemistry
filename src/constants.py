@@ -4,4 +4,4 @@
 DEFAULT_AGE = 12
 
 # Array with valid age months
-VALID_AGE_MONTHS = [6, 12, 24, 36]  
+VALID_AGE_MONTHS = [6, 12, 24, 36]
