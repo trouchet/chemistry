@@ -66,6 +66,9 @@ requirements: ## Generates minimal requirements. Usage: make requirements
 		tr -s '\n' > requirements.txt
 	rm requirements-minimal.txt
 
+lint: ## perform inplace lint fixes
+	ruff --fix .
+
 ptw-watch: ## Run tests on watchdog mode. Usage: make ptw-watch
 	ptw --quiet --spool 200 --clear --nobeep \
 	--config pytest.ini --ext=.py \
