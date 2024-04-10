@@ -63,7 +63,7 @@ def test_recommendation_k_best_support(sv_recommender):
 
 
 def test_get_sv_recommender_invalid_suggestion_count(recommendation_dataframe):
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError):
         SVRecommender(
             recommendation_dataframe,
             'order_id',
@@ -75,7 +75,7 @@ def test_get_sv_recommender_invalid_suggestion_count(recommendation_dataframe):
 
 
 def test_get_sv_recommender_invalid_method(sv_recommender):
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError):
         sv_recommender._update_neighbors()
         sv_recommender.recommend(['apple', 'banana'], method='invalid_method')
 

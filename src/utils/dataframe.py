@@ -16,11 +16,10 @@ def listify_items(df_: pd.DataFrame, sets_column: str, items_column: str):
 
 def get_itemsets_with_items(
     df_: pd.DataFrame, items_list: list, sets_column: str, items_column: str
-):  
-    def mask_map():
-        return x[items_column].isin(items_list).any()
-    
-     = lambda x: 
+):
+    def mask_map(group: pd.Series):
+        return group[items_column].isin(items_list).any()
+
     return df_.groupby(sets_column).filter(mask_map)
 
 
