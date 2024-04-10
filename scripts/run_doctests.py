@@ -36,29 +36,25 @@ def gather_doctests(files: List[str]) -> List[DocTest]:
     doctests = []
     parser = doctest.DocTestParser()
     for file in files:
-        with open(file, "r") as f:
-            code = f.read()
-            test = parser.get_doctest(code, {}, file, file, 0)
-            doctests.append(test)
+        try:
+            with open(file, "r") as f:
+                code = f.read()
+                test = parser.get_doctest(code, {}, file, file, 0)
+                if test.examples:
+                    doctests.append(test)
+                else:
+                    pass
+        except Exception as e:
+            print(f"** Error reading {file}: {e} **")
     return doctests
 
 
-def run_tests(doctests: List[DocTest]) -> None:
+def run_tests(doctests: List[DocTest]) -> None:    
+    globs = {}
     for test in doctests:
         try:
-            result = doctest.testmod(test)
-            if result.failed == 0:
-                # No failures, but check if there were actually examples
-                if not result.examples:
-                    print(f"** No examples found in {test.filename} **")
-            else:
-                print(
-                    f"** {'Passed' if not result.failed else 'Failed'} ** - {test.filename}"
-                )
-        except AttributeError:
-            # Handle potential errors related to missing attributes on the test object
-            print(f"** Error processing {test.filename} **")
-        except Exception as e:  # Catch other unexpected exceptions
+            doctest.run_docstring_examples(test.examples, globs, test.filename)
+        except Exception as e:  # Catch unexpected exceptions
             print(f"** Unexpected error: {e} - {test.filename} **")
 
 

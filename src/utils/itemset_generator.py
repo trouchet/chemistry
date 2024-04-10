@@ -9,11 +9,21 @@ import pandas as pd
 DEFAULT_TOKEN_LENGTH = 10
 
 
+def add(a, b):
+    """Compute and return the sum of two numbers.
+
+    Usage examples:
+    >>> add(4.0, 2.0)
+    6.0
+    >>> add(4, 2)
+    6.0
+    """
+    return float(a + b)
+
 def generate_random_tokens(
     num_tokens: int = 1, token_length: int = DEFAULT_TOKEN_LENGTH
 ):
-    """
-    Generate random tokens.
+    """Generate random tokens.
 
     Args:
         num_tokens (int, optional): Number of tokens to generate. Defaults to 1.
@@ -23,14 +33,14 @@ def generate_random_tokens(
         list: List of generated tokens.
 
     Examples:
-        >>> len(generate_random_tokens())
-        1
-        >>> len(generate_random_tokens(5))
-        5
-        >>> all(len(token) == DEFAULT_TOKEN_LENGTH for token in generate_random_tokens())
-        True
-        >>> all(len(token) == 10 for token in generate_random_tokens(5, 10))
-        True
+    >>> len(generate_random_tokens())
+    1
+    >>> len(generate_random_tokens(5))
+    5
+    >>> all(len(token) == DEFAULT_TOKEN_LENGTH for token in generate_random_tokens())
+    True
+    >>> all(len(token) == 10 for token in generate_random_tokens(5, 10))
+    True
     """
 
     tokens = []
