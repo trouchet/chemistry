@@ -74,8 +74,8 @@ lint: ## perform inplace lint fixes
 ptw-watch: ## Run tests on watchdog mode. Usage: make ptw-watch
 	ptw --quiet --spool 200 --clear --nobeep \
 	--config pytest.ini --ext=.py \
-	--onfail="echo Tests failed, fix the issues" \
-	
+	--onfail="echo Tests failed, fix the issues"
+
 script-watch: ## Run tests on watchdog mode. Usage: make script-watch
 	./scripts/watch_tests.sh
 
