@@ -12,7 +12,7 @@ COPY . .
 
 # Install dependencies
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install -r requirements.txt
 
 # Install ElasticSearch and logstash
 RUN apt update & apt install -y wget gnupg
@@ -41,7 +41,7 @@ CMD [\
     "--host", \
     "0.0.0.0", \
     "--port", \
-    "8000"
+    "8000" \
 ]
 
 
