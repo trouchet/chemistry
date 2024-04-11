@@ -14,7 +14,7 @@ from src.utils.routes import get_client_data
 router = APIRouter()
 
 @router.post(
-    "/affiliate", 
+    "/affiliates", 
     tags=["recommendation"], 
     response_model=Recommendation, 
     summary="Recommend products based on a basket."

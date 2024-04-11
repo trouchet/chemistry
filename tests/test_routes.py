@@ -10,7 +10,7 @@ def test_token_endpoint(client):
     assert "access_token" in response.json()
 '''
 
-BASKET_ROUTE = "/api/recommendation/affiliate"
+BASKET_ROUTE = "/api/recommendation/affiliates"
 def test_recommend_product_valid(
     client: TestClient, 
     sample_basket_factory: callable
