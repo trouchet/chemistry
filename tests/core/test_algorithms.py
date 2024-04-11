@@ -1,11 +1,13 @@
 import pytest
 
 from src.core.recommendation.algorithms import (
+    get_k_best_metrics,
     get_k_best_neighbors,
     get_frequent_items_and_rules_dict,
 )
 from src.core.recommendation.constants import AVAILABLE_METHODS
-
+from src.core.recommendation.utils import get_items_neighbors_count
+from src.core.recommendation.metrics import get_association_metrics
 
 def test_get_frequent_items_and_rules_dict(recommendation_dataframe):
     # Test the function with the sample DataFrame
@@ -26,13 +28,37 @@ def test_get_frequent_items_and_rules_dict(recommendation_dataframe):
     assert not result['association_rules'].empty
 
 
-def test_get_k_best_neighbors_invalid_method():
-    with pytest.raises(ValueError) as exc_info:
-        order = ['item1', 'item2', 'item3']
-        neighbors = {'item1': {'item2': 1, 'item3': 2}, 'item2': {'item1': 3}}
-        method = 'invalid_method'
-        n_suggestions = 2
-        n_best_neighbors = 2
-        get_k_best_neighbors(method, order, neighbors, n_suggestions, n_best_neighbors)
+def test_get_k_best_metrics(simple_dataframe):
+    items_neighbors_count = get_items_neighbors_count(
+        simple_dataframe, 
+        "order_id", "item_id"
+    )
+    metrics = get_association_metrics(
+        simple_dataframe, 
+        items_neighbors_count, 
+        'order_id', 'item_id'
+    )
+    
+    k_best_metrics = get_k_best_metrics(metrics, 3)
 
-    assert str(exc_info.value) == f"Available methods: {AVAILABLE_METHODS}"
+    assert k_best_metrics == {
+        'A': { 'B': 2/3 }, 
+        'B': { 'A': 2/3 }, 
+        'C': {}
+    }
+
+    k_best_metrics = get_k_best_metrics(metrics, 3, 'confidence')
+
+    assert k_best_metrics == {
+        'A': { 'B': 1 }, 
+        'B': { 'A': 1 }, 
+        'C': {}
+    }
+
+    k_best_metrics = get_k_best_metrics(metrics, 3, 'lift')
+
+    assert k_best_metrics == {
+        'A': { 'B': 1.5 }, 
+        'B': { 'A': 1.5 }, 
+        'C': {}
+    }

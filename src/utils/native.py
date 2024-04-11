@@ -8,6 +8,12 @@ from string import ascii_letters, digits
 
 from src.utils.constants import DEFAULT_TOKEN_LENGTH
 
+def setify_list(lst: list):
+    return list(set(lst))
+
+def remove_list_from_list(list1, list2):
+    return [x for x in list1 if x not in list2]
+
 def get_random_element(arr: list):
     return sample(arr, 1)[0]
 

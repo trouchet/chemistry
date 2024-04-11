@@ -85,8 +85,8 @@ def sample_product_factory(company_id):
 
 
 @pytest.fixture
-def client(test_app):
-    return TestClient(test_app)
+def client():
+    return TestClient(app)
 
 
 @pytest.fixture
