@@ -1,13 +1,18 @@
 from timy import timer
 import pandas as pd
 import logging
+from reprlib import repr
+import os
 
 from pydantic import BaseModel, Field
 from typing import Optional, List
 
 from src.core.recommendation.algorithms import get_k_best_neighbors
-from .extract_transform import get_sets_count_per_items_dict, get_items_neighbors_count
+from .extract_transform import \
+    get_sets_count_per_items_dict, \
+    get_items_neighbors_count
 from src.utils.dataframe import listify_items, get_descriptions
+from src.core.recommendation.metrics import get_association_metrics
 
 from src.core.recommendation.constants import (
     N_BEST_NEIGHBORS_DEFAULT,
@@ -21,7 +26,7 @@ from src.constants import VALID_AGE_MONTHS, DEFAULT_AGE
 # Auxiliar model
 class CompanyResource(BaseModel):
     company_id: str = Field(default='demo')
-    is_demo: Optional[bool] = True
+    is_demo: Optional[bool] = False
 
 # Request model
 class Product(CompanyResource):
@@ -120,6 +125,18 @@ class SVRecommender(object):
         )
 
         self.neighbors_dict = neighbors
+
+    def association_metrics(self):
+        """
+        Get association metrics
+        """
+        self._update_neighbors()
+        return get_association_metrics(
+            self.data_dataframe, 
+            self.neighbors_dict, 
+            self.__sets_column, 
+            self.__items_column
+        )
 
     @timer()
     def recommend(self, order: list, method: str = RECOMMENDATION_ALGO_DEFAULT):

@@ -49,9 +49,52 @@ def get_items_lift(items_supports_dict: dict, confidences_dict: dict):
         for item_id, this_item_confidences in confidences_dict.items()
     }
 
+def get_neighbor_association_metrics(
+    item_id: str,
+    neighbor_id: str,
+    items_support_dict: dict,
+    neighbors_confidence_dict: dict,
+    neighbors_lift_dict: dict
+):
+    item_support = items_support_dict[item_id]
+    neighbor_support = items_support_dict[neighbor_id]
+    neighbor_confidence = neighbors_confidence_dict[item_id][neighbor_id]
+    neighbor_lift = neighbors_lift_dict[item_id][neighbor_id]
+
+    return {
+        'support': neighbor_support,
+        'confidence': neighbor_confidence,
+        'lift': neighbor_lift,
+        'leverage': neighbor_support - item_support * item_support,
+        'conviction': float('inf') if neighbor_confidence == 1 \
+            else (1 - item_support) / (1 - neighbor_confidence),
+    }
+
+def get_items_association_metrics(
+    item_id: str,
+    neighbors_dict: dict,
+    items_support_dict: dict, 
+    neighbors_confidence_dict: dict,
+    neighbors_lift_dict: dict
+):
+    return {
+        'support': items_support_dict[item_id],
+        'neighbors': {
+            neighbor_id: get_neighbor_association_metrics(
+                item_id, 
+                neighbor_id, 
+                items_support_dict, 
+                neighbors_confidence_dict,
+                neighbors_lift_dict
+            ) for neighbor_id in neighbors_dict[item_id]
+        },
+    }
 
 def get_association_metrics(
-    df_: pd.DataFrame, neighbors_dict: dict, sets_column: str, items_column: str
+    df_: pd.DataFrame, 
+    neighbors_dict: dict, 
+    sets_column: str, 
+    items_column: str
 ):
     '''
     Lift: P(B_given_A) / P(B)
@@ -74,22 +117,13 @@ def get_association_metrics(
     # [x] Conviction: (1 - P(B)) / (1 - P(B_given_A))
 
     return {
-        item_id: {
-            'support': item_support,
-            'neighbors': {
-                neighbor_id: {
-                    'support': neighbor_support,
-                    'confidence': neighbors_confidence_dict[item_id][neighbor_id],
-                    'lift': neighbors_lift_dict[item_id][neighbor_id],
-                    'leverage': neighbors_support_dict[item_id][neighbor_id]
-                    - items_support_dict[item_id] * items_support_dict[neighbor_id],
-                    'conviction': (1 - items_support_dict[neighbor_id])
-                    / (1 - neighbors_confidence_dict[item_id][neighbor_id]),
-                }
-                for neighbor_id, neighbor_support in neighbors_support_dict[
-                    item_id
-                ].items()
-            },
-        }
-        for item_id, item_support in items_support_dict.items()
+        item_id: get_items_association_metrics(
+            item_id,
+            neighbors_dict,
+            items_support_dict, 
+            neighbors_confidence_dict,
+            neighbors_lift_dict
+        ) for item_id in items_support_dict
     }
+
+# Path: tests/core/test_recommendation.py

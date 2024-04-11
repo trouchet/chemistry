@@ -191,6 +191,47 @@ def sv_recommender(recommendation_dataframe):
     )
     return recommender
 
+@pytest.fixture
+def sample_item():
+    return Item(identifier='apple', value=0.5)
+
+@pytest.fixture
+def sample_sets_info():
+    df_dict = {
+        'sets': [1, 1, 1, 2, 2, 3],
+        'items': ['A', 'B', 'C', 'A', 'B', 'A'],
+    }
+    
+    df = pd.DataFrame(df_dict)
+    
+    return {
+        "dataframe": df,
+        "total": 3,
+        "sets_count": { 'A': 3, 'B': 2, 'C': 1, },
+        "neighbors": {
+            'A': { 'B': 2, 'C': 1, },
+            'B': { 'A': 2, 'C': 1, },
+            'C': { 'A': 1, 'B': 1, },
+        },
+        "expected": {
+            "item_support": { 'A': 1, 'B': 2/3, 'C': 1/3, },
+            "neighbors_support": {
+                'A': { 'B': 2/3, 'C': 1/3, },
+                'B': { 'A': 2/3, 'C': 1/3, },
+                'C': { 'A': 1/3, 'B': 1/3, },
+            },
+            "neighbors_confidence": {
+                'A': { 'B': 2/3, 'C': 1/3, },
+                'B': { 'A': 1, 'C': 1/2, },
+                'C': { 'A': 1, 'B': 1, },
+            },
+            "neighbors_lift": {
+                'A': { 'B': 1, 'C': 1 },
+                'B': { 'A': 1, 'C': 3/2 },
+                'C': { 'A': 1, 'B': 3/2 },
+            }
+        }
+    }
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/core/recommendation/algorithms

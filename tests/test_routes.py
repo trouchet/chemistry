@@ -1,4 +1,5 @@
 from src.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT
+from fastapi.testclient import TestClient
 
 '''
 # TO FIX: Add authentication to the API

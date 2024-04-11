@@ -2,11 +2,10 @@ import pytest
 
 from src.core.recommendation.models import (
     SVRecommender,
-    Basket,
     Product,
     product_to_basket,
+    Basket,
 )
-
 
 # We will test the core functionality of the models
 def test_basket_validity():
@@ -14,6 +13,41 @@ def test_basket_validity():
 
     assert not basket.is_age_valid()
 
+def test_basket_eq(sample_basket_factory):
+    basket_1 = sample_basket_factory(['apple', 'banana'])
+    basket_2 = sample_basket_factory(['apple', 'banana'])
+
+    assert basket_1 == basket_2
+
+def test_basket_ne(sample_basket_factory):
+    basket_1 = sample_basket_factory(['apple', 'banana'])
+    basket_2 = sample_basket_factory(['apple', 'orange'])
+
+    assert basket_1 != basket_2
+
+def test_basket_repr(sample_basket_factory):
+    basket = sample_basket_factory(['apple', 'banana'])
+
+    assert repr(basket) == "Basket(company_id=acme, items=['apple', 'banana'])"
+
+    many_items = ['apple', 'banana', 'orange', 'grape', 
+                  'kiwi', 'pear', 'peach', 'plum', 'mango', 
+                  'papaya', 'pineapple', 'dragon fruit']
+    basket = sample_basket_factory(many_items)
+
+    summarized_items = "['apple', 'banana', 'orange', 'grape', 'kiwi', 'pear', ...]"
+    assert repr(basket) == f"Basket(company_id=acme, items={summarized_items})"
+
+def test_basket_eq_different_type(sample_basket_factory):
+    basket = sample_basket_factory(['apple', 'banana'])
+
+    assert basket != 'apple'
+
+def test_item_description(sample_item):
+    assert sample_item.description == 'Description of apple'
+
+def test_item_repr(sample_item):
+    assert repr(sample_item) == 'Item(identifier=apple, value=0.5)'
 
 def test_product_to_basket():
     company_id_ = 'acme'
