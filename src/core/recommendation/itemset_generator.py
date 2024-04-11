@@ -1,3 +1,5 @@
+# Description: Module responsible for generating template itemsets 
+# for the recommendation system.
 from scipy.stats import poisson
 from typing import Union, List, Tuple
 import pandas as pd

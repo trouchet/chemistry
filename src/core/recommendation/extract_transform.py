@@ -1,3 +1,5 @@
+# Description: This file contains functions to extract and transform 
+# data for recommendation systems.
 from collections import defaultdict
 import pandas as pd
 from random import sample
