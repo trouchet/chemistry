@@ -1,8 +1,8 @@
+# Description: Utility functions for recommendation system.
 import pandas as pd
 from collections import defaultdict
 from random import sample
 
-from src.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT
 from src.utils.dataframe import listify_items, get_unique_elements
 
 def get_items_sample(
@@ -46,28 +46,10 @@ def get_items_neighbors_count(
                 friend_i_value = item_neighbors[item_id][friend_id]
                 item_neighbors[item_id][friend_id] = friend_i_value + 1
 
-    return {key: value for key, value in item_neighbors.items() if len(value) != 0}
-
-
-def get_n_best_neighbors(
-    neighbors: dict, 
-    best_neighbor_count: int = N_BEST_NEIGHBORS_DEFAULT
-):
-    # Prune
-    max_count = max(1, best_neighbor_count)
-    n_best_neighbors = {
-        neighbor_id: dict(
-            [
-                item
-                for item in sorted(
-                    neighbors[neighbor_id].items(), key=lambda x: x[1], reverse=True
-                )[:max_count]
-            ]
-        )
-        for neighbor_id in neighbors
+    return {
+        key: value 
+        for key, value in item_neighbors.items() if len(value) != 0
     }
-
-    return n_best_neighbors
 
 
 def get_sets_count_per_items(

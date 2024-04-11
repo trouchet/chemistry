@@ -1,3 +1,4 @@
+# Description: This file contains the routes for the recommendation module.
 from fastapi import APIRouter
 from typing import Union
 

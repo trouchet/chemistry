@@ -1,3 +1,4 @@
+# Description: This file contains the setup routes for the FastAPI application.
 from fastapi import APIRouter
 import toml
 

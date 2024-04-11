@@ -1,14 +1,24 @@
+# Description: Functions to calculate association metrics between  
+# items in a dataset.
+
 import pandas as pd
 
-from src.core.recommendation.extract_transform import get_sets_count_per_items_dict
+from src.core.recommendation.extract_transform import \
+    get_sets_count_per_items_dict
 from src.utils.dataframe import get_unique_elements
 
 
 def get_items_support(sets_count_dict: dict, sets_total: int):
-    return {item_id: count / sets_total for item_id, count in sets_count_dict.items()}
+    return {
+        item_id: count / sets_total 
+        for item_id, count in sets_count_dict.items()
+    }
 
 
-def get_items_neighbors_support(item_to_neighbors_dict: dict, sets_total: int):
+def get_items_neighbors_support(
+        item_to_neighbors_dict: dict, 
+        sets_total: int
+    ):
     return {
         item_id: {
             neighbor_id: neighbor_count / sets_total
@@ -76,18 +86,19 @@ def get_items_association_metrics(
     items_support_dict: dict, 
     neighbors_confidence_dict: dict,
     neighbors_lift_dict: dict
-):
+):  
     return {
         'support': items_support_dict[item_id],
-        'neighbors': {
-            neighbor_id: get_neighbor_association_metrics(
-                item_id, 
-                neighbor_id, 
-                items_support_dict, 
-                neighbors_confidence_dict,
-                neighbors_lift_dict
-            ) for neighbor_id in neighbors_dict[item_id]
-        },
+        'neighbors': dict() if neighbors_dict.get(item_id) is None 
+            else {
+                neighbor_id: get_neighbor_association_metrics(
+                    item_id, 
+                    neighbor_id, 
+                    items_support_dict, 
+                    neighbors_confidence_dict,
+                    neighbors_lift_dict
+                ) for neighbor_id in neighbors_dict[item_id]
+            },
     }
 
 def get_association_metrics(
@@ -103,18 +114,18 @@ def get_association_metrics(
     sets_total = len(get_unique_elements(df_, sets_column))
 
     items_support_dict = get_items_support(sets_count_dict, sets_total)
-    neighbors_support_dict = get_items_neighbors_support(df_, sets_column, items_column)
     neighbors_confidence_dict = get_items_confidence(
         neighbors_dict, items_support_dict, sets_total
     )
     neighbors_lift_dict = get_items_lift(items_support_dict, neighbors_confidence_dict)
 
-    # TODO:
-    # [x] Support: P(A and B)
-    # [x] Confidence: P(B_given_A) = P(A and B) / P(A)
-    # [x] Lift: P(B_given_A) / P(B)
-    # [x] Leverage: P(A and B) - P(A) * P(B)
-    # [x] Conviction: (1 - P(B)) / (1 - P(B_given_A))
+    # Association metrics:
+    #
+    # Support: P(A and B)
+    # Confidence: P(B_given_A) = P(A and B) / P(A)
+    # Lift: P(B_given_A) / P(B)
+    # Leverage: P(A and B) - P(A) * P(B)
+    # Conviction: (1 - P(B)) / (1 - P(B_given_A))
 
     return {
         item_id: get_items_association_metrics(

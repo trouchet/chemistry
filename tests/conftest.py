@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 import os
 
-from src.app_factory import create_app
+from src.app import app
 from src.core.recommendation.models import \
     SVRecommender, \
     Product, \
@@ -63,11 +63,6 @@ def recommendation_dataframe():
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/routes
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-@pytest.fixture
-def test_app():
-    return create_app()
-
-
 @pytest.fixture
 def company_id():
     return 'acme'

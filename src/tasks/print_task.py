@@ -1,3 +1,5 @@
+# Description: This file contains the function that will 
+# be executed as a scheduled task
 from src.setup.logging import logging
 
 

@@ -1,8 +1,8 @@
+# Description: Recommendation models for the recommender system.
 from timy import timer
 import pandas as pd
 import logging
 from reprlib import repr
-import os
 
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -23,7 +23,6 @@ from src.core.recommendation.constants import (
 
 from src.constants import VALID_AGE_MONTHS, DEFAULT_AGE
 
-# Auxiliar model
 class CompanyResource(BaseModel):
     company_id: str = Field(default='demo')
     is_demo: Optional[bool] = False
@@ -92,6 +91,27 @@ class Recommendation(BaseModel):
     metadata: Optional[dict] = {}
 
 class SVRecommender(object):
+    """
+    This class is responsible for providing recommendations based on 
+    the provided DataFrame. It uses an heuristic approach to suggest
+    items that are frequently bought together.
+
+    Parameters
+    ----------
+
+    df_: pd.DataFrame
+        DataFrame containing the data to be used for recommendation
+    sets_column: str
+        Column name containing the sets
+    items_column: str
+        Column name containing the items
+    description_column: str
+        Column name containing the description of the items
+    n_suggestions: int
+        Number of suggestions to be provided
+    n_best_neighbors: int
+        Number of best neighbors to be considered
+    """
     def __init__(
         self,
         df_: pd.DataFrame,
@@ -123,11 +143,9 @@ class SVRecommender(object):
         self.n_best_neighbors = n_best_neighbors
 
     def _update_neighbors(self):
-        neighbors = get_items_neighbors_count(
+        self.neighbors_dict = get_items_neighbors_count(
             self.data_dataframe, self.__sets_column, self.__items_column
         )
-
-        self.neighbors_dict = neighbors
 
     def association_metrics(self):
         """
@@ -142,9 +160,13 @@ class SVRecommender(object):
         )
 
     @timer()
-    def recommend(self, order: list, method: str = RECOMMENDATION_ALGO_DEFAULT):
+    def recommend(
+        self, 
+        order: list, 
+        method: str = RECOMMENDATION_ALGO_DEFAULT
+    ):
         logging.info(f'Running recommendation with method: {method}')
-        self._update_neighbors()
+        metrics = self.association_metrics()
 
         # Empty dataframe or without neighbors
         if len(self.neighbors_dict) == 0:
@@ -155,7 +177,7 @@ class SVRecommender(object):
             return get_k_best_neighbors(
                 method,
                 order,
-                self.neighbors_dict,
+                metrics,
                 self.n_suggestions,
                 self.n_best_neighbors,
             )
