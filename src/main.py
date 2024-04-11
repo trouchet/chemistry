@@ -1,7 +1,7 @@
 from prometheus_fastapi_instrumentator import Instrumentator
 from uvicorn import run
 
-from src.scheduler import scheduler
+from src.setup.scheduler import scheduler
 from src.app import app
 
 

@@ -7,14 +7,16 @@ from src.core.recommendation.algorithms import (
 from src.core.recommendation.constants import AVAILABLE_METHODS
 
 
-def test_get_frequent_items_and_rules_dict(fruits_dataframe):
+def test_get_frequent_items_and_rules_dict(recommendation_dataframe):
     # Test the function with the sample DataFrame
     min_support = 0.2
     min_threshold = 0.5
     sets_column = 'order_id'
     items_column = 'item_id'
     result = get_frequent_items_and_rules_dict(
-        fruits_dataframe, sets_column, items_column, min_support, min_threshold
+        recommendation_dataframe, 
+        sets_column, items_column, 
+        min_support, min_threshold
     )
 
     assert isinstance(result, dict)

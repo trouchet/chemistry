@@ -57,7 +57,6 @@ def test_product_to_basket():
 
     assert set(basket.items) == set(expected_basket.items)
 
-
 def test_recommendation_k_best_arbitrary(sv_recommender):
     order = ['apple', 'banana']
     expected_recommendation = ['orange', 'grape']
@@ -107,6 +106,18 @@ def test_get_sv_recommender_invalid_suggestion_count(recommendation_dataframe):
             n_best_neighbors=-1,
         )
 
+
+def test_get_sv_recommender_metrics(recommendation_dataframe):
+    sv_recommender = SVRecommender(
+        recommendation_dataframe,
+        'order_id',
+        'item_id',
+        'description',
+        n_suggestions=2,
+        n_best_neighbors=2,
+    )
+
+    
 
 def test_get_sv_recommender_invalid_method(sv_recommender):
     with pytest.raises(ValueError):

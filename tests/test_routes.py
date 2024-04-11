@@ -10,8 +10,11 @@ def test_token_endpoint(client):
     assert "access_token" in response.json()
 '''
 
-BASKET_ROUTE = "/api/recommendation/basket"
-def test_recommend_product_valid(client, sample_basket_factory):
+BASKET_ROUTE = "/api/recommendation/affiliate"
+def test_recommend_product_valid(
+    client: TestClient, 
+    sample_basket_factory: callable
+):
     basket_request = sample_basket_factory(["apple", "banana"]).model_dump()
     response = client.post(BASKET_ROUTE, json=basket_request)
 
@@ -20,7 +23,10 @@ def test_recommend_product_valid(client, sample_basket_factory):
     assert isinstance(response.json()["items"], list)
 
 
-def test_recommend_product_empty_basket(client, sample_basket_factory):
+def test_recommend_product_empty_basket(
+    client: TestClient, 
+    sample_basket_factory: callable
+):
     basket_request = sample_basket_factory([]).model_dump()
 
     response = client.post(BASKET_ROUTE, json=basket_request)
@@ -30,11 +36,15 @@ def test_recommend_product_empty_basket(client, sample_basket_factory):
     assert response.json()["items"] == []
 
 
-def test_recommend_product_missing_items(client, sample_basket_factory):
+def test_recommend_product_missing_items(
+    client: TestClient, 
+    sample_basket_factory: callable
+):
     # Inexistent pear item
     basket_request = sample_basket_factory(
         ["apple", "banana", "grape", "pear"]
     ).model_dump()
+    print(basket_request)
     response = client.post(BASKET_ROUTE, json=basket_request)
 
     assert response.status_code == 200
@@ -45,23 +55,46 @@ def test_recommend_product_missing_items(client, sample_basket_factory):
     assert len(items) <= N_BEST_NEIGHBORS_DEFAULT
 
 
-def test_recommend_product_invalid_request(
-    client,
+def test_recommend_product_(
+    client: TestClient, 
+    sample_product_factory: callable 
 ):
-    response = client.post(BASKET_ROUTE, json={})
-    assert response.status_code == 200
+    product_request = sample_product_factory("apple").model_dump()
+    response = client.post(BASKET_ROUTE, json=product_request)
 
+    assert response.status_code == 200
+    assert "items" in response.json()
+    assert isinstance(response.json()["items"], list)
+    
+
+def test_recommend_product_invalid_request(client: TestClient):
     # Test case with invalid basket items
     invalid_basket = {"company_id": "acme", "items": "invalid_data"}
     response = client.post(BASKET_ROUTE, json=invalid_basket)
     assert response.status_code == 422
 
-ITEM_ROUTE = "/api/recommendation/item"
-def test_item_recommendation_valid(client, sample_item_factory):
-    item_request = sample_item_factory("apple").model_dump()
-    
-    response = client.post(ITEM_ROUTE, json=item_request)
+"""
+def test_create_user(client: TestClient):
+    # Define a user object to send in the request
+    user_data = {
+        "username": "testuser",
+        "password": "testpassword"
+    }
 
-    assert response.status_code == 200
-    assert "items" in response.json()
-    assert isinstance(response.json()["items"], list)
+    # Send a POST request to the /users endpoint
+    response = client.post("/api/users", json=user_data)
+
+    # Assert the response status code and content
+    assert response.status_code == 201
+    assert response.json() == {"message": "User created successfully"}
+
+    # Test case where user already exists
+    response = client.post("/users", json=user_data)
+    assert response.status_code == 400
+    assert response.json() == {"error": "User already exists"}
+
+    # Test case where an exception is raised
+    response = client.post("/users", json={"username": "testuser"})
+    assert response.status_code == 500
+    assert response.json() == {"error": "Column 'password' cannot be null"}
+"""

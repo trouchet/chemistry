@@ -34,13 +34,10 @@ class Product(CompanyResource):
 
 # Object Item
 class Item:
-    def __init__(self, identifier: str, value: float):
+    def __init__(self, identifier: str, value: float, description: str = None):
         self.identifier = identifier 
-        self.value = value 
-
-    @property
-    def description(self):
-        return f"Description of {self.identifier}"
+        self.value = value
+        self.description = description or f"Description of {identifier}"
 
     def __repr__(self):
         return f"Item(identifier={self.identifier}, value={self.value})"
@@ -78,6 +75,9 @@ class Basket(CompanyResource):
         Compares two baskets for inequality based on their items.
         """
         return not self.__eq__(other)
+    
+    def __repr__(self) -> None:
+        return f"Basket(company_id={self.company_id}, items={repr(self.items)})"
 
 def product_to_basket(product: Product) -> Basket:
     return Basket(
@@ -110,7 +110,10 @@ class SVRecommender(object):
         self.__sets_column = sets_column
         self.__items_column = items_column
 
-        self.descriptions_dict = get_descriptions(df_, items_column, description_column)
+        self.descriptions_dict = get_descriptions(\
+            df_, items_column, 
+            description_column
+        )
         self.order_list = listify_items(df_, sets_column, items_column)
         self.orders_per_product_dict = get_sets_count_per_items_dict(
             df_, sets_column, items_column

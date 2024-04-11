@@ -17,7 +17,13 @@ DATABASE_URL = f'postgresql://{credentials}@{db_info}'
 print(DATABASE_URL)
 
 ## Create a database connection
-## FIXME: Unable to connect so far connection
-# engine = create_engine(DATABASE_URL)
-#
-# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Function to return a new session
+def get_session():
+    session = SessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()

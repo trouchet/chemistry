@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Body
+from fastapi import APIRouter
+from typing import Union
 
 from src.core.recommendation.models import (
     Product,
@@ -11,38 +12,30 @@ from src.utils.routes import get_client_data
 
 router = APIRouter()
 
-@router.post("/item")
-async def recommend_item(
-    product: Product
+@router.post(
+    "/affiliate", 
+    tags=["recommendation"], 
+    response_model=Recommendation, 
+    summary="Recommend products based on a basket."
+)
+async def recommend_basket(
+    basket_product: Union[Product, Basket]
 ) -> Recommendation:
-    print(product)
-    item_basket = product_to_basket(product)
-
-    sets_col, items_col, description_col, df = get_client_data(item_basket)
-
-    recommender = SVRecommender(df, sets_col, items_col, description_col)
-
-    if item_basket.items:
-        basket_items = item_basket.model_dump()['items']
+    is_product = isinstance(basket_product, Product)
+    if(is_product):
+        items_basket = product_to_basket(basket_product)
     else:
-        return Recommendation(items=[])
-
-    recommendation_items = recommender.recommend(basket_items)
-
-    return Recommendation(items=recommendation_items)
-
-
-@router.post("/basket")
-async def recommend_basket(basket: Basket) -> Recommendation:
-    sets_col, items_col, description_col, df = get_client_data(basket)
+        items_basket = basket_product
+    
+    sets_col, items_col, description_col, df = get_client_data(items_basket)
 
     recommender = SVRecommender(df, sets_col, items_col, description_col)
 
-    basket_items = basket.model_dump().get('items', [])
+    items = items_basket.model_dump().get('items', [])
 
-    is_empty_basket = len(basket_items) == 0
+    is_empty_basket = len(items) == 0
     recommendation_items = (
-        [] if is_empty_basket else recommender.recommend(basket_items)
+        [] if is_empty_basket else recommender.recommend(items)
     )
 
     return Recommendation(items=recommendation_items)
