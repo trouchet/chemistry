@@ -26,7 +26,7 @@ class RecommendationResource(BaseModel):
     neighbors_count: Optional[int] = N_BEST_NEIGHBORS_DEFAULT
     age_months: Optional[int] = DEFAULT_AGE
     is_demo: Optional[bool] = False
-    demo_type: str = Field('small', description='One of: small, medium, big')
+    demo_type: str = Field('small', description='One of: small, medium, big, huge')
 
     @model_validator(mode="before")
     @classmethod
@@ -35,8 +35,8 @@ class RecommendationResource(BaseModel):
         demo_type = values.get('demo_type')
 
         if demo_type is not None and \
-            demo_type not in ['small', 'medium', 'big']:
-            raise ValueError("demo_type must be one of: small, medium, big")
+            demo_type not in ['small', 'medium', 'big', 'huge']:
+            raise ValueError("demo_type must be one of: small, medium, big, huge")
 
         if is_demo and not demo_type:
             values['demo_type'] = 'small'

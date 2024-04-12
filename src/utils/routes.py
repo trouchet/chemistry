@@ -15,14 +15,14 @@ def demo_client_data(basket: Basket):
     '''
     from os import getcwd
 
-    sets_column = 'order_id'
+    sets_column = 'itemset_id'
     items_column = 'item_id'
-    description_column = 'description'
+    description_column = 'item_description'
 
     # Data file path
-    filename = f'{basket.demo_type}_test_sample.xlsx'
+    filename = f'{basket.demo_type}_order_sample.xlsx'
     foldername = 'data'
-    filepath = path.join(getcwd(), foldername, filename)         
+    filepath = path.join(getcwd(), foldername, filename)
 
     df = read_data_from_file(filepath, sets_column, items_column)
     
