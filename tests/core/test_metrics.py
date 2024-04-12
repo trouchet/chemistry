@@ -8,7 +8,6 @@ from src.core.recommendation.metrics import (
 )
 
 
-
 def test_get_items_support(sample_sets_info):
     sets_count_dict = sample_sets_info["sets_count"]
     sets_total = sample_sets_info["total"]
