@@ -64,7 +64,7 @@ def get_k_best_neighbors(
 ) -> list:
     if method in AVAILABLE_METRICS:
         n_best_metrics = get_k_best_metrics(item_to_neighbors_metrics, n_best, method)
-
+        
         all_suggestions = flatten_list(
             [
                 list(neighbors_metrics.items())
@@ -72,18 +72,39 @@ def get_k_best_neighbors(
             ]
         )
 
+        all_suggestions = remove_duplicates_and_select_max(all_suggestions)
+
+        # Remove items already in the order
+        all_suggestions = [
+            (neighbor_id, neighbor_metric)
+            for neighbor_id, neighbor_metric in all_suggestions
+            if neighbor_id not in order
+        ]
+
         suggestions = setify_list(
-            [
+            [ 
                 best_neighbor_j
-                for best_neighbor_j in sorted(
-                    all_suggestions, key=lambda x: x[1], reverse=True
-                )
+                for best_neighbor_j in \
+                    sorted(
+                        all_suggestions, 
+                        key=lambda x: x[1], 
+                        reverse=True
+                    )
             ][:n_suggestions]
         )
 
     elif method in ['arbitrary', 'random']:
         n_best_metrics = get_k_best_metrics(item_to_neighbors_metrics, n_best)
         all_suggestions = get_all_suggestions(order, n_best_metrics)
+        
+        all_suggestions = remove_duplicates_and_select_max(all_suggestions)
+
+        # Remove items already in the order
+        all_suggestions = [
+            (neighbor_id, neighbor_metric)
+            for neighbor_id, neighbor_metric in all_suggestions
+            if neighbor_id not in order
+        ]
 
         if method == 'arbitrary':
             suggestions = all_suggestions[:n_suggestions]
@@ -126,7 +147,7 @@ def get_association_rules(
     min_threshold_=DEFAULT_MIN_THRESHOLD,
 ):
     all_sets_list = listify_items(df_, sets_column, items_column)
-
+    
     # Data transform
     te = TransactionEncoder()
     te_ary = te.fit(all_sets_list).transform(all_sets_list)

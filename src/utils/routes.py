@@ -35,11 +35,9 @@ def demo_client_data(basket: Basket):
 
 
 # NOTE: Replace this function by database query or any source data loading
-def client_data(basket: Basket):
+def retrieve_data(basket: Basket):
     raise NotImplementedError('This function is not implemented yet.')
 
 
 def get_client_data(basket: Basket):
-    return demo_client_data(basket) \
-        if basket.is_demo \
-        else client_data(basket)
+    return demo_client_data(basket) if basket.is_demo else retrieve_data(basket)

@@ -3,7 +3,8 @@
 
 import pandas as pd
 
-from src.core.recommendation.extract_transform import get_sets_count_per_items_dict
+from src.core.recommendation.extract_transform import \
+    get_sets_count_per_items_dict
 from src.utils.dataframe import get_unique_elements
 
 
@@ -122,7 +123,7 @@ def get_association_metrics(
         neighbors_dict, items_support_dict, sets_total
     )
     neighbors_lift_dict = get_items_lift(items_support_dict, neighbors_confidence_dict)
-
+    
     # Association metrics:
     #
     # Support: P(A and B)
@@ -142,5 +143,3 @@ def get_association_metrics(
         for item_id in items_support_dict
     }
 
-
-# Path: tests/core/test_recommendation.py

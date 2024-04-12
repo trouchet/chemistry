@@ -180,7 +180,6 @@ class SVRecommender(object):
             self.__items_column,
         )
 
-    @timer()
     def recommend(self, order: list, method: str = RECOMMENDATION_ALGO_DEFAULT):
         logging.info(f'Running recommendation with method: {method}')
         metrics = self.association_metrics()

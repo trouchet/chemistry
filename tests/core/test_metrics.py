@@ -4,7 +4,6 @@ from src.core.recommendation.metrics import (
     get_items_confidence,
     get_items_lift,
     get_association_metrics,
-    get_neighbor_association_metrics,
 )
 
 

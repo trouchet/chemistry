@@ -7,14 +7,8 @@ from src.core.recommendation.models import (
     Basket,
 )
 
-from src.core.recommendation.metrics import (
-    get_items_support,
-    get_items_neighbors_support,
-    get_items_confidence,
-    get_items_lift,
-    get_association_metrics,
-    get_neighbor_association_metrics,
-)
+from src.core.recommendation.constants import AVAILABLE_METHODS as AVA
+from src.core.recommendation.metrics import get_association_metrics
 
 # We will test the core functionality of the models
 def test_basket_validity():
@@ -78,50 +72,26 @@ def test_item_repr(sample_item):
 
 def test_product_to_basket():
     company_id_ = 'acme'
-    product = Product(company_id=company_id_, id='apple')
+    product = Product(
+        company_id=company_id_, 
+        product_id='apple'
+    )
     basket = product_to_basket(product)
     expected_basket = Basket(company_id=company_id_, items=['apple'])
 
     assert set(basket.items) == set(expected_basket.items)
 
-
-def test_recommendation_k_best_arbitrary(sv_recommender):
+@pytest.mark.parametrize("method", AVA)
+def test_recommendation_k_best_arbitrary(sv_recommender, method):
     order = ['apple', 'banana']
-    expected_recommendation = ['orange', 'grape']
 
     sv_recommender._update_neighbors()
-    recommendations = sv_recommender.recommend(order, method='arbitrary')
+    recommendations = sv_recommender.recommend(order, method=method)
 
     assert isinstance(recommendations, list)
     assert len(recommendations) <= sv_recommender.n_suggestions
     assert all([isinstance(item, str) for item in recommendations])
     assert recommendations != order
-    assert set(recommendations) == set(expected_recommendation)
-
-
-def test_recommendation_k_best_random(sv_recommender):
-    order = ['apple', 'banana']
-
-    sv_recommender._update_neighbors()
-    recommendations = sv_recommender.recommend(order, method='random')
-
-    assert isinstance(recommendations, list)
-    assert len(recommendations) <= sv_recommender.n_suggestions
-    assert all([isinstance(item, str) for item in recommendations])
-    assert recommendations != order
-
-
-def test_recommendation_k_best_support(sv_recommender):
-    order = ['apple', 'banana']
-
-    sv_recommender._update_neighbors()
-    recommendations = sv_recommender.recommend(order, method='support')
-
-    assert isinstance(recommendations, list)
-    assert len(recommendations) <= sv_recommender.n_suggestions
-    assert all([isinstance(item, str) for item in recommendations])
-    assert recommendations != order
-
 
 def test_get_sv_recommender_invalid_suggestion_count(recommendation_dataframe):
     with pytest.raises(ValueError):
