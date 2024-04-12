@@ -7,6 +7,14 @@ from src.core.recommendation.models import (
     Basket,
 )
 
+from src.core.recommendation.metrics import (
+    get_items_support,
+    get_items_neighbors_support,
+    get_items_confidence,
+    get_items_lift,
+    get_association_metrics,
+    get_neighbor_association_metrics,
+)
 
 # We will test the core functionality of the models
 def test_basket_validity():
@@ -125,6 +133,20 @@ def test_get_sv_recommender_invalid_suggestion_count(recommendation_dataframe):
             n_suggestions=-1,
             n_best_neighbors=-1,
         )
+
+def test_get_sv_recommender_metrics(sample_sets_info: dict):
+    df = sample_sets_info["dataframe"]
+    set_column = sample_sets_info["set_column"]
+    item_column = sample_sets_info["item_column"]
+    sets_neighbors_dict = sample_sets_info["neighbors"]
+    expected_metrics = sample_sets_info["expected_metrics"]
+
+    dataframe_metrics = get_association_metrics(
+        df, sets_neighbors_dict, set_column, item_column
+    )
+
+    assert dataframe_metrics == expected_metrics
+
 
 def test_get_sv_recommender_invalid_method(sv_recommender):
     with pytest.raises(ValueError):

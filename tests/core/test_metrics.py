@@ -70,34 +70,13 @@ def test_get_items_support_empty():
 
 def test_association_metrics(sample_sets_info):
     df = sample_sets_info["dataframe"]
+    set_column = sample_sets_info["set_column"]
+    item_column = sample_sets_info["item_column"]
     sets_neighbors_dict = sample_sets_info["neighbors"]
-    expected_items_support = sample_sets_info["expected"]["item_support"]
-    expected_neighbors_confidence = sample_sets_info["expected"]["neighbors_confidence"]
-    expected_neighbors_lift = sample_sets_info["expected"]["neighbors_lift"]
-
+    expected_metrics = sample_sets_info["expected_metrics"]
+    
     dataframe_metrics = get_association_metrics(
-        df, sets_neighbors_dict, "sets", "items"
+        df, sets_neighbors_dict, set_column, item_column
     )
 
-    expected_dataframe_metrics = {
-        item_id: {
-            'support': expected_items_support[item_id],
-            'neighbors': {
-                neighbor_id: get_neighbor_association_metrics(
-                    item_id,
-                    neighbor_id,
-                    expected_items_support,
-                    expected_neighbors_confidence,
-                    expected_neighbors_lift,
-                )
-                for neighbor_id in neighbors
-            },
-        }
-        for item_id, neighbors in sets_neighbors_dict.items()
-    }
-
-    print(dataframe_metrics)
-    print()
-    print(expected_dataframe_metrics)
-
-    assert dataframe_metrics == expected_dataframe_metrics
+    assert dataframe_metrics == expected_metrics
