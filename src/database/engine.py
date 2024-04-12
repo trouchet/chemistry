@@ -22,6 +22,7 @@ print(DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 # Function to return a new session
 def get_session():
     session = SessionLocal()

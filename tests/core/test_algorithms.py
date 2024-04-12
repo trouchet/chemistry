@@ -1,13 +1,11 @@
-import pytest
 
 from src.core.recommendation.algorithms import (
     get_k_best_metrics,
-    get_k_best_neighbors,
     get_frequent_items_and_rules_dict,
 )
-from src.core.recommendation.constants import AVAILABLE_METHODS
 from src.core.recommendation.utils import get_items_neighbors_count
 from src.core.recommendation.metrics import get_association_metrics
+
 
 def test_get_frequent_items_and_rules_dict(recommendation_dataframe):
     # Test the function with the sample DataFrame
@@ -16,9 +14,7 @@ def test_get_frequent_items_and_rules_dict(recommendation_dataframe):
     sets_column = 'order_id'
     items_column = 'item_id'
     result = get_frequent_items_and_rules_dict(
-        recommendation_dataframe, 
-        sets_column, items_column, 
-        min_support, min_threshold
+        recommendation_dataframe, sets_column, items_column, min_support, min_threshold
     )
 
     assert isinstance(result, dict)
@@ -30,35 +26,20 @@ def test_get_frequent_items_and_rules_dict(recommendation_dataframe):
 
 def test_get_k_best_metrics(simple_dataframe):
     items_neighbors_count = get_items_neighbors_count(
-        simple_dataframe, 
-        "order_id", "item_id"
+        simple_dataframe, "order_id", "item_id"
     )
     metrics = get_association_metrics(
-        simple_dataframe, 
-        items_neighbors_count, 
-        'order_id', 'item_id'
+        simple_dataframe, items_neighbors_count, 'order_id', 'item_id'
     )
-    
+
     k_best_metrics = get_k_best_metrics(metrics, 3)
 
-    assert k_best_metrics == {
-        'A': { 'B': 2/3 }, 
-        'B': { 'A': 2/3 }, 
-        'C': {}
-    }
+    assert k_best_metrics == {'A': {'B': 2 / 3}, 'B': {'A': 2 / 3}, 'C': {}}
 
     k_best_metrics = get_k_best_metrics(metrics, 3, 'confidence')
 
-    assert k_best_metrics == {
-        'A': { 'B': 1 }, 
-        'B': { 'A': 1 }, 
-        'C': {}
-    }
+    assert k_best_metrics == {'A': {'B': 1}, 'B': {'A': 1}, 'C': {}}
 
     k_best_metrics = get_k_best_metrics(metrics, 3, 'lift')
 
-    assert k_best_metrics == {
-        'A': { 'B': 1.5 }, 
-        'B': { 'A': 1.5 }, 
-        'C': {}
-    }
+    assert k_best_metrics == {'A': {'B': 1.5}, 'B': {'A': 1.5}, 'C': {}}

@@ -5,11 +5,8 @@ import pytest
 import os
 
 from src.app import app
-from src.core.recommendation.models import \
-    SVRecommender, \
-    Product, \
-    Item, \
-    Basket
+from src.core.recommendation.models import SVRecommender, Product, Item, Basket
+
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## Samples
@@ -20,14 +17,7 @@ def sample_dataframe():
         {
             'order_id': [1, 1, 2, 2, 3, 3],
             'item_id': ['a', 'b', 'c', 'd', 'e', 'f'],
-            'description': [
-                'desc_a', 
-                'desc_b', 
-                'desc_c', 
-                'desc_d', 
-                'desc_e', 
-                'desc_f'
-            ],
+            'description': ['desc_a', 'desc_b', 'desc_c', 'desc_d', 'desc_e', 'desc_f'],
             'purchase_date': [
                 '2022-01-01',
                 '2022-01-02',
@@ -42,10 +32,7 @@ def sample_dataframe():
 
 @pytest.fixture
 def simple_dataframe():
-    data = {
-        'order_id': [1, 1, 2, 2, 3], 
-        'item_id': ['A', 'B', 'A', 'B', 'C']
-    }
+    data = {'order_id': [1, 1, 2, 2, 3], 'item_id': ['A', 'B', 'A', 'B', 'C']}
     return pd.DataFrame(data)
 
 
@@ -107,11 +94,7 @@ def sample_dict():
 
 @pytest.fixture
 def mangled_sample_dict():
-    return {
-        'a': [1, 2, 3], 
-        'b': [2, 4, 6], 
-        'c': {'foo': 'bar'}
-    }  # Value is not a list
+    return {'a': [1, 2, 3], 'b': [2, 4, 6], 'c': {'foo': 'bar'}}  # Value is not a list
 
 
 @pytest.fixture
@@ -122,7 +105,7 @@ def sample_list():
 @pytest.fixture
 def mock_read_data_to_dataframe_gen():
     path = 'src.utils.dataframe.read_data_to_dataframe_gen'
-    
+
     with patch(path) as mock_gen:
         yield mock_gen
 
@@ -163,9 +146,11 @@ def sv_recommender(recommendation_dataframe):
     )
     return recommender
 
+
 @pytest.fixture
 def sample_item():
     return Item(identifier='apple', value=0.5)
+
 
 @pytest.fixture
 def sample_sets_info():
@@ -173,37 +158,73 @@ def sample_sets_info():
         'sets': [1, 1, 1, 2, 2, 3],
         'items': ['A', 'B', 'C', 'A', 'B', 'A'],
     }
-    
+
     df = pd.DataFrame(df_dict)
-    
+
     return {
         "dataframe": df,
         "total": 3,
-        "sets_count": { 'A': 3, 'B': 2, 'C': 1, },
+        "sets_count": {
+            'A': 3,
+            'B': 2,
+            'C': 1,
+        },
         "neighbors": {
-            'A': { 'B': 2, 'C': 1, },
-            'B': { 'A': 2, 'C': 1, },
-            'C': { 'A': 1, 'B': 1, },
+            'A': {
+                'B': 2,
+                'C': 1,
+            },
+            'B': {
+                'A': 2,
+                'C': 1,
+            },
+            'C': {
+                'A': 1,
+                'B': 1,
+            },
         },
         "expected": {
-            "item_support": { 'A': 1, 'B': 2/3, 'C': 1/3, },
+            "item_support": {
+                'A': 1,
+                'B': 2 / 3,
+                'C': 1 / 3,
+            },
             "neighbors_support": {
-                'A': { 'B': 2/3, 'C': 1/3, },
-                'B': { 'A': 2/3, 'C': 1/3, },
-                'C': { 'A': 1/3, 'B': 1/3, },
+                'A': {
+                    'B': 2 / 3,
+                    'C': 1 / 3,
+                },
+                'B': {
+                    'A': 2 / 3,
+                    'C': 1 / 3,
+                },
+                'C': {
+                    'A': 1 / 3,
+                    'B': 1 / 3,
+                },
             },
             "neighbors_confidence": {
-                'A': { 'B': 2/3, 'C': 1/3, },
-                'B': { 'A': 1, 'C': 1/2, },
-                'C': { 'A': 1, 'B': 1, },
+                'A': {
+                    'B': 2 / 3,
+                    'C': 1 / 3,
+                },
+                'B': {
+                    'A': 1,
+                    'C': 1 / 2,
+                },
+                'C': {
+                    'A': 1,
+                    'B': 1,
+                },
             },
             "neighbors_lift": {
-                'A': { 'B': 1, 'C': 1 },
-                'B': { 'A': 1, 'C': 3/2 },
-                'C': { 'A': 1, 'B': 3/2 },
-            }
-        }
+                'A': {'B': 1, 'C': 1},
+                'B': {'A': 1, 'C': 3 / 2},
+                'C': {'A': 1, 'B': 3 / 2},
+            },
+        },
     }
+
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/core/recommendation/algorithms

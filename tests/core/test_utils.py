@@ -2,7 +2,7 @@ import pandas as pd
 from src.core.recommendation.utils import (
     get_items_sample,
     get_sets_count_per_items_dict,
-    get_items_neighbors_count, 
+    get_items_neighbors_count,
     get_sets_count_per_items,
     get_sets_to_items_dict,
 )
@@ -29,6 +29,7 @@ def test_get_items_neighbors_count(simple_dataframe):
     expected['B']['A'] = 2
 
     assert neighbors_count == expected
+
 
 def test_get_sets_count_per_items(simple_dataframe):
     counts = get_sets_count_per_items(simple_dataframe, 'order_id', 'item_id')

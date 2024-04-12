@@ -8,9 +8,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 
 from src.core.recommendation.algorithms import get_k_best_neighbors
-from .extract_transform import \
-    get_sets_count_per_items_dict, \
-    get_items_neighbors_count
+from .extract_transform import get_sets_count_per_items_dict, get_items_neighbors_count
 from src.utils.dataframe import listify_items, get_descriptions
 from src.core.recommendation.metrics import get_association_metrics
 
@@ -23,23 +21,27 @@ from src.core.recommendation.constants import (
 
 from src.constants import VALID_AGE_MONTHS, DEFAULT_AGE
 
+
 class CompanyResource(BaseModel):
     company_id: str = Field(default='demo')
     is_demo: Optional[bool] = False
+
 
 # Request model
 class Product(CompanyResource):
     id: str
 
+
 # Object Item
 class Item:
     def __init__(self, identifier: str, value: float, description: str = None):
-        self.identifier = identifier 
+        self.identifier = identifier
         self.value = value
         self.description = description or f"Description of {identifier}"
 
     def __repr__(self):
         return f"Item(identifier={self.identifier}, value={self.value})"
+
 
 # Request model
 class Basket(CompanyResource):
@@ -74,25 +76,26 @@ class Basket(CompanyResource):
         Compares two baskets for inequality based on their items.
         """
         return not self.__eq__(other)
-    
+
     def __repr__(self) -> None:
         return f"Basket(company_id={self.company_id}, items={repr(self.items)})"
 
+
 def product_to_basket(product: Product) -> Basket:
     return Basket(
-        company_id=product.company_id, 
-        items=[product.id], 
-        is_demo=product.is_demo
+        company_id=product.company_id, items=[product.id], is_demo=product.is_demo
     )
+
 
 # Response model
 class Recommendation(BaseModel):
     items: Optional[List[str]] = []
     metadata: Optional[dict] = {}
 
+
 class SVRecommender(object):
     """
-    This class is responsible for providing recommendations based on 
+    This class is responsible for providing recommendations based on
     the provided DataFrame. It uses an heuristic approach to suggest
     items that are frequently bought together.
 
@@ -112,6 +115,7 @@ class SVRecommender(object):
     n_best_neighbors: int
         Number of best neighbors to be considered
     """
+
     def __init__(
         self,
         df_: pd.DataFrame,
@@ -130,10 +134,7 @@ class SVRecommender(object):
         self.__sets_column = sets_column
         self.__items_column = items_column
 
-        self.descriptions_dict = get_descriptions(\
-            df_, items_column, 
-            description_column
-        )
+        self.descriptions_dict = get_descriptions(df_, items_column, description_column)
         self.order_list = listify_items(df_, sets_column, items_column)
         self.orders_per_product_dict = get_sets_count_per_items_dict(
             df_, sets_column, items_column
@@ -153,18 +154,14 @@ class SVRecommender(object):
         """
         self._update_neighbors()
         return get_association_metrics(
-            self.data_dataframe, 
-            self.neighbors_dict, 
-            self.__sets_column, 
-            self.__items_column
+            self.data_dataframe,
+            self.neighbors_dict,
+            self.__sets_column,
+            self.__items_column,
         )
 
     @timer()
-    def recommend(
-        self, 
-        order: list, 
-        method: str = RECOMMENDATION_ALGO_DEFAULT
-    ):
+    def recommend(self, order: list, method: str = RECOMMENDATION_ALGO_DEFAULT):
         logging.info(f'Running recommendation with method: {method}')
         metrics = self.association_metrics()
 

@@ -8,14 +8,18 @@ from string import ascii_letters, digits
 
 from src.utils.constants import DEFAULT_TOKEN_LENGTH
 
+
 def setify_list(lst: list):
     return list(set(lst))
+
 
 def remove_list_from_list(list1, list2):
     return [x for x in list1 if x not in list2]
 
+
 def get_random_element(arr: list):
     return sample(arr, 1)[0]
+
 
 def generate_random_tokens(
     num_tokens: int = 1, token_length: int = DEFAULT_TOKEN_LENGTH
@@ -45,6 +49,7 @@ def generate_random_tokens(
         tokens.append(token)
 
     return tokens
+
 
 def invert_dict(dict_: dict):
     new_dict = dict()
@@ -119,6 +124,7 @@ def dump_dill(dump_file: any, dill_filepath: str) -> None:
 def load_cloudpickle(pkl_filepath: str) -> None:
     with open(pkl_filepath, 'rb') as f:
         return cloudpickle.load(f)
+
 
 @timer()
 def dump_cloudpickle(dump_file: any, pkl_filepath: str) -> None:

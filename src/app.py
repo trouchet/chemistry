@@ -1,8 +1,7 @@
-# Description: This file is responsible for creating the 
+# Description: This file is responsible for creating the
 # FastAPI app instance and adding the routes to it.
 from fastapi import FastAPI
-from starlette.middleware.cors import \
-    CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 from src.routes import setup, signup, auth, recommendation
 
@@ -20,6 +19,7 @@ def create_app():
     app_.add_middleware(CORSMiddleware)
 
     return app_
+
 
 # Get the number of applications from the environment variable
 app = create_app()

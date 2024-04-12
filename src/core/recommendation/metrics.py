@@ -1,24 +1,17 @@
-# Description: Functions to calculate association metrics between  
+# Description: Functions to calculate association metrics between
 # items in a dataset.
 
 import pandas as pd
 
-from src.core.recommendation.extract_transform import \
-    get_sets_count_per_items_dict
+from src.core.recommendation.extract_transform import get_sets_count_per_items_dict
 from src.utils.dataframe import get_unique_elements
 
 
 def get_items_support(sets_count_dict: dict, sets_total: int):
-    return {
-        item_id: count / sets_total 
-        for item_id, count in sets_count_dict.items()
-    }
+    return {item_id: count / sets_total for item_id, count in sets_count_dict.items()}
 
 
-def get_items_neighbors_support(
-        item_to_neighbors_dict: dict, 
-        sets_total: int
-    ):
+def get_items_neighbors_support(item_to_neighbors_dict: dict, sets_total: int):
     return {
         item_id: {
             neighbor_id: neighbor_count / sets_total
@@ -59,12 +52,13 @@ def get_items_lift(items_supports_dict: dict, confidences_dict: dict):
         for item_id, this_item_confidences in confidences_dict.items()
     }
 
+
 def get_neighbor_association_metrics(
     item_id: str,
     neighbor_id: str,
     items_support_dict: dict,
     neighbors_confidence_dict: dict,
-    neighbors_lift_dict: dict
+    neighbors_lift_dict: dict,
 ):
     item_support = items_support_dict[item_id]
     neighbor_support = items_support_dict[neighbor_id]
@@ -76,36 +70,42 @@ def get_neighbor_association_metrics(
         'confidence': neighbor_confidence,
         'lift': neighbor_lift,
         'leverage': neighbor_support - item_support * item_support,
-        'conviction': float('inf') if neighbor_confidence == 1 \
-            else (1 - item_support) / (1 - neighbor_confidence),
+        'conviction': (
+            float('inf')
+            if neighbor_confidence == 1
+            else (1 - item_support) / (1 - neighbor_confidence)
+        ),
     }
+
 
 def get_items_association_metrics(
     item_id: str,
     neighbors_dict: dict,
-    items_support_dict: dict, 
+    items_support_dict: dict,
     neighbors_confidence_dict: dict,
-    neighbors_lift_dict: dict
-):  
+    neighbors_lift_dict: dict,
+):
     return {
         'support': items_support_dict[item_id],
-        'neighbors': dict() if neighbors_dict.get(item_id) is None 
+        'neighbors': (
+            dict()
+            if neighbors_dict.get(item_id) is None
             else {
                 neighbor_id: get_neighbor_association_metrics(
-                    item_id, 
-                    neighbor_id, 
-                    items_support_dict, 
+                    item_id,
+                    neighbor_id,
+                    items_support_dict,
                     neighbors_confidence_dict,
-                    neighbors_lift_dict
-                ) for neighbor_id in neighbors_dict[item_id]
-            },
+                    neighbors_lift_dict,
+                )
+                for neighbor_id in neighbors_dict[item_id]
+            }
+        ),
     }
 
+
 def get_association_metrics(
-    df_: pd.DataFrame, 
-    neighbors_dict: dict, 
-    sets_column: str, 
-    items_column: str
+    df_: pd.DataFrame, neighbors_dict: dict, sets_column: str, items_column: str
 ):
     '''
     Lift: P(B_given_A) / P(B)
@@ -131,10 +131,12 @@ def get_association_metrics(
         item_id: get_items_association_metrics(
             item_id,
             neighbors_dict,
-            items_support_dict, 
+            items_support_dict,
             neighbors_confidence_dict,
-            neighbors_lift_dict
-        ) for item_id in items_support_dict
+            neighbors_lift_dict,
+        )
+        for item_id in items_support_dict
     }
+
 
 # Path: tests/core/test_recommendation.py

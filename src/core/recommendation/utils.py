@@ -5,18 +5,14 @@ from random import sample
 
 from src.utils.dataframe import listify_items, get_unique_elements
 
-def get_items_sample(
-    df_: pd.DataFrame, 
-    column: str, 
-    sample_count: int
-):
+
+def get_items_sample(df_: pd.DataFrame, column: str, sample_count: int):
     item_ids = get_unique_elements(df_, column)
     return list(sample(item_ids, sample_count))
 
+
 def get_sets_count_per_items_dict(
-    df_: pd.DataFrame, 
-    sets_column: str, 
-    items_column: str
+    df_: pd.DataFrame, sets_column: str, items_column: str
 ):
     result = df_.groupby(items_column)[sets_column].count().reset_index()
     result_dict = result.set_index(items_column)[sets_column].to_dict()
@@ -24,11 +20,7 @@ def get_sets_count_per_items_dict(
     return result_dict
 
 
-def get_items_neighbors_count(
-    df_: pd.DataFrame, 
-    sets_column: str, 
-    items_column: str
-):
+def get_items_neighbors_count(df_: pd.DataFrame, sets_column: str, items_column: str):
     item_ids = get_unique_elements(df_, items_column)
     sets_list = listify_items(df_, sets_column, items_column)
 
@@ -46,17 +38,10 @@ def get_items_neighbors_count(
                 friend_i_value = item_neighbors[item_id][friend_id]
                 item_neighbors[item_id][friend_id] = friend_i_value + 1
 
-    return {
-        key: value 
-        for key, value in item_neighbors.items() if len(value) != 0
-    }
+    return {key: value for key, value in item_neighbors.items() if len(value) != 0}
 
 
-def get_sets_count_per_items(
-    df_: pd.DataFrame, 
-    sets_column: str, 
-    items_column: str
-):
+def get_sets_count_per_items(df_: pd.DataFrame, sets_column: str, items_column: str):
     # Group by items_column and count sets_column, then reset the index
     counts = df_.groupby(items_column)[sets_column].count().reset_index()
 
@@ -69,11 +54,7 @@ def get_sets_count_per_items(
     return counts
 
 
-def get_sets_to_items_dict(
-    df_: pd.DataFrame, 
-    sets_column: str, 
-    items_column: str
-):
+def get_sets_to_items_dict(df_: pd.DataFrame, sets_column: str, items_column: str):
     # Group by 'sets_column' and aggregate 'items_column' into a list
     result = df_.groupby(sets_column)[items_column].agg(list).reset_index()
 

@@ -7,13 +7,7 @@ N_SUGGESTIONS_DEFAULT = 6
 N_BEST_NEIGHBORS_DEFAULT = 3
 
 # Available association metrics
-AVAILABLE_METRICS = [
-    'support', 
-    'confidence', 
-    'lift', 
-    'leverage', 
-    'conviction'
-]
+AVAILABLE_METRICS = ['support', 'confidence', 'lift', 'leverage', 'conviction']
 
 # Available recommendation algorithms
 AVAILABLE_METHODS = ['arbitrary', 'random'] + AVAILABLE_METRICS

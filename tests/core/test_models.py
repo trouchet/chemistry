@@ -7,11 +7,13 @@ from src.core.recommendation.models import (
     Basket,
 )
 
+
 # We will test the core functionality of the models
 def test_basket_validity():
     basket = Basket(company_id='acme', items=['apple', 'banana'], age_months=42)
 
     assert not basket.is_age_valid()
+
 
 def test_basket_eq(sample_basket_factory):
     basket_1 = sample_basket_factory(['apple', 'banana'])
@@ -19,35 +21,52 @@ def test_basket_eq(sample_basket_factory):
 
     assert basket_1 == basket_2
 
+
 def test_basket_ne(sample_basket_factory):
     basket_1 = sample_basket_factory(['apple', 'banana'])
     basket_2 = sample_basket_factory(['apple', 'orange'])
 
     assert basket_1 != basket_2
 
+
 def test_basket_repr(sample_basket_factory):
     basket = sample_basket_factory(['apple', 'banana'])
 
     assert repr(basket) == "Basket(company_id=acme, items=['apple', 'banana'])"
 
-    many_items = ['apple', 'banana', 'orange', 'grape', 
-                  'kiwi', 'pear', 'peach', 'plum', 'mango', 
-                  'papaya', 'pineapple', 'dragon fruit']
+    many_items = [
+        'apple',
+        'banana',
+        'orange',
+        'grape',
+        'kiwi',
+        'pear',
+        'peach',
+        'plum',
+        'mango',
+        'papaya',
+        'pineapple',
+        'dragon fruit',
+    ]
     basket = sample_basket_factory(many_items)
 
     summarized_items = "['apple', 'banana', 'orange', 'grape', 'kiwi', 'pear', ...]"
     assert repr(basket) == f"Basket(company_id=acme, items={summarized_items})"
+
 
 def test_basket_eq_different_type(sample_basket_factory):
     basket = sample_basket_factory(['apple', 'banana'])
 
     assert basket != 'apple'
 
+
 def test_item_description(sample_item):
     assert sample_item.description == 'Description of apple'
 
+
 def test_item_repr(sample_item):
     assert repr(sample_item) == 'Item(identifier=apple, value=0.5)'
+
 
 def test_product_to_basket():
     company_id_ = 'acme'
@@ -56,6 +75,7 @@ def test_product_to_basket():
     expected_basket = Basket(company_id=company_id_, items=['apple'])
 
     assert set(basket.items) == set(expected_basket.items)
+
 
 def test_recommendation_k_best_arbitrary(sv_recommender):
     order = ['apple', 'banana']
@@ -117,7 +137,6 @@ def test_get_sv_recommender_metrics(recommendation_dataframe):
         n_best_neighbors=2,
     )
 
-    
 
 def test_get_sv_recommender_invalid_method(sv_recommender):
     with pytest.raises(ValueError):

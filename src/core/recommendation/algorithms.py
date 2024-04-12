@@ -1,4 +1,4 @@
-# Description: Implementation of algorithm for generating 
+# Description: Implementation of algorithm for generating
 # itemsets and association rules.
 import pandas as pd
 from random import sample
@@ -16,10 +16,11 @@ from src.core.recommendation.constants import (
 from src.utils.dataframe import listify_items
 from src.utils.native import flatten_list, setify_list
 
+
 def get_k_best_metrics(
-    item_to_neighbors_metrics: dict, 
+    item_to_neighbors_metrics: dict,
     best_neighbor_count: int = N_BEST_NEIGHBORS_DEFAULT,
-    metric_subject: str = 'support'
+    metric_subject: str = 'support',
 ):
     # Prune
     max_count = max(1, best_neighbor_count)
@@ -29,28 +30,27 @@ def get_k_best_metrics(
             sorted(
                 [
                     (neighbor_id, neighbor_metrics[metric_subject])
-                    for neighbor_id, neighbor_metrics in \
-                        item_to_neighbors_metrics[item_id]["neighbors"].items()
-                ], key=lambda x: x[1], reverse=True
+                    for neighbor_id, neighbor_metrics in item_to_neighbors_metrics[
+                        item_id
+                    ]["neighbors"].items()
+                ],
+                key=lambda x: x[1],
+                reverse=True,
             )[:max_count]
         )
         for item_id in item_to_neighbors_metrics
     }
 
-def get_all_suggestions(
-    order: list,
-    n_best_metrics: dict
-) -> list:
+
+def get_all_suggestions(order: list, n_best_metrics: dict) -> list:
     def get_best_neighbor(item_id: str):
         return n_best_metrics.get(item_id, {})
 
     # Get best neighbors for each item in the order
-    best_neighbors = [ 
-        list(get_best_neighbor(item_id).items()) 
-        for item_id in order
-    ]
-    
+    best_neighbors = [list(get_best_neighbor(item_id).items()) for item_id in order]
+
     return list(set(flatten_list(best_neighbors)))
+
 
 def get_k_best_neighbors(
     method: str,
@@ -58,26 +58,25 @@ def get_k_best_neighbors(
     item_to_neighbors_metrics: dict,
     n_suggestions: dict,
     n_best: int,
-) -> list: 
-    if(method in AVAILABLE_METRICS):
-        n_best_metrics = get_k_best_metrics(
-            item_to_neighbors_metrics, n_best, method
-        )
-        
-        all_suggestions = flatten_list([
-            list(neighbors_metrics.items()) 
-            for neighbors_metrics in n_best_metrics.values()
-        ])
+) -> list:
+    if method in AVAILABLE_METRICS:
+        n_best_metrics = get_k_best_metrics(item_to_neighbors_metrics, n_best, method)
 
-        suggestions = setify_list([
-            best_neighbor_j
-            for best_neighbor_j in \
-            sorted(
-                all_suggestions, 
-                key=lambda x: x[1], 
-                reverse=True
-            )
-        ][:n_suggestions])
+        all_suggestions = flatten_list(
+            [
+                list(neighbors_metrics.items())
+                for neighbors_metrics in n_best_metrics.values()
+            ]
+        )
+
+        suggestions = setify_list(
+            [
+                best_neighbor_j
+                for best_neighbor_j in sorted(
+                    all_suggestions, key=lambda x: x[1], reverse=True
+                )
+            ][:n_suggestions]
+        )
 
     elif method in ['arbitrary', 'random']:
         n_best_metrics = get_k_best_metrics(item_to_neighbors_metrics, n_best)
@@ -97,7 +96,7 @@ def get_k_best_neighbors(
         raise ValueError(f'Available methods: {AVAILABLE_METHODS}')
 
     suggestions = [suggestion[0] for suggestion in suggestions]
-        
+
     return list(set(suggestions) - set(order))[:n_suggestions]
 
 

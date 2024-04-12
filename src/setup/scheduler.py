@@ -1,8 +1,6 @@
 # Description: This file is used to set up the scheduler for the application.
-from apscheduler.schedulers.background import \
-    BackgroundScheduler
-from apscheduler.triggers.interval import \
-    IntervalTrigger
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 
 from src.tasks.print_task import print_statement
 

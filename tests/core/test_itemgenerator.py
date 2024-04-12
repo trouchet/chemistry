@@ -1,6 +1,6 @@
-from src.core.recommendation.itemset_generator \
-    import ItemSetsGenerator
+from src.core.recommendation.itemset_generator import ItemSetsGenerator
 from src.utils.dataframe import get_unique_elements
+
 
 def test_itemset_generator():
     num_itemsets = 10
@@ -11,12 +11,12 @@ def test_itemset_generator():
     mean_items_per_itemset = 10
 
     itemset_generator = ItemSetsGenerator(
-        num_itemsets, 
-        num_items, 
+        num_itemsets,
+        num_items,
         num_agents,
         quantity_interval,
         value_interval,
-        mean_items_per_itemset
+        mean_items_per_itemset,
     )
 
     df = itemset_generator.generate()
@@ -28,6 +28,5 @@ def test_itemset_generator():
     expected_agent_ids = set(itemset_generator.agent_ids)
     this_agent_ids = set(itemsets_agent_ids)
     intersection_ids = this_agent_ids.intersection(expected_agent_ids)
-    
-    assert len(intersection_ids) > 0
 
+    assert len(intersection_ids) > 0
