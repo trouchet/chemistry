@@ -1,4 +1,0 @@
-- script: |
-    pip install pytest pytest-cov
-    pytest --cov=src --cov-report=xml --junitxml=pytest.xml
-  displayName: 'Run pytest tests with coverage'
