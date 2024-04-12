@@ -44,7 +44,7 @@ def test_recommend_product_missing_items(
     basket_request = sample_basket_factory(
         ["apple", "banana", "grape", "pear"]
     ).model_dump()
-    print(basket_request)
+
     response = client.post(BASKET_ROUTE, json=basket_request)
 
     assert response.status_code == 200
