@@ -17,7 +17,7 @@
         context: .
         dockerfile: Dockerfile
         args:
-          APPS_COUNT: ${APPS_COUNT:-1}  # Use 1 as default if APPS_COUNT is not set
+          APPS_COUNT: ${APPS_COUNT:-1}
       ports:
         - "8000:8000"
       depends_on: 
