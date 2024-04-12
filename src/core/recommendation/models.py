@@ -1,10 +1,9 @@
 # Description: Recommendation models for the recommender system.
-from timy import timer
 import pandas as pd
 import logging
 from reprlib import repr
 
-from pydantic import BaseModel, Field
+from pydantic import model_validator, BaseModel, Field
 from typing import Optional, List
 
 from src.core.recommendation.algorithms import get_k_best_neighbors
@@ -21,34 +20,37 @@ from src.core.recommendation.constants import (
 
 from src.constants import VALID_AGE_MONTHS, DEFAULT_AGE
 
-
-class CompanyResource(BaseModel):
+class RecommendationResource(BaseModel):
     company_id: str = Field(default='demo')
-    is_demo: Optional[bool] = False
-
-
-# Request model
-class Product(CompanyResource):
-    id: str
-
-
-# Object Item
-class Item:
-    def __init__(self, identifier: str, value: float, description: str = None):
-        self.identifier = identifier
-        self.value = value
-        self.description = description or f"Description of {identifier}"
-
-    def __repr__(self):
-        return f"Item(identifier={self.identifier}, value={self.value})"
-
-
-# Request model
-class Basket(CompanyResource):
-    items: List[str] = Field(default=[])
     algorithm: Optional[str] = RECOMMENDATION_ALGO_DEFAULT
     neighbors_count: Optional[int] = N_BEST_NEIGHBORS_DEFAULT
     age_months: Optional[int] = DEFAULT_AGE
+    is_demo: Optional[bool] = False
+    demo_type: str = Field('small', description='One of: small, medium, big')
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate_demo_type(cls, values):
+        is_demo = values.get('is_demo')
+        demo_type = values.get('demo_type')
+
+        if demo_type is not None and \
+            demo_type not in ['small', 'medium', 'big']:
+            raise ValueError("demo_type must be one of: small, medium, big")
+
+        if is_demo and not demo_type:
+            values['demo_type'] = 'small'
+
+        return values
+
+
+# Request model
+class Product(RecommendationResource):
+    product_id: str
+
+# Request model
+class Basket(RecommendationResource):
+    items: List[str] = Field(default=[])
 
     def is_age_valid(self):
         """
@@ -83,9 +85,25 @@ class Basket(CompanyResource):
 
 def product_to_basket(product: Product) -> Basket:
     return Basket(
-        company_id=product.company_id, items=[product.id], is_demo=product.is_demo
+        company_id=product.company_id, 
+        items=[product.product_id], 
+        algorithm=product.algorithm,
+        neighbors_count=product.neighbors_count,
+        age_months=product.age_months,
+        is_demo=product.is_demo,
+        demo_type=product.demo_type
     )
 
+# Object Item
+class Item:
+    def __init__(self, identifier: str, value: float, description: str = None):
+        self.identifier = identifier
+        self.value = value
+        self.description = description or f"Description of {identifier}"
+
+    def __repr__(self):
+        return f"Item(identifier={self.identifier}, value={self.value})"
+    
 
 # Response model
 class Recommendation(BaseModel):
@@ -124,7 +142,8 @@ class SVRecommender(object):
         description_column: str,
         n_suggestions: int = N_SUGGESTIONS_DEFAULT,
         n_best_neighbors: int = N_BEST_NEIGHBORS_DEFAULT,
-    ):
+    ):  
+
         if n_suggestions <= 0 or n_best_neighbors <= 0:
             error_message = 'Number of provided suggestions or best neighbors must be greater than 0!'
             raise ValueError(error_message)
@@ -153,6 +172,7 @@ class SVRecommender(object):
         Get association metrics
         """
         self._update_neighbors()
+        
         return get_association_metrics(
             self.data_dataframe,
             self.neighbors_dict,

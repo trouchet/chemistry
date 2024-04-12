@@ -15,12 +15,19 @@ def listify_items(df_: pd.DataFrame, sets_column: str, items_column: str):
 
 
 def get_itemsets_with_items(
-    df_: pd.DataFrame, items_list: list, sets_column: str, items_column: str
-):
+    df_: pd.DataFrame, 
+    items_list: list, 
+    sets_column: str, 
+    items_column: str
+):  
+    
     def mask_map(group: pd.Series):
-        return group[items_column].isin(items_list).any()
-
-    return df_.groupby(sets_column).filter(mask_map)
+        is_empty = group[items_column].empty
+        has_intersection = set(group[items_column]).intersection(items_list)
+        return not is_empty and len(has_intersection) > 0
+    
+    grouped_df = df_.groupby(sets_column)
+    return grouped_df.filter(mask_map)
 
 
 def get_descriptions(df_: pd.DataFrame, item_column: str, description_column: str):
@@ -40,7 +47,9 @@ def get_unique_elements(df_: pd.DataFrame, column_label: str):
 
 
 def read_data_from_file(
-    filepath: str, sets_column: str, items_column: str
+    filepath: str, 
+    sets_column: str, 
+    items_column: str
 ) -> pd.DataFrame:
     def get_extension(word: str):
         return word.split('.')[-1]
@@ -48,15 +57,15 @@ def read_data_from_file(
     extension = get_extension(filepath)
 
     if extension == 'xlsx':
-        df = pd.read_excel(filepath)
+        df = pd.read_excel(filepath, engine='openpyxl')
     elif extension == 'csv':
         df = pd.read_csv(filepath)
     else:
         raise ValueError(f'Unsupported extension: {extension}')
 
-    df = df.dropna()
     relevant_columns = [sets_column, items_column]
     filtered_df = df.groupby(relevant_columns).first().reset_index()
+    
     return filtered_df
 
 

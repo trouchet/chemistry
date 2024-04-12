@@ -14,7 +14,10 @@ from src.core.recommendation.constants import (
     N_BEST_NEIGHBORS_DEFAULT,
 )
 from src.utils.dataframe import listify_items
-from src.utils.native import flatten_list, setify_list
+from src.utils.native import \
+    flatten_list, \
+    setify_list, \
+    remove_duplicates_and_select_max
 
 
 def get_k_best_metrics(

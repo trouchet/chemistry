@@ -105,12 +105,16 @@ def get_items_association_metrics(
 
 
 def get_association_metrics(
-    df_: pd.DataFrame, neighbors_dict: dict, sets_column: str, items_column: str
+    df_: pd.DataFrame, 
+    neighbors_dict: dict, 
+    sets_column: str, 
+    items_column: str
 ):
     '''
     Lift: P(B_given_A) / P(B)
     '''
     sets_count_dict = get_sets_count_per_items_dict(df_, sets_column, items_column)
+    
     sets_total = len(get_unique_elements(df_, sets_column))
 
     items_support_dict = get_items_support(sets_count_dict, sets_total)

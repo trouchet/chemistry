@@ -3,6 +3,7 @@ import pandas as pd
 from unittest.mock import patch
 import pytest
 import os
+from os import getcwd, path
 
 from src.app import app
 from src.core.recommendation.models import \
@@ -52,7 +53,10 @@ def simplest_dataframe():
 
 @pytest.fixture
 def recommendation_dataframe():
-    return pd.read_csv('data/small_test_sample.csv')
+    filename = "small_test_sample.xlsx"
+    folder = 'data'
+    filepath = path.join(getcwd(), folder, filename)
+    return pd.read_excel(filepath)
 
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
@@ -74,7 +78,10 @@ def sample_basket_factory(company_id):
 @pytest.fixture
 def sample_product_factory(company_id):
     def factory(item: str) -> Basket:
-        return Product(company_id=company_id, id=item, is_demo=True)
+        return Product(
+            company_id=company_id, 
+            product_id=item, 
+            is_demo=True)
 
     return factory
 
@@ -233,8 +240,8 @@ def sv_recommender_small_base(recommendation_dataframe):
 @pytest.fixture
 def neighbors_data():
     return {
-        'item1': {'neighbor1': 1, 'neighbor2': 2},
-        'item2': {'neighbor3': 3, 'neighbor4': 4},
+        'item1': { 'neighbor1': 1, 'neighbor2': 2 },
+        'item2': { 'neighbor3': 3, 'neighbor4': 4 },
     }
 
 

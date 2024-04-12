@@ -4,8 +4,9 @@ import pandas as pd
 from scipy.stats import entropy
 import numpy as np
 
+NumberList = Union[List[int], List[float]]
 
-def get_list_statistics(lst: Union[List[int], List[float]], precision: int = 2) -> dict:
+def get_list_statistics(lst: NumberList, precision: int = 2) -> dict:
     from numpy import percentile, mean, std, abs, var
 
     mean_value = mean(lst)
@@ -32,7 +33,10 @@ def get_list_statistics(lst: Union[List[int], List[float]], precision: int = 2) 
         "entropy": entropy(np.histogram(lst, bins='auto')[0]),
     }
 
-    return {descrip: round(value, precision) for descrip, value in stats.items()}
+    return {
+        descrip: round(value, precision) 
+        for descrip, value in stats.items()
+    }
 
 
 def print_list_statistics(lst: Union[List[int], List[float]]) -> None:
