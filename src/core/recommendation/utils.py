@@ -3,7 +3,6 @@ from collections import defaultdict
 from random import sample 
 from numpy import unique
 
-from src.utils.dataframe import listify_items
 from src.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT
 from src.utils.dataframe import listify_items, get_unique_elements
 
