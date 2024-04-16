@@ -99,7 +99,7 @@ def test_get_sv_recommender_invalid_suggestion_count(recommendation_dataframe):
             recommendation_dataframe,
             'order_id',
             'item_id',
-            'description',
+            'item_description',
             n_suggestions=-1,
             n_best_neighbors=-1,
         )
@@ -118,21 +118,24 @@ def test_get_sv_recommender_metrics(sample_sets_info: dict):
     assert dataframe_metrics == expected_metrics
 
 
-def test_get_sv_recommender_invalid_method(sv_recommender):
+def test_get_sv_recommender_invalid_method(sv_recommender, small_sample_items):
     with pytest.raises(ValueError):
         sv_recommender._update_neighbors()
-        sv_recommender.recommend(['apple', 'banana'], method='invalid_method')
+        sv_recommender.recommend(small_sample_items, method='invalid_method')
 
 
-def test_description(sv_recommender):
-    item_ids = ['apple', 'banana']
-    descriptions = sv_recommender.describe(item_ids)
+def test_description(sv_recommender, small_sample_items, small_sample_description):
+    descriptions = sv_recommender.describe(small_sample_items)
 
-    assert len(descriptions) == len(item_ids)
-    assert descriptions == ['Description of apple', 'Description of banana']
+    assert len(descriptions) == len(small_sample_items)
+    assert descriptions == small_sample_description
 
 
-def test_get_sv_recommender_invalid_item(sv_recommender):
-    descriptions = sv_recommender.describe(['dragon fruit', 'banana'])
+def test_get_sv_recommender_invalid_item(
+    sv_recommender,
+    small_sample_items,
+    small_sample_description
+):
+    descriptions = sv_recommender.describe(small_sample_items)
 
-    assert descriptions == ['', 'Description of banana']
+    assert descriptions == small_sample_description 

@@ -8,7 +8,6 @@ Base = declarative_base()
 # # Create tables if they do not exist
 # Base.metadata.create_all(bind=engine)
 
-
 # Define the database models
 class UserDB(Base):
     __tablename__ = "users"
@@ -18,39 +17,42 @@ class UserDB(Base):
     password = Column(String)
 
 
-class ProviderDB(Base):
-    __tablename__ = "providers"
+class FornecedorDB(Base):
+    __tablename__ = "fornecedores"
 
-    id = Column(Integer, primary_key=True, index=True)
+    forn_id = Column(Integer, primary_key=True, index=True)
 
 
 class CompanyDB(Base):
-    __tablename__ = "companies"
+    __tablename__ = "   "
 
     id = Column(Integer, primary_key=True, index=True)
     provider_id = Column(Integer, ForeignKey('providers.id'))
     provider = relationship("ProviderDB", back_populates="companies")
 
 
-class ClientDB(Base):
+class ClienteDB(Base):
     __tablename__ = "clients"
 
-    id = Column(Integer, primary_key=True, index=True)
-    company_id = Column(Integer, ForeignKey('companies.id'))
-    company = relationship("CompanyDB", back_populates="clients")
+    clie_id = Column(Integer, primary_key=True, index=True)
+    clie_token = Column(String)
+    clie_status = Column(String)
+
+class ProdutoDB(Base):
+    __tablename__ = "produtos"
+
+    prod_id = Column(Integer, primary_key=True, index=True)
+    prod_sku = Column(String, index=True)
+    prod_nome = Column(String)
+    prod_descricao = Column(String)
+    prod_fornecedor = Column(String)    
+
+class ProdutoFotoDB(Base):
+    __table__ = "produtos_fotos"
 
 
-class ProductDB(Base):
-    __tablename__ = "products"
-
-    id = Column(Integer, primary_key=True, index=True)
-    description = Column(String, index=True)
-    provider_id = Column(Integer, ForeignKey('providers.id'))
-    provider = relationship("ProviderDB", back_populates="products")
-
-
-class TransactionHistoryDB(Base):
-    __tablename__ = "transations_history"
+class HistoricoDeVendaDB(Base):
+    __tablename__ = "historico_venda"
 
     id = Column(Integer, primary_key=True, index=True)
     provider_id = Column(Integer, ForeignKey('providers.id'))
@@ -59,17 +61,26 @@ class TransactionHistoryDB(Base):
     item_id = Column(Integer, index=True)
 
 
-class RecommendationDB(Base):
-    __tablename__ = "recommendations"
+class HistoricoVendaArquivoDB(Base):
+    __tablename__ = "historico_venda_arquivo"
 
-    id = Column(Integer, primary_key=True, index=True)
+    hvar_id = Column(Integer, primary_key=True, index=True)
+    hvar_provider_id = Column(Integer, ForeignKey('providers.id'))
+    hvar_
+
+
+class RecomendacaoDB(Base):
+    __tablename__ = "recomendacoes"
+
+    reco_id = Column(Integer, primary_key=True, index=True)
+    reco_sku = Column(String, index=True)
+    reco_cliente = Column(String, index=True)
+
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("UserDB", back_populates="recommendations")
     item_id = Column(Integer, index=True)
 
 
 # Define relationships
-ProviderDB.companies = relationship("CompanyDB", back_populates="provider")
-CompanyDB.clients = relationship("ClientDB", back_populates="company")
-ProviderDB.products = relationship("ProductDB", back_populates="provider")
+FornecedorDB.companies = relationship("CompanyDB", back_populates="provider")
 UserDB.recommendations = relationship("RecommendationDB", back_populates="user")

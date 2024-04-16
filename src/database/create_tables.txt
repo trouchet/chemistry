@@ -1,0 +1,60 @@
+-- Drop the existing tables if they exist
+DROP TABLE IF EXISTS historico_venda_arquivo;
+DROP TABLE IF EXISTS historico_venda;
+DROP TABLE IF EXISTS recomendacao;
+
+-- Create the new historico_venda_arquivo table
+CREATE TABLE historico_venda_arquivo
+(
+    hvar_id UUID PRIMARY KEY NOT NULL,
+    hvar_erp TEXT NOT NULL,
+    hvar_erp_cliente TEXT NOT NULL,
+    hvar_data_envio TEXT NOT NULL,
+    hvar_nome_arquivo TEXT NOT NULL,
+    hvar_url TEXT,
+    hvar_tamanho DECIMAL NOT NULL,
+    hvar_status TEXT
+);
+
+CREATE INDEX idx_hvar_id on historico_venda_arquivo(hvar_id)
+
+CREATE TABLE historico_venda
+(
+    hive_id UUID PRIMARY KEY NOT NULL,
+    hive_datahora_inclusao TIMESTAMP NOT NULL,
+    hive_data_processamento TEXT NOT NULL,
+    hive_data_venda timestamp NOT NULL,
+    hive_fornecedor TEXT,
+    hive_consumidor TEXT,
+    hive_transacao_id TEXT NOT NULL,
+    hive_sku TEXT NOT NULL,
+    hive_sku_categoria TEXT NOT NULL,
+    hive_ordem integer,
+    hive_quantidade INTEGER,
+    hive_valor DECIMAL,
+    hive_status TEXT,
+    hive_erp TEXT NOT NULL,
+    hive_erp_cliente TEXT NOT NULL
+);
+
+CREATE INDEX idx_hive_id on historico_venda(hive_id)
+
+create table recomendacao
+(
+    reco_id UUID PRIMARY KEY NOT NULL,
+    reco_erp TEXT NOT NULL,
+    reco_erp_cliente TEXT NOT NULL,
+    reco_data_processamento timestamp NOT NULL,
+    reco_sku TEXT NOT NULL,
+    reco_fornecedor TEXT,
+    reco_consumidor TEXT,
+    reco_sku_recomendacao json NOT NULL,
+    reco_margem_corte TEXT,
+    reco_hash_sku TEXT NOT NULL,
+    reco_forecast_quantidade JSON,
+    reco_forecast_ticket_medio JSON,
+    reco_forecast_proxima_compra JSON
+);
+
+CREATE INDEX idx_reco_id on recomendacao(reco_id)
+

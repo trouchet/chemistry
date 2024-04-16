@@ -130,7 +130,7 @@ def get_frequent_items_and_rules_dict(
     items_column: str,
     min_support_: float,
     min_threshold_: float,
-):
+):  
     frequent_itemsets, rules = get_association_rules(
         df_, sets_column, items_column, min_support_, min_threshold_
     )

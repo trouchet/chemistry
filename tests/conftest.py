@@ -13,7 +13,6 @@ from src.core.recommendation.models import \
     Basket
 
 from src.core.recommendation.metrics import (
-    get_association_metrics,
     get_neighbor_association_metrics,
 )
 
@@ -53,10 +52,11 @@ def simplest_dataframe():
 
 @pytest.fixture
 def recommendation_dataframe():
-    filename = "small_test_sample.xlsx"
+    filename = "fruits_sample.csv"
     folder = 'data'
     filepath = path.join(getcwd(), folder, filename)
-    return pd.read_excel(filepath)
+    
+    return pd.read_csv(filepath)
 
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
@@ -164,6 +164,14 @@ def sv_recommender(recommendation_dataframe):
         description_column='description',
     )
     return recommender
+
+@pytest.fixture
+def small_sample_items():
+    return ["apple", "banana"]
+
+@pytest.fixture
+def small_sample_description():
+    return ['Description of apple', 'Description of banana']
 
 @pytest.fixture
 def sample_sets_info():
