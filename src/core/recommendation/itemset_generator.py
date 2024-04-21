@@ -5,6 +5,7 @@ from typing import Union, List, Tuple
 import pandas as pd
 from random import uniform, randint
 import uuid
+from datetime import datetime, timedelta
 
 from src.core.recommendation.models import Item
 from src.core.recommendation.constants import MEAN_ITEMS_PER_ITEMSET
@@ -72,6 +73,12 @@ def generate_item_dict(
         'item_value': item.value,
     }
 
+def generate_set_timestamp(start_year: int, end_year: int):
+    start_date = datetime(start_year, 1, 1)
+    end_date = datetime(end_year, 12, 31)
+    days_between = (end_date - start_date).days
+    random_days = randint(0, days_between)
+    return start_date + timedelta(days=random_days)
 
 def generate_quantified_item(items: List[Item], quantity_interval: Tuple[float]):
     item = get_random_element(items)
@@ -86,6 +93,7 @@ def generate_quantified_item(items: List[Item], quantity_interval: Tuple[float])
 class ItemSetsGenerator:
     def __init__(
         self,
+        time_interval: Tuple[int],
         num_itemsets: int,
         num_items: int,
         num_agents: int,
@@ -93,6 +101,7 @@ class ItemSetsGenerator:
         value_interval: Tuple[float],
         mean_items_per_itemset: int = MEAN_ITEMS_PER_ITEMSET,
     ):
+        self.time_interval = time_interval
         self.num_itemsets = num_itemsets
         self.num_items = num_items
         self.num_agents = num_agents
@@ -126,6 +135,7 @@ class ItemSetsGenerator:
         for itemset_id in range(self.num_itemsets):
             itemset_id_ = itemset_id + 1
             agent_id_ = get_random_element(self.agent_ids)
+            itemset_timestamp = generate_set_timestamp(*self.time_interval)
 
             itemset = self.__generate_itemset_list(itemset_id_, agent_id_)
             itemsets = itemsets + itemset

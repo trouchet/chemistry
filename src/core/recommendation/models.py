@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 from reprlib import repr
 
-from pydantic import model_validator, BaseModel, Field
+from pydantic import BaseModel, Field
 from typing import Optional, List
 
 from src.core.recommendation.algorithms import get_k_best_neighbors
