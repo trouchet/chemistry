@@ -89,7 +89,7 @@ def read_data_from_file(
     if extension in ['xlsx', 'xls']:
         df = pd.read_excel(filepath, engine='openpyxl', columns=dataset_columns)
     elif extension == 'csv':
-        df = pd.read_csv(filepath, columns=dataset_columns))
+        df = pd.read_csv(filepath, columns=dataset_columns)
     else:
         raise ValueError(f'Unsupported extension: {extension}')
 
