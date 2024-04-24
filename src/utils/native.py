@@ -11,7 +11,7 @@ from src.utils.constants import DEFAULT_TOKEN_LENGTH
 
 def remove_duplicates_and_select_max(
     tuples_list: tuple
-):
+) -> list:
     # Convert the list of tuples into a dictionary
     tuples_dict = defaultdict(int)
     for string, number in tuples_list:
@@ -21,21 +21,21 @@ def remove_duplicates_and_select_max(
     result = [(string, number) for string, number in tuples_dict.items()]
     return result
 
-def setify_list(lst: list):
+def setify_list(lst: list) -> list:
     return list(set(lst))
 
 
-def remove_list_from_list(list1, list2):
+def remove_list_from_list(list1, list2) -> list:
     return [x for x in list1 if x not in list2]
 
 
-def get_random_element(arr: list):
+def get_random_element(arr: list) -> any:
     return sample(arr, 1)[0]
 
 
 def generate_random_tokens(
     num_tokens: int = 1, token_length: int = DEFAULT_TOKEN_LENGTH
-):
+) -> list:
     """Generate random tokens.
 
     Args:
@@ -63,7 +63,7 @@ def generate_random_tokens(
     return tokens
 
 
-def invert_dict(dict_: dict):
+def invert_dict(dict_: dict) -> dict:
     new_dict = dict()
 
     # Validate input
@@ -83,7 +83,7 @@ def invert_dict(dict_: dict):
     return new_dict
 
 
-def flatten_list(lst: list):
+def flatten_list(lst: list) -> list:
     new_lst = []
 
     for el in lst:
@@ -95,7 +95,7 @@ def flatten_list(lst: list):
     return new_lst
 
 
-def sum_dicts(dict_list):
+def sum_dicts(dict_list) -> dict:
     result = {}
     for d in dict_list:
         for key, value in d.items():
@@ -107,7 +107,7 @@ def sum_dicts(dict_list):
 
 
 @timer()
-def load_pickle(pkl_filepath: str) -> None:
+def load_pickle(pkl_filepath: str) -> any:
     with open(pkl_filepath, 'rb') as f:
         return pickle.load(f)
 

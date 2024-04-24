@@ -7,11 +7,23 @@ from src.utils.dataframe import get_itemsets_with_items
 
 
 def make_json_response(status_: int, content_: dict) -> JSONResponse:
+    '''
+    Descrição: Retorna uma resposta JSON com o código de status e conteúdo especificados.
+    Parâmetros:
+        status_ (int): O código de status da resposta.
+        content_ (dict): O conteúdo da resposta em formato de dicionário.
+    Retorna:
+        JSONResponse: Uma resposta JSON com o código de status e conteúdo especificados.
+    '''
     return JSONResponse(status_code=status_, content=content_)
 
 def demo_client_data(basket: Basket):
     '''
-    This function is a demo data loader.
+    Descrição: Esta função é um carregador de dados de demonstração.
+    Parâmetros:
+        basket (Basket): O objeto da cesta que contém informações sobre a demonstração.
+    Retorna:
+        Uma tupla contendo o nome das colunas para conjuntos, itens e descrição, juntamente com um DataFrame filtrado.
     '''
 
     sets_column = 'itemset_id'
@@ -35,8 +47,22 @@ def demo_client_data(basket: Basket):
 
 # NOTE: Replace this function by database query or any source data loading
 def retrieve_data(basket: Basket):
+    '''
+    Descrição: Esta função deve ser substituída por uma consulta ao banco de dados ou qualquer outra fonte de carregamento de dados.
+    Parâmetros:
+        basket (Basket): O objeto da cesta que contém informações sobre a consulta de dados.
+    Exceção:
+        NotImplementedError: Lançada quando a função não está implementada.
+    '''
     raise NotImplementedError('This function is not implemented yet.')
 
 
 def get_client_data(basket: Basket):
+    '''
+    Descrição: Retorna os dados do cliente, seja dos dados de demonstração ou da consulta de dados, dependendo do tipo de cesta.
+    Parâmetros:
+        basket (Basket): O objeto da cesta que contém informações sobre a consulta de dados.
+    Retorna:
+        Os dados do cliente obtidos da função de demonstração ou da consulta de dados, dependendo do tipo de cesta.
+    '''
     return demo_client_data(basket) if basket.is_demo else retrieve_data(basket)

@@ -1,17 +1,17 @@
-# Description: Constants used in the application utilitary functions.
+# Descrição: Constantes usadas nas funções utilitárias da aplicação.
 from fastapi import status
 
-# Confidence level for lists on histograms
+# Nível de confiança para listas em histogramas
 PLOT_CONFIDENCE = 0.99
 
-# HTTP status codes
+# Códigos de status HTTP
 OK_200 = status.HTTP_200_OK
 CREATED_201 = status.HTTP_201_CREATED
 BAD_REQUEST_400 = status.HTTP_400_BAD_REQUEST
 INTERNAL_SERVER_ERROR_500 = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-# Mean number of items per itemsets
+# Média de itens por conjunto de itens
 MEAN_ITEMS_PER_ITEMSET = 5
 
-# Default size of token
+# Tamanho padrão do token
 DEFAULT_TOKEN_LENGTH = 10
