@@ -51,7 +51,7 @@ def generate_items(
         value = item_props[1]
 
         return Item(identifier, value)
-
+    
     min_value, max_value = value_interval
 
     value_gen = generate_value(min_value, max_value)
@@ -98,7 +98,7 @@ class ItemSetsFactory:
     Classe para gerar conjuntos de itens fictícios com base em parâmetros específicos.
 
     Parâmetros do Construtor:
-    - time_interval (Tuple[int]): Um intervalo de tempo representado por um intervalo de anos.
+    - year_interval (Tuple[int]): Um intervalo de tempo representado por um intervalo de anos.
     - num_itemsets (int): O número de conjuntos de itens a serem gerados.
     - num_items (int): O número total de itens disponíveis para a geração de conjuntos.
     - num_agents (int): O número total de agentes disponíveis para a geração de conjuntos.
@@ -115,7 +115,7 @@ class ItemSetsFactory:
     '''
     def __init__(
         self,
-        time_interval: Tuple[int],
+        year_interval: Tuple[int],
         num_itemsets: int,
         num_items: int,
         num_agents: int,
@@ -123,7 +123,8 @@ class ItemSetsFactory:
         value_interval: Tuple[float],
         mean_items_per_itemset: int = MEAN_ITEMS_PER_ITEMSET,
     ):
-        self.time_interval = time_interval
+    
+        self.year_interval = year_interval
         self.num_itemsets = num_itemsets
         self.num_items = num_items
         self.num_agents = num_agents
@@ -157,7 +158,7 @@ class ItemSetsFactory:
         for itemset_id in range(self.num_itemsets):
             itemset_id_ = itemset_id + 1
             agent_id_ = get_random_element(self.agent_ids)
-            itemset_timestamp = generate_set_timestamp(*self.time_interval)
+            itemset_timestamp = generate_set_timestamp(*self.year_interval)
 
             itemset = self.__generate_itemset_list(itemset_id_, agent_id_)
             itemsets = itemsets + itemset

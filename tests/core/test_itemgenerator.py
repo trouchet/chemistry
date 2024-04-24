@@ -3,6 +3,7 @@ from src.utils.dataframe import get_unique_elements
 
 
 def test_itemset_generator():
+    time_interval = (2000, 2020)
     num_itemsets = 10
     num_items = 100
     num_agents = 10
@@ -11,6 +12,7 @@ def test_itemset_generator():
     mean_items_per_itemset = 10
 
     itemset_generator = ItemSetsFactory(
+        time_interval,
         num_itemsets,
         num_items,
         num_agents,
@@ -18,6 +20,14 @@ def test_itemset_generator():
         value_interval,
         mean_items_per_itemset,
     )
+
+    time_interval: Tuple[int],
+    num_itemsets: int,
+    num_items: int,
+    num_agents: int,
+    quantity_interval: Tuple[int],
+    value_interval: Tuple[float],
+    mean_items_per_itemset: int = MEAN_ITEMS_PER_ITEMSET,  
 
     df = itemset_generator.generate()
 
