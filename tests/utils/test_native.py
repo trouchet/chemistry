@@ -9,6 +9,7 @@ from src.utils.native import (
     dump_dill,
     load_cloudpickle,
     dump_cloudpickle,
+    remove_list_from_list,
 )
 
 
@@ -57,3 +58,29 @@ def test_cloudpickle_functions(sample_data, cloudpickle_filepath):
     dump_cloudpickle(sample_data, cloudpickle_filepath)
     loaded_data = load_cloudpickle(cloudpickle_filepath)
     assert loaded_data == sample_data
+
+@pytest.mark.parametrize(
+    "list1, list2, expected",
+    [
+        ([1, 2, 3, 4, 5], [2, 4], [1, 3, 5]),
+        ([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], []),
+        ([1, 2, 3, 4, 5], [], [1, 2, 3, 4, 5]),
+        ([], [1, 2, 3, 4, 5], []),
+        ([], [], []),
+    ],
+)
+def test_remove_list_from_list(list1, list2, expected):
+    assert remove_list_from_list(list1, list2) == expected
+
+def test_remove_list_from_list_handles_duplicates():
+    list1 = [1, 2, 2, 3, 4, 5]
+    list2 = [2, 4]
+    expected = [1, 3, 5]
+    assert remove_list_from_list(list1, list2) == expected
+
+def test_remove_list_from_list_returns_new_list():
+    list1 = [1, 2, 3, 4, 5]
+    list2 = [2, 4]
+    result = remove_list_from_list(list1, list2)
+    assert result is not list1
+    assert result is not list2

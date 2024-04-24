@@ -8,3 +8,4 @@ def test_make_json_response():
 
     assert response.status_code == 200
     assert json.loads(response.body.decode()) == {"key": "value"}
+
