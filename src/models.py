@@ -13,12 +13,6 @@ class JWTSettings(BaseModel):
     authjwt_algorithm: str = JWT_ALGORITHM
 
 
-# Request model
-class User(BaseModel):
-    username: str
-    password: str
-
-
 # Response model
 class ErrorResponse(BaseModel):
     error: str
