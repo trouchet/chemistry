@@ -18,3 +18,4 @@ scheduler.add_job(print_statement, trigger=interval_1_s)
 interval_1_h = IntervalTrigger(hours=1)
 scheduler.add_job(generate_recommendations, trigger=interval_1_h)
 
+    

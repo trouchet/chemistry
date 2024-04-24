@@ -48,7 +48,8 @@ def demo_client_data(basket: Basket):
 # NOTE: Replace this function by database query or any source data loading
 def retrieve_data(basket: Basket):
     '''
-    Descrição: Esta função deve ser substituída por uma consulta ao banco de dados ou qualquer outra fonte de carregamento de dados.
+    Descrição: Esta função deve ser substituída por uma consulta ao banco de dados 
+    ou qualquer outra fonte de carregamento de dados.
     Parâmetros:
         basket (Basket): O objeto da cesta que contém informações sobre a consulta de dados.
     Exceção:
@@ -59,10 +60,12 @@ def retrieve_data(basket: Basket):
 
 def get_client_data(basket: Basket):
     '''
-    Descrição: Retorna os dados do cliente, seja dos dados de demonstração ou da consulta de dados, dependendo do tipo de cesta.
+    Descrição: Retorna os dados do cliente, seja dos dados de demonstração ou da consulta de dados, 
+    dependendo do tipo de cesta.
     Parâmetros:
         basket (Basket): O objeto da cesta que contém informações sobre a consulta de dados.
     Retorna:
-        Os dados do cliente obtidos da função de demonstração ou da consulta de dados, dependendo do tipo de cesta.
+        Os dados do cliente obtidos da função de demonstração ou da consulta de dados, dependendo 
+        do tipo de cesta.
     '''
     return demo_client_data(basket) if basket.is_demo else retrieve_data(basket)
