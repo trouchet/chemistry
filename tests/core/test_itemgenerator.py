@@ -21,14 +21,6 @@ def test_itemset_generator():
         mean_items_per_itemset,
     )
 
-    time_interval: Tuple[int],
-    num_itemsets: int,
-    num_items: int,
-    num_agents: int,
-    quantity_interval: Tuple[int],
-    value_interval: Tuple[float],
-    mean_items_per_itemset: int = MEAN_ITEMS_PER_ITEMSET,  
-
     df = itemset_generator.generate()
 
     itemsets_len = len(get_unique_elements(df, 'itemset_id'))

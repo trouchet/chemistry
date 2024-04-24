@@ -78,8 +78,7 @@ def get_unique_elements(df_: pd.DataFrame, column_label: str) -> List[str]:
 
 
 def read_data_from_file(
-    filepath: str, 
-    dataset_columns: str
+    filepath: str
 ) -> pd.DataFrame:
     def get_extension(word: str):
         return word.split('.')[-1]
@@ -87,9 +86,9 @@ def read_data_from_file(
     extension = get_extension(filepath)
 
     if extension in ['xlsx', 'xls']:
-        df = pd.read_excel(filepath, engine='openpyxl', columns=dataset_columns)
+        df = pd.read_excel(filepath, engine='openpyxl')
     elif extension == 'csv':
-        df = pd.read_csv(filepath, columns=dataset_columns)
+        df = pd.read_csv(filepath)
     else:
         raise ValueError(f'Unsupported extension: {extension}')
 
@@ -97,7 +96,7 @@ def read_data_from_file(
 
 
 def read_data_to_dataframe_gen(
-    data_folder_: str, sets_column: str, items_column: str, extension: str = 'xlsx'
+    data_folder_: str, extension: str = 'xlsx'
 ) -> dict:
     filepaths = [
         path.join(data_folder_, filename)
@@ -106,7 +105,7 @@ def read_data_to_dataframe_gen(
     ]
 
     for filepath in filepaths:
-        df_ = read_data_from_file(filepath, sets_column, items_column)
+        df_ = read_data_from_file(filepath)
         yield filepath, df_
 
 

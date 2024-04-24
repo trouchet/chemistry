@@ -35,7 +35,7 @@ def demo_client_data(basket: Basket):
     foldername = 'data'
     filepath = path.join(getcwd(), foldername, filename)
 
-    df = read_data_from_file(filepath, sets_column, items_column)
+    df = read_data_from_file(filepath)
     
     # Filter the dataframe by the basket items
     order = basket.model_dump()["items"]

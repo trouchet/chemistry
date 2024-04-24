@@ -27,10 +27,9 @@ def test_read_data_to_dataframe_gen(tmpdir):
     pd.DataFrame(data2).to_excel(file2, index=False)
 
     # Test the function
-    sets_column = "sets_column"
-    items_column = "items_column"
+    columns = ["sets_column", "items_column"]
     results = list(
-        read_data_to_dataframe_gen(str(data_folder), sets_column, items_column)
+        read_data_to_dataframe_gen(str(data_folder))
     )
 
     # Check if the results are as expected
@@ -82,7 +81,7 @@ def test_read_data_from_file(sample_dataframe):
 
     with patch('pandas.read_excel') as mock_read_excel:
         mock_read_excel.return_value = sample_dataframe
-        result = read_data_from_file(filepath, sets_column, items_column)
+        result = read_data_from_file(filepath)
 
     assert result.equals(sample_dataframe)
 
@@ -90,26 +89,23 @@ def test_read_data_from_file(sample_dataframe):
 
     with patch('pandas.read_csv') as mock_read_excel:
         mock_read_excel.return_value = sample_dataframe
-        result = read_data_from_file(filepath, sets_column, items_column)
+        result = read_data_from_file(filepath)
 
     assert result.equals(sample_dataframe)
 
     filepath = 'sample_file.txt'
     with pytest.raises(ValueError):
-        read_data_from_file(filepath, sets_column, items_column)
+        read_data_from_file(filepath)
 
 
 def test_read_data_to_dataframe_gen_folder_not_found():
     with patch('os.listdir') as mock_listdir:
         mock_listdir.side_effect = FileNotFoundError
         data_folder = 'purchase_date'
-        sets_column = 'order_id'
-        items_column = 'item_id'
+        dataset_columns = [ 'order_id', 'item_id' ]
         extension = 'xlsx'
 
-        gen = read_data_to_dataframe_gen(
-            data_folder, sets_column, items_column, extension
-        )
+        gen = read_data_to_dataframe_gen(data_folder, extension)
         with pytest.raises(FileNotFoundError):
             next(gen)
 
