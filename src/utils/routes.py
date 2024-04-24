@@ -1,4 +1,4 @@
-from os import path
+from os import path, getcwd
 from fastapi.responses import JSONResponse
 
 from src.utils.dataframe import read_data_from_file
@@ -13,7 +13,6 @@ def demo_client_data(basket: Basket):
     '''
     This function is a demo data loader.
     '''
-    from os import getcwd
 
     sets_column = 'itemset_id'
     items_column = 'item_id'

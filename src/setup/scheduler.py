@@ -10,3 +10,4 @@ scheduler = BackgroundScheduler()
 # Test task: Add the scheduled task with a five-second interval
 interval_1 = IntervalTrigger(seconds=5)
 scheduler.add_job(print_statement, trigger=interval_1)
+
