@@ -1,4 +1,4 @@
-from src.core.recommendation.itemset_generator import ItemSetsGenerator
+from src.core.recommendation.itemset_factory import ItemSetsFactory
 from src.utils.dataframe import get_unique_elements
 
 
@@ -10,7 +10,7 @@ def test_itemset_generator():
     value_interval = (0.01, 1000)
     mean_items_per_itemset = 10
 
-    itemset_generator = ItemSetsGenerator(
+    itemset_generator = ItemSetsFactory(
         num_itemsets,
         num_items,
         num_agents,
