@@ -89,9 +89,9 @@ StringOrUUIDList = List[Union[str, uuid.UUID]]
         return item, quantity
 
 
-class ItemSetsGenerator:
+class ItemSetsFactory:
     '''
-    Classe: ItemSetsGenerator
+    Classe: ItemSetsFactory
 
     Descrição:
     Classe para gerar conjuntos de itens fictícios com base em parâmetros específicos.
