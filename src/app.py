@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from src.routes import setup, signup, auth, recommendation
+from src.routes import setup, auth, recommendation
 
 
 def create_app():
@@ -14,8 +14,7 @@ def create_app():
     app_.include_router(
         recommendation.router, prefix="/api/recommendation", tags=["recommendation"]
     )
-    app_.include_router(signup.router, prefix="/api", tags=["recommendation"])
-
+    
     app_.add_middleware(CORSMiddleware)
 
     return app_
