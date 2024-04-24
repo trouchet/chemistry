@@ -39,6 +39,7 @@ psycopg2-binary==2.9.9
 pytest-asyncio==0.23.6
 pytest-watch==4.2.0
 python-daemon==3.0.1
+python-dotenv==1.0.1
 python-nvd3==0.15.0
 requests-toolbelt==1.0.0
 rfc3339-validator==0.1.4
