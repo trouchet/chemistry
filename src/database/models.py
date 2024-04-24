@@ -1,63 +1,61 @@
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
-# from src.database.engine import engine
-# # Create tables if they do not exist
-# Base.metadata.create_all(bind=engine)
-
-# Define the database models
-class UserDB(Base):
-    __tablename__ = "users"
+class UsuarioDB(Base):
+    __tablename__ = "usuarios"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     password = Column(String)
+    recommendations = relationship("RecomendacaoDB", back_populates="user")
 
 
 class FornecedorDB(Base):
     __tablename__ = "fornecedores"
 
     forn_id = Column(Integer, primary_key=True, index=True)
+    companies = relationship("CompanyDB", back_populates="provider")
 
 
-class CompanyDB(Base):
-    __tablename__ = "   "
+class EmpresaDB(Base):
+    __tablename__ = "companies"
 
     id = Column(Integer, primary_key=True, index=True)
-    provider_id = Column(Integer, ForeignKey('providers.id'))
-    provider = relationship("ProviderDB", back_populates="companies")
+    provider_id = Column(Integer, ForeignKey('fornecedores.forn_id'))
+    provider = relationship("FornecedorDB", back_populates="companies")
 
 
 class ClienteDB(Base):
-    __tablename__ = "clients"
+    __tablename__ = "clientes"
 
     clie_id = Column(Integer, primary_key=True, index=True)
     clie_token = Column(String)
     clie_status = Column(String)
 
-class ProdutoDB(Base):
+
+class ProdutosDB(Base):
     __tablename__ = "produtos"
 
     prod_id = Column(Integer, primary_key=True, index=True)
     prod_sku = Column(String, index=True)
     prod_nome = Column(String)
     prod_descricao = Column(String)
-    prod_fornecedor = Column(String)    
+    prod_fornecedor = Column(String)
+
 
 class ProdutoFotoDB(Base):
-    __table__ = "produtos_fotos"
+    __tablename__ = "produtos_fotos"
 
 
 class HistoricoDeVendaDB(Base):
     __tablename__ = "historico_venda"
 
     id = Column(Integer, primary_key=True, index=True)
-    provider_id = Column(Integer, ForeignKey('providers.id'))
+    provider_id = Column(Integer, ForeignKey('fornecedores.forn_id'))
     company_id = Column(Integer, ForeignKey('companies.id'))
-    client_id = Column(Integer, ForeignKey('clients.id'))
+    client_id = Column(Integer, ForeignKey('clients.clie_id'))
     item_id = Column(Integer, index=True)
 
 
@@ -65,7 +63,7 @@ class HistoricoVendaArquivoDB(Base):
     __tablename__ = "historico_venda_arquivo"
 
     hvar_id = Column(Integer, primary_key=True, index=True)
-    hvar_provider_id = Column(Integer, ForeignKey('providers.id'))
+    hvar_provider_id = Column(Integer, ForeignKey('fornecedores.forn_id'))
 
 
 class RecomendacaoDB(Base):
@@ -78,8 +76,3 @@ class RecomendacaoDB(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("UserDB", back_populates="recommendations")
     item_id = Column(Integer, index=True)
-
-
-# Define relationships
-FornecedorDB.companies = relationship("CompanyDB", back_populates="provider")
-UserDB.recommendations = relationship("RecommendationDB", back_populates="user")
