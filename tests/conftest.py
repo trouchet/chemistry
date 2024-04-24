@@ -53,7 +53,7 @@ def simplest_dataframe():
 @pytest.fixture
 def recommendation_dataframe():
     filename = "fruits_sample.csv"
-    folder = 'data'
+    folder = 'tests/data'
     filepath = path.join(getcwd(), folder, filename)
     
     return pd.read_csv(filepath)

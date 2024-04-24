@@ -15,3 +15,16 @@ MEAN_ITEMS_PER_ITEMSET = 5
 
 # Tamanho padrão do token
 DEFAULT_TOKEN_LENGTH = 10
+
+# Colunas do conjunto de dados
+# NOTE: This is a hardcode list of columns
+# TODO: Make this dynamic
+dataset_columns = [
+    'itemset_timestamp', 
+    'itemset_id', 
+    'agent_id', 
+    'item_id', 
+    'item_description', 
+    'item_quantity', 
+    'item_value'
+]
