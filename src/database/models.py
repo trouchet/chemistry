@@ -66,7 +66,6 @@ class HistoricoVendaArquivoDB(Base):
 
     hvar_id = Column(Integer, primary_key=True, index=True)
     hvar_provider_id = Column(Integer, ForeignKey('providers.id'))
-    hvar_
 
 
 class RecomendacaoDB(Base):

@@ -1,20 +1,26 @@
-drop table historico_venda_arquivo;
-
 /*=================================================================================*/
 /* Table: historico_venda_arquivo                                                  */
-/* Descrição: Tabela histórica de arquivos de importação			   */
+/* Descrição: Tabela histórica de arquivos de importação			                    */
 /*=================================================================================*/
+drop table historico_venda_arquivo;
+
 create table historico_venda_arquivo (
    hvar_id              integer              not null,
    hvar_erp             text                 not null,
    hvar_erp_cliente_id  text                 not null,
-   hvar_nome_arquivo    text          	     not null,
+   hvar_nome_arquivo    text          	      not null,
    hvar_url             text                 not null,
    hvar_data_envio      timestamp            not null,
    hvar_status          text                 not null,
    hvar_tamanho         decimal              not null,
    constraint PK_HISTORICO_VENDA_ARQUIVO primary key (hvar_id)
 );
+
+comment on column historico_venda_arquivo.hvar_erp is
+'Nome do ERP que usa o SV Recommender. Exemplo: sv';
+
+comment on column historico_venda_arquivo.hvar_erp_cliente_id is
+'ID do Cliente do ERP. Por exemplo: ID do cliente no SV (clie_id)';
 
 comment on column historico_venda_arquivo.hvar_nome_arquivo is
 'Nome do arquivo armazenado, a ser processado. Este arquivo será enviado pelo ERP';
@@ -27,17 +33,11 @@ Erro';
 comment on column historico_venda_arquivo.hvar_tamanho is
 'Tamanho do arquivo em KB';
 
-comment on column historico_venda_arquivo.hvar_erp_cliente_id is
-'ID do Cliente do ERP. Por exemplo: ID do cliente no SV (clie_id)';
-
-comment on column historico_venda_arquivo.hvar_erp is
-'Nome do ERP que usa o SV Recommender. Exemplo: sv';
-
-drop table historico_venda;
-
 /*=================================================================================*/
 /* Table: historico_venda                                                          */
+/* Descrição: Tabela histórica de vendas de produtos			                       */
 /*=================================================================================*/
+drop table historico_venda;
 create table historico_venda (
    hive_id                 integer              not null,
    hive_transacao_id       text                 not null,
@@ -85,11 +85,11 @@ comment on column historico_venda.hive_erp_cliente_id is
 comment on column historico_venda.hive_erp is
 'Exemplo: sv';
 
-drop table recomendacao;
-
 /*==================================================================================*/
 /* Table: recomendacao                                                              */
+/* Descrição: Tabela de recomendação de produtos			                           */
 /*==================================================================================*/
+drop table recomendacao;
 create table recomendacao (
    reco_id                      integer              not null,
    reco_erp                     text                 not null,
