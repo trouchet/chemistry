@@ -4,8 +4,19 @@ from os import environ, getcwd, path
 from dotenv import load_dotenv
 
 from sqlalchemy import create_engine, text, MetaData
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from sqlalchemy.ext.declarative import DeclarativeMeta
+
+from sqlalchemy import (
+    Column,
+    Integer,
+    Text,
+    String,
+    DateTime,
+    Decimal,
+    JSON,
+    ForeignKey,
+)
 
 load_dotenv()
 POSTGRES_USER = environ.get("POSTGRES_USER")
@@ -37,18 +48,6 @@ session = SessionLocal()
 
 # Crie o banco de dados e as tabelas
 Base.metadata.create_all(bind=engine)
-
-from sqlalchemy import (
-    Column,
-    Integer,
-    Text,
-    DateTime,
-    Decimal,
-    JSON,
-    ForeignKey,
-)
-from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import Column, Integer, String, ForeignKey
 
 Base = declarative_base()
 
