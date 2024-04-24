@@ -1,26 +1,26 @@
-# Description: Constants for recommendation module
+# Descrição: Constantes para o módulo de recomendação
 
-# Default number of suggestions
+# Número padrão de sugestões
 N_SUGGESTIONS_DEFAULT = 6
 
-# Default number of best neighbors
+# Número padrão dos melhores vizinhos
 N_BEST_NEIGHBORS_DEFAULT = 3
 
-# Available association metrics
+# Métricas de associação disponíveis
 AVAILABLE_METRICS = ['support', 'confidence', 'lift', 'leverage', 'conviction']
 
-# Available recommendation algorithms
+# Algoritmos de recomendação disponíveis
 AVAILABLE_METHODS = ['arbitrary', 'random'] + AVAILABLE_METRICS
 
-# Default recommendation algorithm
+# Algoritmo de recomendação padrão
 RECOMMENDATION_ALGO_DEFAULT = 'support'
 
-# Default minimum support and threshold
+# Suporte mínimo padrão e limiar
 DEFAULT_MIN_SUPPORT = 0.001
 DEFAULT_MIN_THRESHOLD = 0.05
 
-# Confidence level for sets
+# Nível de confiança para conjuntos
 MIN_SET_SIZE_CONFIDENCE = 0.95
 
-# Mean number of items per itemsets
+# Média do número de itens por itemset
 MEAN_ITEMS_PER_ITEMSET = 5

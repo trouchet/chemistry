@@ -43,13 +43,31 @@ class RecommendationResource(BaseModel):
 
         return values
 
+#################### Modelos de requisição ####################
 
-# Request model
+# Produto
 class Product(RecommendationResource):
+    """
+    Classe para representar um produto.
+
+    Attributes:
+        product_id (str): O ID do produto.
+        Os demais atributos são herdados da classe RecommendationResource.
+    """
     product_id: str
 
-# Request model
+# Carrinho
 class Basket(RecommendationResource):
+    """
+    Classe para representar um carrinho de compras.
+
+    Attributes:
+        items (List[str]): Uma lista de IDs de produtos no carrinho.
+        Os demais atributos são herdados da classe RecommendationResource.
+
+    Methods:
+        is_age_valid(): Verifica se age_months está dentro de VALID_AGE_MONTHS.
+    """
     items: List[str] = Field(default=[])
 
     def is_age_valid(self):
@@ -82,7 +100,7 @@ class Basket(RecommendationResource):
     def __repr__(self) -> None:
         return f"Basket(company_id={self.company_id}, items={repr(self.items)})"
 
-
+# Converte 'Product' para 'Basket'
 def product_to_basket(product: Product) -> Basket:
     return Basket(
         company_id=product.company_id, 
@@ -94,8 +112,30 @@ def product_to_basket(product: Product) -> Basket:
         demo_type=product.demo_type
     )
 
+# Recomendação
+class Recommendation(BaseModel):
+    """
+    Classe para representar uma recomendação de itens.
+
+    Attributes:
+        items (Optional[List[str]]): Uma lista opcional de IDs de itens recomendados.
+        metadata (Optional[dict]): Metadados opcionais adicionais.
+
+    """
+    items: Optional[List[str]] = []
+    metadata: Optional[dict] = {}
+
 # Object Item
 class Item:
+    """
+    Classe para representar um item.
+
+    Attributes:
+        identifier (str): O identificador do item.
+        value (float): O valor do item.
+        description (str): A descrição do item (padrão: 'Description of {identifier}').
+
+    """
     def __init__(self, identifier: str, value: float, description: str = None):
         self.identifier = identifier
         self.value = value
@@ -103,35 +143,32 @@ class Item:
 
     def __repr__(self):
         return f"Item(identifier={self.identifier}, value={self.value})"
-    
-
-# Response model
-class Recommendation(BaseModel):
-    items: Optional[List[str]] = []
-    metadata: Optional[dict] = {}
-
 
 class SVRecommender(object):
     """
-    This class is responsible for providing recommendations based on
-    the provided DataFrame. It uses an heuristic approach to suggest
-    items that are frequently bought together.
+    Classe para recomendação de itens com base em conjuntos de itens anteriores.
 
-    Parameters
-    ----------
+    Args:
+        df_ (pd.DataFrame): O DataFrame contendo os dados.
+        sets_column (str): O nome da coluna contendo os conjuntos.
+        items_column (str): O nome da coluna contendo os item_ids.
+        description_column (str): O nome da coluna contendo as descrições dos itens.
+        n_suggestions (int): O número de sugestões a serem feitas (padrão: N_SUGGESTIONS_DEFAULT).
+        n_best_neighbors (int): O número de melhores vizinhos a serem considerados (padrão: N_BEST_NEIGHBORS_DEFAULT).
 
-    df_: pd.DataFrame
-        DataFrame containing the data to be used for recommendation
-    sets_column: str
-        Column name containing the sets
-    items_column: str
-        Column name containing the items
-    description_column: str
-        Column name containing the description of the items
-    n_suggestions: int
-        Number of suggestions to be provided
-    n_best_neighbors: int
-        Number of best neighbors to be considered
+    Attributes:
+        data_dataframe (pd.DataFrame): O DataFrame contendo os dados.
+        descriptions_dict (dict): Um dicionário contendo as descrições dos itens.
+        order_list (list): Uma lista de conjuntos de itens em cada pedido.
+        orders_per_product_dict (dict): Um dicionário com a contagem de conjuntos únicos em que cada item aparece.
+        neighbors_dict (dict): Um dicionário representando os vizinhos de cada item e a contagem de vezes que eles aparecem nos mesmos conjuntos.
+        n_suggestions (int): O número de sugestões a serem feitas.
+        n_best_neighbors (int): O número de melhores vizinhos a serem considerados.
+
+    Methods:
+        association_metrics(): Retorna as métricas de associação.
+        recommend(order: list, method: str = RECOMMENDATION_ALGO_DEFAULT): Retorna uma lista de recomendações com base no pedido fornecido.
+        describe(item_ids: list): Retorna as descrições dos itens fornecidos.
     """
 
     def __init__(
@@ -163,13 +200,16 @@ class SVRecommender(object):
         self.n_best_neighbors = n_best_neighbors
 
     def _update_neighbors(self):
+        """
+        Atualiza o dicionário de vizinhos dos itens.
+        """
         self.neighbors_dict = get_items_neighbors_count(
             self.data_dataframe, self.__sets_column, self.__items_column
         )
 
     def association_metrics(self):
         """
-        Get association metrics
+        Retorna as métricas de associação.
         """
         self._update_neighbors()
         
@@ -181,6 +221,16 @@ class SVRecommender(object):
         )
 
     def recommend(self, order: list, method: str = RECOMMENDATION_ALGO_DEFAULT):
+        """
+        Retorna uma lista de recomendações com base no pedido fornecido.
+
+        Args:
+            order (list): A lista de itens do pedido.
+            method (str): O método de recomendação a ser utilizado (padrão: RECOMMENDATION_ALGO_DEFAULT).
+
+        Returns:
+            list: Uma lista de itens recomendados.
+        """
         logging.info(f'Running recommendation with method: {method}')
         metrics = self.association_metrics()
 
@@ -202,6 +252,16 @@ class SVRecommender(object):
             raise ValueError(f'Available methods: {AVAILABLE_METHODS}')
 
     def describe(self, item_ids: list):
+        """
+        Retorna as descrições dos itens fornecidos.
+
+        Args:
+            item_ids (list): A lista de item_ids.
+
+        Returns:
+            list: Uma lista de descrições dos itens.
+        """
+
         described_items = []
 
         for item_id in item_ids:

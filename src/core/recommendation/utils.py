@@ -7,6 +7,18 @@ from src.utils.dataframe import listify_items, get_unique_elements
 
 
 def get_items_sample(df_: pd.DataFrame, column: str, sample_count: int):
+    """
+    Retorna uma amostra aleatória de item_ids únicos de um DataFrame.
+
+    Args:
+        df_ (pd.DataFrame): O DataFrame contendo os dados.
+        column (str): O nome da coluna contendo os item_ids.
+        sample_count (int): O número de item_ids a serem amostrados.
+
+    Returns:
+        List: Uma lista contendo a amostra de item_ids.
+    """
+
     item_ids = get_unique_elements(df_, column)
     return list(sample(item_ids, sample_count))
 
@@ -14,13 +26,44 @@ def get_items_sample(df_: pd.DataFrame, column: str, sample_count: int):
 def get_sets_count_per_items_dict(
     df_: pd.DataFrame, sets_column: str, items_column: str
 ):
+    """
+    Retorna um dicionário onde as chaves são os item_ids e os valores são o número de conjuntos
+    únicos em que cada item aparece.
+
+    Args:
+        df_ (pd.DataFrame): O DataFrame contendo os dados.
+        sets_column (str): O nome da coluna contendo os conjuntos.
+        items_column (str): O nome da coluna contendo os item_ids.
+
+    Returns:
+        Dict: Um dicionário onde as chaves são os item_ids e os valores são o número de conjuntos
+        únicos em que cada item aparece.
+    """
     result = df_.groupby(items_column)[sets_column].count().reset_index()
     result_dict = result.set_index(items_column)[sets_column].to_dict()
 
     return result_dict
 
 
-def get_items_neighbors_count(df_: pd.DataFrame, sets_column: str, items_column: str):
+def get_items_neighbors_count(
+        df_: pd.DataFrame, 
+        sets_column: str, 
+        items_column: str
+):
+    """
+    Retorna um dicionário onde as chaves são os item_ids e os valores são outro dicionário
+    representando os vizinhos de cada item e a contagem de vezes que eles aparecem nos mesmos conjuntos.
+
+    Args:
+        df_ (pd.DataFrame): O DataFrame contendo os dados.
+        sets_column (str): O nome da coluna contendo os conjuntos.
+        items_column (str): O nome da coluna contendo os item_ids.
+
+    Returns:
+        Dict: Um dicionário onde as chaves são os item_ids e os valores são outro dicionário
+        representando os vizinhos de cada item e a contagem de vezes que eles aparecem nos mesmos conjuntos.
+    """
+
     item_ids = get_unique_elements(df_, items_column)
     sets_list = listify_items(df_, sets_column, items_column)
 
@@ -42,6 +85,20 @@ def get_items_neighbors_count(df_: pd.DataFrame, sets_column: str, items_column:
 
 
 def get_sets_count_per_items(df_: pd.DataFrame, sets_column: str, items_column: str):
+    """
+    Retorna um DataFrame contendo a contagem de conjuntos únicos em que cada item aparece,
+    ordenado pela contagem em ordem decrescente.
+
+    Args:
+        df_ (pd.DataFrame): O DataFrame contendo os dados.
+        sets_column (str): O nome da coluna contendo os conjuntos.
+        items_column (str): O nome da coluna contendo os item_ids.
+
+    Returns:
+        pd.DataFrame: Um DataFrame contendo a contagem de conjuntos únicos em que cada item aparece,
+        ordenado pela contagem em ordem decrescente.
+    """
+
     # Group by items_column and count sets_column, then reset the index
     counts = df_.groupby(items_column)[sets_column].count().reset_index()
 

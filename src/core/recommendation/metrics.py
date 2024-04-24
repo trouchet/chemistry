@@ -9,10 +9,16 @@ from src.utils.dataframe import get_unique_elements
 
 
 def get_items_support(sets_count_dict: dict, sets_total: int):
+    '''
+    P(A) = n_A/n
+    '''
     return {item_id: count / sets_total for item_id, count in sets_count_dict.items()}
 
 
 def get_items_neighbors_support(item_to_neighbors_dict: dict, sets_total: int):
+    '''
+    P(A and B) = n_A_and_B/n
+    '''
     return {
         item_id: {
             neighbor_id: neighbor_count / sets_total
@@ -22,7 +28,6 @@ def get_items_neighbors_support(item_to_neighbors_dict: dict, sets_total: int):
     }
 
 
-# Confidence(A→B) = Probability(A & B) / Support(A)
 def get_items_confidence(
     item_to_neighbors_dict: dict, items_support_dict: dict, sets_total: int
 ):
@@ -43,8 +48,11 @@ def get_items_confidence(
     }
 
 
-# Lift(A→B) = Confidence(A→B) / Support(B)
+
 def get_items_lift(items_supports_dict: dict, confidences_dict: dict):
+    '''
+    Lift: P(B_given_A) / P(B)
+    '''
     return {
         item_id: {
             neighbor_id: neighbor_confidence / items_supports_dict[neighbor_id]
@@ -86,6 +94,24 @@ def get_items_association_metrics(
     neighbors_confidence_dict: dict,
     neighbors_lift_dict: dict,
 ):
+    '''
+    Função: get_items_association_metrics
+
+    Descrição:
+    Calcula as métricas de associação para um item e seus vizinhos com base em dicionários de suporte, 
+    confiança e elevação.
+
+    Parâmetros:
+    - item_id (str): O ID do item para o qual as métricas serão calculadas.
+    - neighbors_dict (dict): Um dicionário contendo os vizinhos de cada item.
+    - items_support_dict (dict): Um dicionário contendo o suporte de cada item.
+    - neighbors_confidence_dict (dict): Um dicionário contendo a confiança dos vizinhos de cada item.
+    - neighbors_lift_dict (dict): Um dicionário contendo a elevação dos vizinhos de cada item.
+
+    Retorno:
+    - dict: Um dicionário contendo as métricas de associação para o item e seus vizinhos. As métricas 
+    incluem o suporte do item e um dicionário de vizinhos com suas métricas de associação.
+    '''
     return {
         'support': items_support_dict[item_id],
         'neighbors': (
@@ -112,7 +138,22 @@ def get_association_metrics(
     items_column: str
 ):
     '''
-    Lift: P(B_given_A) / P(B)
+    Função: get_association_metrics
+
+    Descrição:
+    Calcula as métricas de associação (suporte, confiança, elevação, alavancagem e convicção) 
+    para todos os itens em um DataFrame com base em dicionários de vizinhos, contagem de conjuntos 
+    por item e suporte dos itens.
+
+    Parâmetros:
+    - df_ (pd.DataFrame): O DataFrame contendo os dados.
+    - neighbors_dict (dict): Um dicionário contendo os vizinhos de cada item.
+    - sets_column (str): O nome da coluna no DataFrame que contém os conjuntos de itens.
+    - items_column (str): O nome da coluna no DataFrame que contém os IDs dos itens.
+
+    Retorno:
+    - dict: Um dicionário contendo as métricas de associação para cada item. Cada item tem um dicionário 
+    com suas métricas de associação, incluindo suporte, confiança, elevação, alavancagem e convicção.
     '''
     sets_count_dict = get_sets_count_per_items_dict(df_, sets_column, items_column)
     

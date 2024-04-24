@@ -11,86 +11,107 @@ from src.core.recommendation.models import Item
 from src.core.recommendation.constants import MEAN_ITEMS_PER_ITEMSET
 from src.utils.native import generate_random_tokens, get_random_element
 
-# Types
+# Tipos
 ItemsetSizeType = Union[int, float]
 StringOrUUIDList = List[Union[str, uuid.UUID]]
 
-
-def get_itemset_size(mean_items_per_itemset: int):
-    return poisson.rvs(mean_items_per_itemset, size=1)[0]
-
-
-def generate_item_ids(num_items: int):
-    return generate_random_tokens(num_items)
+    def get_itemset_size(mean_items_per_itemset: int):
+        return poisson.rvs(mean_items_per_itemset, size=1)[0]
 
 
-def generate_agent_ids(num_agents: int):
-    return generate_random_tokens(num_agents)
+    def generate_item_ids(num_items: int):
+        return generate_random_tokens(num_items)
 
 
-def generate_quantity(min_qty: float, max_qty: float):
-    while True:
-        yield randint(min_qty, max_qty)
+    def generate_agent_ids(num_agents: int):
+        return generate_random_tokens(num_agents)
 
 
-def generate_value(min_value: float, max_value: float):
-    while True:
-        value = round(uniform(min_value, max_value), 2)
-        yield value
+    def generate_quantity(min_qty: float, max_qty: float):
+        while True:
+            yield randint(min_qty, max_qty)
 
 
-def generate_items(
-    num_items: int,
-    value_interval: Tuple[float],
-):
-    item_ids = generate_item_ids(num_items)
-
-    # Generate available item ids
-    def item_factory(item_props: Tuple):
-        identifier = item_props[0]
-        value = item_props[1]
-
-        return Item(identifier, value)
-
-    min_value, max_value = value_interval
-
-    value_gen = generate_value(min_value, max_value)
-    item_props_zip = zip(item_ids, value_gen)
-    items = list(map(item_factory, item_props_zip))
-
-    return items
+    def generate_value(min_value: float, max_value: float):
+        while True:
+            value = round(uniform(min_value, max_value), 2)
+            yield value
 
 
-def generate_item_dict(
-    itemset_id: Union[int, str], agent_id: str, item: Item, quantity: int
-):
-    return {
-        'itemset_id': itemset_id,
-        'agent_id': agent_id,
-        'item_id': item.identifier,
-        'item_description': item.description,
-        'item_quantity': quantity,
-        'item_value': item.value,
-    }
+    def generate_items(
+        num_items: int,
+        value_interval: Tuple[float],
+    ):
+        item_ids = generate_item_ids(num_items)
 
-def generate_set_timestamp(start_year: int, end_year: int):
-    start_date = datetime(start_year, 1, 1)
-    end_date = datetime(end_year, 12, 31)
-    days_between = (end_date - start_date).days
-    random_days = randint(0, days_between)
-    return start_date + timedelta(days=random_days)
+        # Generate available item ids
+        def item_factory(item_props: Tuple):
+            identifier = item_props[0]
+            value = item_props[1]
 
-def generate_quantified_item(items: List[Item], quantity_interval: Tuple[float]):
-    item = get_random_element(items)
+            return Item(identifier, value)
 
-    min_qty = quantity_interval[0]
-    max_qty = quantity_interval[1]
-    quantity = next(generate_quantity(min_qty, max_qty))
+        min_value, max_value = value_interval
 
-    return item, quantity
+        value_gen = generate_value(min_value, max_value)
+        item_props_zip = zip(item_ids, value_gen)
+        items = list(map(item_factory, item_props_zip))
+
+        return items
+
+
+    def generate_item_dict(
+        itemset_id: Union[int, str], agent_id: str, item: Item, quantity: int
+    ):
+        return {
+            'itemset_id': itemset_id,
+            'agent_id': agent_id,
+            'item_id': item.identifier,
+            'item_description': item.description,
+            'item_quantity': quantity,
+            'item_value': item.value,
+        }
+
+    def generate_set_timestamp(start_year: int, end_year: int):
+        start_date = datetime(start_year, 1, 1)
+        end_date = datetime(end_year, 12, 31)
+        days_between = (end_date - start_date).days
+        random_days = randint(0, days_between)
+        return start_date + timedelta(days=random_days)
+
+    def generate_quantified_item(items: List[Item], quantity_interval: Tuple[float]):
+        item = get_random_element(items)
+
+        min_qty = quantity_interval[0]
+        max_qty = quantity_interval[1]
+        quantity = next(generate_quantity(min_qty, max_qty))
+
+        return item, quantity
 
 
 class ItemSetsGenerator:
+    '''
+    Classe: ItemSetsGenerator
+
+    Descrição:
+    Classe para gerar conjuntos de itens fictícios com base em parâmetros específicos.
+
+    Parâmetros do Construtor:
+    - time_interval (Tuple[int]): Um intervalo de tempo representado por um intervalo de anos.
+    - num_itemsets (int): O número de conjuntos de itens a serem gerados.
+    - num_items (int): O número total de itens disponíveis para a geração de conjuntos.
+    - num_agents (int): O número total de agentes disponíveis para a geração de conjuntos.
+    - quantity_interval (Tuple[int]): Um intervalo para a quantidade de itens em cada conjunto.
+    - value_interval (Tuple[float]): Um intervalo para os valores dos itens.
+    - mean_items_per_itemset (int): O número médio de itens por conjunto (padrão: 5).
+
+    Métodos:
+    - __generate_itemset_list(itemset_id: int, agent_id: list): Método privado para gerar um conjunto de itens.
+    - generate(): Método público para gerar os conjuntos de itens com base nos parâmetros fornecidos.
+
+    Retorno:
+    - pd.DataFrame: Um DataFrame contendo os conjuntos de itens gerados.
+    '''
     def __init__(
         self,
         time_interval: Tuple[int],
