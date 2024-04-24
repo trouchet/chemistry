@@ -16,9 +16,9 @@ from src.core.recommendation.metrics import (
     get_neighbor_association_metrics,
 )
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## Samples
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 @pytest.fixture
 def sample_dataframe():
     return pd.DataFrame(
@@ -59,9 +59,9 @@ def recommendation_dataframe():
     return pd.read_csv(filepath)
 
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/routes
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 @pytest.fixture
 def company_id():
     return 'acme'
@@ -99,9 +99,9 @@ def mock_get_client_data(mocker, sample_dataframe):
     )
 
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/utils/native
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 @pytest.fixture
 def sample_dict():
     return {'a': [1, 2, 3], 'b': [2, 4, 6], 'c': [3, 6, 9]}
@@ -125,9 +125,9 @@ def mock_read_data_to_dataframe_gen():
         yield mock_gen
 
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/utils
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 @pytest.fixture
 def sample_data():
     return {'a': 1, 'b': [2, 3, 4], 'c': {'d': 5, 'e': 6}}
@@ -148,9 +148,9 @@ def cloudpickle_filepath(tmp_path):
     return os.path.join(tmp_path, 'test_cloudpickle.pkl')
 
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/core/recommendation/models
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 @pytest.fixture
 def sample_item():
     return Item(identifier='apple', value=0.5)
@@ -242,9 +242,9 @@ def sv_recommender_small_base(recommendation_dataframe):
     )
     return recommender
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/core/recommendation/algorithms
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 @pytest.fixture
 def neighbors_data():
     return {
