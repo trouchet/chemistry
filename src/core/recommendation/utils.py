@@ -112,6 +112,20 @@ def get_sets_count_per_items(df_: pd.DataFrame, sets_column: str, items_column: 
 
 
 def get_sets_to_items_dict(df_: pd.DataFrame, sets_column: str, items_column: str):
+    '''
+    Retorna um dicionário onde as chaves são os conjuntos únicos no DataFrame e os 
+    valores são as listas de itens associadas a cada conjunto.
+
+    Parâmetros:
+    - df_: DataFrame: O DataFrame contendo os dados.
+    - sets_column: str: O nome da coluna que contém os conjuntos.
+    - items_column: str: O nome da coluna que contém os itens.
+
+    Retorna:
+    - dict: Um dicionário onde as chaves são os conjuntos e os valores são listas de 
+    itens associadas a cada conjunto.
+    '''
+
     # Group by 'sets_column' and aggregate 'items_column' into a list
     result = df_.groupby(sets_column)[items_column].agg(list).reset_index()
 
