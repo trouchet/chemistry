@@ -91,6 +91,12 @@ ps: ## List containers. Usage: make ps
 up: ## Docker up containers. Usage: make up
 	docker-compose up -d
 
+enter: ## Enter the container. Usage: make enter
+	docker exec -it $(CONTAINER_NAME) /bin/bash
+
+migrate: ## Run migrations. Usage: make migrate
+	python scripts/migrate.py
+
 restart: down build up ## Add a rule to docker restart containers. Usage: make restart
 
 down: ## Docker down containers. Usage: make down

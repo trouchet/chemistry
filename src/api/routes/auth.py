@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix="/api", tags=["auth"])
 
 TOKEN_EXPIRATION_MINUTES = 60
 

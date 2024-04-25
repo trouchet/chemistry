@@ -1,4 +1,4 @@
-from src.setup.logging import logging
+from api.setup.logging import logging
 
 # Function to be executed as a scheduled task
 def print_statement():

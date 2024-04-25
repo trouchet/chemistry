@@ -2,9 +2,9 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from src.tasks.print_task import \
+from api.tasks.print_task import \
     print_statement
-from src.tasks.recommendation_task import \
+from api.tasks.recommendation_task import \
     generate_recommendations
 
 # Initialize the scheduler

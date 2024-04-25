@@ -1,42 +1,48 @@
-  version: '3.8'
+version: '3.8'
 
-  services:
-    postgres:
-      image: postgres:13
-      environment:
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_DB: ${POSTGRES_DB}
-      ports:
-        - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-
-    backend-app:
-      build: 
-        context: .
-        dockerfile: Dockerfile
-        args:
-          APPS_COUNT: ${APPS_COUNT:-1}
-      ports:
-        - "8000:8000"
-      depends_on: 
-        - postgres
-      environment:
-        DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_DB: ${POSTGRES_DB}
-
-    prometheus:
-      image: prom/prometheus
-      volumes:
-        - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      ports:
-        - "9090:9090"
-      command:
-        - '--config.file=/etc/prometheus/prometheus.yml'
-        - '--web.enable-lifecycle'
-
+x-default-app:
+  &default-app
+  build:
+    context: .
+    target: dev
   volumes:
-    postgres_data:
+    - .:/code
+  stdin_open: true
+  tty: true
+
+services:
+  backend-app:
+    <<: *default-app
+    ports:
+      - "8000:8000"
+    depends_on: 
+      - postgres
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:15-alpine
+    restart: on-failure
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Run a command after the container starts to create the test database
+      - ./scripts/create_test_db.sh:/docker-entrypoint-initdb.d/create_test_db.sh
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-lifecycle'
+
+volumes:
+  postgres_data:

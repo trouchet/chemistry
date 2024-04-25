@@ -14,7 +14,7 @@ from src.core.recommendation.models import (
 )
 from src.utils.routes import get_client_data
 
-router = APIRouter()
+router = APIRouter(prefix="/api/recommendation", tags=["recommendation"])
 
 @router.post(
     "/affiliates",

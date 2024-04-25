@@ -1,14 +1,14 @@
 import pytest
 
-from src.core.recommendation.models import (
+from api.core.recommendation.models import (
     SVRecommender,
     Product,
     product_to_basket,
     Basket,
 )
 
-from src.core.recommendation.constants import AVAILABLE_METHODS as AVA
-from src.core.recommendation.metrics import get_association_metrics
+from api.core.recommendation.constants import AVAILABLE_METHODS as AVA
+from api.core.recommendation.metrics import get_association_metrics
 
 # We will test the core functionality of the models
 def test_basket_validity():

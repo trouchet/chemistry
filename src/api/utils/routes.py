@@ -1,9 +1,9 @@
 from os import path, getcwd
 from fastapi.responses import JSONResponse
 
-from src.utils.dataframe import read_data_from_file
-from src.core.recommendation.schemas import Basket
-from src.utils.dataframe import get_itemsets_with_items
+from api.utils.dataframe import read_data_from_file
+from api.core.recommendation.schemas import Basket
+from api.utils.dataframe import get_itemsets_with_items
 
 
 def make_json_response(status_: int, content_: dict) -> JSONResponse:
