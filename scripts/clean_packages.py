@@ -37,7 +37,7 @@ def find_packages_with_comment(
     splitted_file = requirements_file.split('.')
     name = splitted_file[0]
     extension = splitted_file[1]
-    pattern = rf"^([^\s#][\w\-]+)==[\d\.]+\n\s+# via -r {name}\.{extension}$"
+    pattern = rf"^([^\s#][\w\-]+)==([\d\.]+)\n\s+# via -r {name}\.{extension}$"
 
     with open(pip_compile_output_file, "r") as file:
         with open(requirements_output_file, "w") as out_file:
@@ -46,9 +46,12 @@ def find_packages_with_comment(
             matches = re.finditer(pattern, text, re.MULTILINE)
             
             for match in matches:
-                
+                # Catched patterns
                 package_name = match.group(1)
-                out_file.write(package_name + "\n")
+                version = match.group(2)
+                
+                # Write to file
+                out_file.write(package_name + '==' + version + "\n")
 
 
 if __name__ == "__main__":
