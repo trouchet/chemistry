@@ -14,18 +14,19 @@ def run_pip_compile(
     # Command to run pip-compile
     command = [
         "pip-compile",
-        f"{input_file}",
+        input_file,
         f"--output-file={output_file}",
         "--quiet",
         "--strip-extras"
     ]
 
-    "pip-compile {input_file} --output-file={output_file}",
-    "--quiet"
-
     # Run the command
-    subprocess.run(command, check=True)
-
+    try:
+        subprocess.run(command, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error running pip-compile: {e}")
+        raise
+        
 def find_packages_with_comment(
     requirements_file: str,
     pip_compile_output_file: str, 
@@ -37,7 +38,7 @@ def find_packages_with_comment(
     splitted_file = requirements_file.split('.')
     name = splitted_file[0]
     extension = splitted_file[1]
-    pattern = rf"^([^\s#][\w\-]+)==([\d\.]+)\n\s+# via -r {name}\.{extension}$"
+    pattern = rf"^([^\s#][\w\-]+)==([\d\.]+)\n\s+# via -r {escape(name)}.{escape(extension)}$"
 
     with open(pip_compile_output_file, "r") as file:
         with open(requirements_output_file, "w") as out_file:
