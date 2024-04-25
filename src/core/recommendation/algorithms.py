@@ -171,7 +171,7 @@ def get_k_best_neighbors(
     else:
         raise ValueError(f'Available methods: {AVAILABLE_METHODS}')
 
-    suggestions = [suggestion[0] for suggestion in suggestions]
+    suggestions = [ suggestion[0] for suggestion in suggestions ]
 
     return list(set(suggestions) - set(order))[:n_suggestions]
 

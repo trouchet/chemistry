@@ -32,10 +32,6 @@ DATABASE_URL = f'postgresql://{credentials}@{db_info}'
 ## Create a database connection
 engine = create_engine(DATABASE_URL)
 
-# Create tables in the database
-Base = declarative_base()
-Base.metadata.create_all(engine)
-
 # Crie uma instância de MetaData
 metadata = MetaData()
 
