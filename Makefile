@@ -55,6 +55,12 @@ search: ## Searchs for a token in the code. Usage: make search token=your_token
 	--exclude=poetry.lock \
 	-e "$(token)"
 
+replace_token: ## Replaces a token in the code. Usage: make replace token=your_token
+	sed -i 's/$(token)/$(new_token)/g' $$(grep -rl "$(token)" . \
+		--exclude-dir=venv \
+		--exclude-dir=.git \
+		--exclude=poetry.lock)
+
 test: ## Test the application. Usage: make test
 	poetry run coverage run --rcfile=.coveragerc -m pytest
 

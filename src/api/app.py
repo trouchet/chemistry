@@ -22,6 +22,7 @@ def create_app():
     app_.include_router(setup.router)
     app_.include_router(auth.router)
     app_.include_router(recommendation.router)
+    app_.include_router(file.router)
     
     app_.add_middleware(CORSMiddleware)
 
