@@ -7,9 +7,9 @@ from random import uniform, randint
 import uuid
 from datetime import datetime, timedelta
 
-from api.core.recommendation.models import Item
-from api.core.recommendation.constants import MEAN_ITEMS_PER_ITEMSET
-from api.utils.native import generate_random_tokens, get_random_element
+from src.api.core.recommendation.models import Item
+from src.api.core.recommendation.constants import MEAN_ITEMS_PER_ITEMSET
+from src.api.utils.native import generate_random_tokens, get_random_element
 
 
 # Tipos

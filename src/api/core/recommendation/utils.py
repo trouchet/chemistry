@@ -3,7 +3,7 @@ import pandas as pd
 from collections import defaultdict
 from random import sample
 
-from api.utils.dataframe import listify_items, get_unique_elements
+from src.api.utils.dataframe import listify_items, get_unique_elements
 
 
 def get_items_sample(df_: pd.DataFrame, column: str, sample_count: int):

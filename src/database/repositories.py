@@ -3,7 +3,7 @@ from fastapi import Depends
 
 from database import models as db_models
 from database.base.repository import DatabaseRepository
-from api.dependencies import get_repository
+from src.api.dependencies import get_repository
 
 def create_repository(model):
     return Annotated[

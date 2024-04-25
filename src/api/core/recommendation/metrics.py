@@ -3,9 +3,9 @@
 
 import pandas as pd
 
-from api.core.recommendation.extract_transform import \
+from src.api.core.recommendation.extract_transform import \
     get_sets_count_per_items_dict
-from api.utils.dataframe import get_unique_elements
+from src.api.utils.dataframe import get_unique_elements
 
 
 def get_items_support(sets_count_dict: dict, sets_total: int):

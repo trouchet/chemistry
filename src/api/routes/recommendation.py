@@ -3,16 +3,16 @@ from fastapi import APIRouter
 from typing import Union
 from about_time import about_time
 
-from src.core.recommendation.schemas import (
+from src.api.core.recommendation.schemas import (
     Product,
     Basket,
     Recommendation,
     product_to_basket,
 )
-from src.core.recommendation.models import (
+from src.api.core.recommendation.models import (
     SVRecommender
 )
-from src.utils.routes import get_client_data
+from src.api.utils.routes import get_client_data
 
 router = APIRouter(prefix="/api/recommendation", tags=["recommendation"])
 

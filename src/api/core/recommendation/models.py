@@ -2,12 +2,12 @@
 import pandas as pd
 import logging
 
-from api.core.recommendation.algorithms import get_k_best_neighbors
+from src.api.core.recommendation.algorithms import get_k_best_neighbors
 from .extract_transform import get_sets_count_per_items_dict, get_items_neighbors_count
-from api.utils.dataframe import listify_items, get_descriptions
-from api.core.recommendation.metrics import get_association_metrics
+from src.api.utils.dataframe import listify_items, get_descriptions
+from src.api.core.recommendation.metrics import get_association_metrics
 
-from api.core.recommendation.constants import (
+from src.api.core.recommendation.constants import (
     N_BEST_NEIGHBORS_DEFAULT,
     RECOMMENDATION_ALGO_DEFAULT,
     N_SUGGESTIONS_DEFAULT,

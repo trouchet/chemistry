@@ -4,9 +4,9 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from api.routes import setup, auth, recommendation
+from src.api.routes import setup, auth, recommendation, file
 from database.engine import Base, engine
-from api.config import settings
+from src.api.config import settings
 
 
 def create_app():

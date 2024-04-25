@@ -5,14 +5,14 @@ import pytest
 import os
 from os import getcwd, path
 
-from api.app import app
-from api.core.recommendation.models import \
+from src.api.app import app
+from src.api.core.recommendation.models import \
     SVRecommender, \
     Product, \
     Item, \
     Basket
 
-from api.core.recommendation.metrics import (
+from src.api.core.recommendation.metrics import (
     get_neighbor_association_metrics,
 )
 

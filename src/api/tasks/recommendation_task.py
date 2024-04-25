@@ -1,7 +1,7 @@
 from os import listdir, path, getcwd
 
-from api.setup.logging import logging
-from api.utils.dataframe import read_data_from_file
+from src.api.setup.logging import logging
+from src.api.utils.dataframe import read_data_from_file
 
 # NOTE: The columns are hardcoded for now
 dataset_columns = [

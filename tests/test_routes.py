@@ -1,4 +1,4 @@
-from api.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT
+from src.api.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT
 from fastapi.testclient import TestClient
 
 '''

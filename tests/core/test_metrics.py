@@ -1,4 +1,4 @@
-from api.core.recommendation.metrics import (
+from src.api.core.recommendation.metrics import (
     get_items_support,
     get_items_neighbors_support,
     get_items_confidence,

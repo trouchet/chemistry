@@ -6,15 +6,15 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, association_rules
 from timy import timer
 
-from api.core.recommendation.constants import (
+from src.api.core.recommendation.constants import (
     AVAILABLE_METHODS,
     AVAILABLE_METRICS,
     DEFAULT_MIN_SUPPORT,
     DEFAULT_MIN_THRESHOLD,
     N_BEST_NEIGHBORS_DEFAULT,
 )
-from api.utils.dataframe import listify_items
-from api.utils.native import \
+from src.api.utils.dataframe import listify_items
+from src.api.utils.native import \
     flatten_list, \
     setify_list, \
     remove_duplicates_and_select_max
