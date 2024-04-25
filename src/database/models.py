@@ -5,29 +5,25 @@ from sqlalchemy import (
     Text,
     String,
     DateTime,
-    Decimal,
     JSON,
     ForeignKey,
 )
+from sqlalchemy.dialects.postgresql import NUMERIC
 import uuid
-from sqlalchemy import Column, ForeignKey, orm
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, ForeignKey
 
-from database.engine import Base
+# Tipos 
+PrimaryKeyType = UUID(as_uuid=True)
+Decimal = NUMERIC(precision=10, scale=2)
 
-PRIMARY_KEY_TYPE = uuid.UUID
-
-class Base(orm.DeclarativeBase):
-    """Base database model."""
-
-    pk: orm.Mapped[PRIMARY_KEY_TYPE] = orm.mapped_column(
-        primary_key=True,
-        default=uuid.uuid4,
-    )
+Base = declarative_base()
 
 class Usuarios(Base):
     __tablename__ = "usuarios"
 
-    user_id = Column(PRIMARY_KEY_TYPE, primary_key=True, index=True)
+    user_id = Column(PrimaryKeyType, primary_key=True, index=True)
     user_signup_timestamp = Column(DateTime)
     user_token_str = Column(String)
 
@@ -35,22 +31,22 @@ class Usuarios(Base):
 class Fornecedores(Base):
     __tablename__ = "fornecedores"
 
-    forn_id = Column(PRIMARY_KEY_TYPE, primary_key=True, index=True)
+    forn_id = Column(PrimaryKeyType, primary_key=True, index=True)
     forn_companies = relationship("EmpresaDB", back_populates="fornecedores")
 
 
 class Empresas(Base):
     __tablename__ = "empresas"
 
-    empr_id = Column(PRIMARY_KEY_TYPE, primary_key=True, index=True)
-    empr_provider_id = Column(Integer, ForeignKey('fornecedores.forn_id'))
+    empr_id = Column(PrimaryKeyType, primary_key=True, index=True)
+    empr_fornecedor_id = Column(PrimaryKeyType, ForeignKey('fornecedores.forn_id'))
     empr_fornecedor = relationship("FornecedorDB", back_populates="empresas")
 
 
 class Clientes(Base):
     __tablename__ = "clientes"
 
-    clie_id = Column(PRIMARY_KEY_TYPE, primary_key=True, index=True)
+    clie_id = Column(PrimaryKeyType, primary_key=True, index=True)
     clie_token = Column(String)
     clie_status = Column(String)
 
@@ -58,7 +54,7 @@ class Clientes(Base):
 class Produtos(Base):
     __tablename__ = "produtos"
 
-    prod_id = Column(PRIMARY_KEY_TYPE, primary_key=True, index=True)
+    prod_id = Column(PrimaryKeyType, primary_key=True, index=True)
     prod_sku = Column(String, index=True)
     prod_nome = Column(String)
     prod_descricao = Column(String)
@@ -69,7 +65,7 @@ class Produtos(Base):
 class HistoricoVenda(Base):
     __tablename__ = "historico_venda"
 
-    hive_id = Column(PRIMARY_KEY_TYPE, primary_key=True, nullable=False, index=True)
+    hive_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
     hive_transacao_id = Column(Text, nullable=False)
     hive_consumidor = Column(Text, nullable=False)
     hive_sku = Column(Text, nullable=False)
@@ -86,10 +82,10 @@ class HistoricoVenda(Base):
     hive_erp = Column(Text, nullable=False)
 
 
-class HistoricoVendaArquivo(Base):
-    __tablename__ = "historico_venda_arquivo"
+class ArquivoHistoricoVenda(Base):
+    __tablename__ = "arquivo_historico_venda"
 
-    hvar_id = Column(PRIMARY_KEY_TYPE, primary_key=True, nullable=False, index=True)
+    hvar_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
     hvar_erp = Column(Text, nullable=False)
     hvar_erp_cliente_id = Column(Text, nullable=False)
     hvar_nome_arquivo = Column(Text, nullable=False)
@@ -102,7 +98,7 @@ class HistoricoVendaArquivo(Base):
 class Recomendacoes(Base):
     __tablename__ = "recomendacoes"
 
-    reco_id = Column(PRIMARY_KEY_TYPE, primary_key=True, nullable=False, index=True)
+    reco_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
     reco_erp = Column(Text, nullable=False)
     reco_erp_cliente_id = Column(Text, nullable=False)
     reco_consumidor = Column(Text)

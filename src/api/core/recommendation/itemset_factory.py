@@ -7,7 +7,7 @@ from random import uniform, randint
 import uuid
 from datetime import datetime, timedelta
 
-from src.api.core.recommendation.models import Item
+from src.api.core.recommendation.schemas import Item
 from src.api.core.recommendation.constants import MEAN_ITEMS_PER_ITEMSET
 from src.api.utils.native import generate_random_tokens, get_random_element
 
@@ -63,7 +63,10 @@ def generate_items(
 
 
 def generate_item_dict(
-    itemset_id: Union[int, str], agent_id: str, item: Item, quantity: int
+    itemset_id: Union[int, str], 
+    agent_id: str, 
+    item: Item, 
+    quantity: int
 ):
     return {
         'itemset_id': itemset_id,

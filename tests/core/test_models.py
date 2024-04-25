@@ -1,7 +1,7 @@
 import pytest
 
-from src.api.core.recommendation.models import (
-    SVRecommender,
+from src.api.core.recommendation.models import SVRecommender
+from src.api.core.recommendation.schemas import (
     Product,
     product_to_basket,
     Basket,

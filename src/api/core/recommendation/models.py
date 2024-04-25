@@ -158,6 +158,7 @@ class Item:
         return f"Item(identifier={self.identifier}, value={self.value})"
 
 
+
 class SVRecommender(object):
     """
     Classe para recomendação de itens com base em conjuntos de itens anteriores.

@@ -6,9 +6,9 @@ import os
 from os import getcwd, path
 
 from src.api.app import app
-from src.core.recommendation.models import SVRecommender
-from src.core.recommendation.schemas import (
-    Product, Item, Basket
+from src.api.core.recommendation.models import SVRecommender
+from src.api.core.recommendation.schemas import (\
+    Product, Item, Basket,
 )
 
 from src.api.core.recommendation.metrics import (
@@ -116,7 +116,7 @@ def sample_list():
 
 @pytest.fixture
 def mock_read_data_to_dataframe_gen():
-    path = 'src.utils.dataframe.read_data_to_dataframe_gen'
+    path = 'src.api.utils.dataframe.read_data_to_dataframe_gen'
 
     with patch(path) as mock_gen:
         yield mock_gen

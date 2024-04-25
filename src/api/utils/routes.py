@@ -44,8 +44,7 @@ def demo_client_data(basket: Basket):
 
     # Data file path
     filename = f'{basket.demo_type}_order_sample.xlsx'
-    foldername = 'data'
-    filepath = path.join(getcwd(), foldername, filename)
+    filepath = path.join(getcwd(), 'src', 'data', filename)
 
     df = read_data_from_file(filepath)
 

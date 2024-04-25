@@ -3,12 +3,12 @@ from collections.abc import Callable
 from typing import List, TypeVar
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.models import Base, PRIMARY_KEY_TYPE
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import models, repositories, session
+from src.database.models import Base, PRIMARY_KEY_TYPE
+
 
 Model = TypeVar("Model", bound= Base)
 
