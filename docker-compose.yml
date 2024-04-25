@@ -21,7 +21,7 @@ services:
       - .env
 
   postgres:
-    image: postgres:15-alpine
+    image: postgres:13
     restart: on-failure
     environment:
       POSTGRES_USER: ${POSTGRES_USER}

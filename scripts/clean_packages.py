@@ -1,4 +1,5 @@
 import re
+from re import escape
 import argparse
 import subprocess
 import os

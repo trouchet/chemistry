@@ -1,4 +1,4 @@
 #!/bin/bash
 
 psql -U postgres
-psql -c "CREATE DATABASE test"
+psql -c "CREATE DATABASE test"s

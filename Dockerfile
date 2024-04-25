@@ -1,4 +1,5 @@
-FROM python:3.11.3-slim-buster as base
+# Use python base image
+FROM python:3.9-slim
 
 WORKDIR /code
 
@@ -23,3 +24,5 @@ USER appuser
 
 # Run the application
 CMD ["bash", "scripts/run.sh"]
+
+
