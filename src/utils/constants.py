@@ -20,11 +20,11 @@ DEFAULT_TOKEN_LENGTH = 10
 # NOTE: This is a hardcode list of columns
 # TODO: Make this dynamic
 dataset_columns = [
-    'itemset_timestamp', 
-    'itemset_id', 
-    'agent_id', 
-    'item_id', 
-    'item_description', 
-    'item_quantity', 
-    'item_value'
+    'itemset_timestamp',
+    'itemset_id',
+    'agent_id',
+    'item_id',
+    'item_description',
+    'item_quantity',
+    'item_value',
 ]

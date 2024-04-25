@@ -14,7 +14,7 @@ def create_app():
     app_.include_router(
         recommendation.router, prefix="/api/recommendation", tags=["recommendation"]
     )
-    
+
     app_.add_middleware(CORSMiddleware)
 
     return app_

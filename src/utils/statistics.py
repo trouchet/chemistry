@@ -6,6 +6,7 @@ import numpy as np
 
 NumberList = Union[List[int], List[float]]
 
+
 def get_list_statistics(lst: NumberList, precision: int = 2) -> dict:
     """
     Calcula estatísticas descritivas de uma lista numérica.
@@ -48,10 +49,7 @@ def get_list_statistics(lst: NumberList, precision: int = 2) -> dict:
         "entropy": entropy(np.histogram(lst, bins='auto')[0]),
     }
 
-    return {
-        descrip: round(value, precision) 
-        for descrip, value in stats.items()
-    }
+    return {descrip: round(value, precision) for descrip, value in stats.items()}
 
 
 def print_list_statistics(lst: Union[List[int], List[float]]) -> None:

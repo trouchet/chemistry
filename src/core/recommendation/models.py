@@ -20,6 +20,7 @@ from src.core.recommendation.constants import (
 
 from src.constants import VALID_AGE_MONTHS, DEFAULT_AGE
 
+
 class RecommendationResource(BaseModel):
     company_id: str = Field(default='demo')
     algorithm: Optional[str] = RECOMMENDATION_ALGO_DEFAULT
@@ -34,8 +35,12 @@ class RecommendationResource(BaseModel):
         is_demo = values.get('is_demo')
         demo_type = values.get('demo_type')
 
-        if demo_type is not None and \
-            demo_type not in ['small', 'medium', 'big', 'huge']:
+        if demo_type is not None and demo_type not in [
+            'small',
+            'medium',
+            'big',
+            'huge',
+        ]:
             raise ValueError("demo_type must be one of: small, medium, big, huge")
 
         if is_demo and not demo_type:
@@ -43,7 +48,9 @@ class RecommendationResource(BaseModel):
 
         return values
 
+
 #################### Modelos de requisição ####################
+
 
 # Produto
 class Product(RecommendationResource):
@@ -54,7 +61,9 @@ class Product(RecommendationResource):
         product_id (str): O ID do produto.
         Os demais atributos são herdados da classe RecommendationResource.
     """
+
     product_id: str
+
 
 # Carrinho
 class Basket(RecommendationResource):
@@ -68,6 +77,7 @@ class Basket(RecommendationResource):
     Methods:
         is_age_valid(): Verifica se age_months está dentro de VALID_AGE_MONTHS.
     """
+
     items: List[str] = Field(default=[])
 
     def is_age_valid(self):
@@ -100,17 +110,19 @@ class Basket(RecommendationResource):
     def __repr__(self) -> None:
         return f"Basket(company_id={self.company_id}, items={repr(self.items)})"
 
+
 # Converte 'Product' para 'Basket'
 def product_to_basket(product: Product) -> Basket:
     return Basket(
-        company_id=product.company_id, 
-        items=[product.product_id], 
+        company_id=product.company_id,
+        items=[product.product_id],
         algorithm=product.algorithm,
         neighbors_count=product.neighbors_count,
         age_months=product.age_months,
         is_demo=product.is_demo,
-        demo_type=product.demo_type
+        demo_type=product.demo_type,
     )
+
 
 # Recomendação
 class Recommendation(BaseModel):
@@ -122,8 +134,10 @@ class Recommendation(BaseModel):
         metadata (Optional[dict]): Metadados opcionais adicionais.
 
     """
+
     items: Optional[List[str]] = []
     metadata: Optional[dict] = {}
+
 
 # Object Item
 class Item:
@@ -136,6 +150,7 @@ class Item:
         description (str): A descrição do item (padrão: 'Description of {identifier}').
 
     """
+
     def __init__(self, identifier: str, value: float, description: str = None):
         self.identifier = identifier
         self.value = value
@@ -143,6 +158,7 @@ class Item:
 
     def __repr__(self):
         return f"Item(identifier={self.identifier}, value={self.value})"
+
 
 class SVRecommender(object):
     """
@@ -179,7 +195,7 @@ class SVRecommender(object):
         description_column: str,
         n_suggestions: int = N_SUGGESTIONS_DEFAULT,
         n_best_neighbors: int = N_BEST_NEIGHBORS_DEFAULT,
-    ):  
+    ):
 
         if n_suggestions <= 0 or n_best_neighbors <= 0:
             error_message = 'Number of provided suggestions or best neighbors must be greater than 0!'
@@ -212,7 +228,7 @@ class SVRecommender(object):
         Retorna as métricas de associação.
         """
         self._update_neighbors()
-        
+
         return get_association_metrics(
             self.data_dataframe,
             self.neighbors_dict,

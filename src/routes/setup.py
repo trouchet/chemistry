@@ -4,9 +4,11 @@ import toml
 
 router = APIRouter()
 
+
 @router.get('/ping')
 async def pong():
     return {"message": "pong"}
+
 
 @router.get("/health")
 async def health_check():

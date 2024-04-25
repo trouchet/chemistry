@@ -6,15 +6,12 @@ import os
 from os import getcwd, path
 
 from src.app import app
-from src.core.recommendation.models import \
-    SVRecommender, \
-    Product, \
-    Item, \
-    Basket
+from src.core.recommendation.models import SVRecommender, Product, Item, Basket
 
 from src.core.recommendation.metrics import (
     get_neighbor_association_metrics,
 )
+
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## Samples
@@ -55,7 +52,7 @@ def recommendation_dataframe():
     filename = "fruits_sample.csv"
     folder = 'tests/data'
     filepath = path.join(getcwd(), folder, filename)
-    
+
     return pd.read_csv(filepath)
 
 
@@ -78,10 +75,7 @@ def sample_basket_factory(company_id):
 @pytest.fixture
 def sample_product_factory(company_id):
     def factory(item: str) -> Basket:
-        return Product(
-            company_id=company_id, 
-            product_id=item, 
-            is_demo=True)
+        return Product(company_id=company_id, product_id=item, is_demo=True)
 
     return factory
 
@@ -155,6 +149,7 @@ def cloudpickle_filepath(tmp_path):
 def sample_item():
     return Item(identifier='apple', value=0.5)
 
+
 @pytest.fixture
 def sv_recommender(recommendation_dataframe):
     recommender = SVRecommender(
@@ -165,13 +160,16 @@ def sv_recommender(recommendation_dataframe):
     )
     return recommender
 
+
 @pytest.fixture
 def small_sample_items():
     return ["apple", "banana"]
 
+
 @pytest.fixture
 def small_sample_description():
     return ['Description of apple', 'Description of banana']
+
 
 @pytest.fixture
 def sample_sets_info():
@@ -181,23 +179,58 @@ def sample_sets_info():
     }
 
     df = pd.DataFrame(df_dict)
-    set_count = { 'A': 3, 'B': 2, 'C': 1,}
-    neighbors = { 
-        'A': { 'B': 2, 'C': 1, },
-        'B': { 'A': 2, 'C': 1, },
-        'C': { 'A': 1, 'B': 1, },
+    set_count = {
+        'A': 3,
+        'B': 2,
+        'C': 1,
+    }
+    neighbors = {
+        'A': {
+            'B': 2,
+            'C': 1,
+        },
+        'B': {
+            'A': 2,
+            'C': 1,
+        },
+        'C': {
+            'A': 1,
+            'B': 1,
+        },
     }
     expected = {
-        "item_support": { 'A': 1, 'B': 2 / 3, 'C': 1 / 3, },
+        "item_support": {
+            'A': 1,
+            'B': 2 / 3,
+            'C': 1 / 3,
+        },
         "neighbors_support": {
-            'A': { 'B': 2 / 3, 'C': 1 / 3, },
-            'B': { 'A': 2 / 3, 'C': 1 / 3, },
-            'C': { 'A': 1 / 3, 'B': 1 / 3, },
+            'A': {
+                'B': 2 / 3,
+                'C': 1 / 3,
+            },
+            'B': {
+                'A': 2 / 3,
+                'C': 1 / 3,
+            },
+            'C': {
+                'A': 1 / 3,
+                'B': 1 / 3,
+            },
         },
         "neighbors_confidence": {
-            'A': { 'B': 2 / 3, 'C': 1 / 3, },
-            'B': { 'A': 1, 'C': 1 / 2, },
-            'C': { 'A': 1, 'B': 1, },
+            'A': {
+                'B': 2 / 3,
+                'C': 1 / 3,
+            },
+            'B': {
+                'A': 1,
+                'C': 1 / 2,
+            },
+            'C': {
+                'A': 1,
+                'B': 1,
+            },
         },
         "neighbors_lift": {
             'A': {'B': 1, 'C': 1},
@@ -211,11 +244,13 @@ def sample_sets_info():
             'support': expected["item_support"][item_id],
             'neighbors': {
                 neighbor_id: get_neighbor_association_metrics(
-                    item_id, neighbor_id,
+                    item_id,
+                    neighbor_id,
                     expected['item_support'],
                     expected['neighbors_confidence'],
                     expected['neighbors_lift'],
-                ) for neighbor_id in neighbors
+                )
+                for neighbor_id in neighbors
             },
         }
         for item_id, neighbors in neighbors.items()
@@ -229,8 +264,9 @@ def sample_sets_info():
         "sets_count": set_count,
         "neighbors": neighbors,
         "expected": expected,
-        "expected_metrics": expected_dataframe_metrics
+        "expected_metrics": expected_dataframe_metrics,
     }
+
 
 @pytest.fixture
 def sv_recommender_small_base(recommendation_dataframe):
@@ -242,14 +278,15 @@ def sv_recommender_small_base(recommendation_dataframe):
     )
     return recommender
 
+
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/core/recommendation/algorithms
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 @pytest.fixture
 def neighbors_data():
     return {
-        'item1': { 'neighbor1': 1, 'neighbor2': 2 },
-        'item2': { 'neighbor3': 3, 'neighbor4': 4 },
+        'item1': {'neighbor1': 1, 'neighbor2': 2},
+        'item2': {'neighbor3': 3, 'neighbor4': 4},
     }
 
 

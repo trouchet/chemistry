@@ -10,6 +10,7 @@ from src.core.recommendation.models import (
 from src.core.recommendation.constants import AVAILABLE_METHODS as AVA
 from src.core.recommendation.metrics import get_association_metrics
 
+
 # We will test the core functionality of the models
 def test_basket_validity():
     basket = Basket(company_id='acme', items=['apple', 'banana'], age_months=42)
@@ -72,14 +73,12 @@ def test_item_repr(sample_item):
 
 def test_product_to_basket():
     company_id_ = 'acme'
-    product = Product(
-        company_id=company_id_, 
-        product_id='apple'
-    )
+    product = Product(company_id=company_id_, product_id='apple')
     basket = product_to_basket(product)
     expected_basket = Basket(company_id=company_id_, items=['apple'])
 
     assert set(basket.items) == set(expected_basket.items)
+
 
 @pytest.mark.parametrize("method", AVA)
 def test_recommendation_k_best_arbitrary(sv_recommender, method):
@@ -93,6 +92,7 @@ def test_recommendation_k_best_arbitrary(sv_recommender, method):
     assert all([isinstance(item, str) for item in recommendations])
     assert recommendations != order
 
+
 def test_get_sv_recommender_invalid_suggestion_count(recommendation_dataframe):
     with pytest.raises(ValueError):
         SVRecommender(
@@ -103,6 +103,7 @@ def test_get_sv_recommender_invalid_suggestion_count(recommendation_dataframe):
             n_suggestions=-1,
             n_best_neighbors=-1,
         )
+
 
 def test_get_sv_recommender_metrics(sample_sets_info: dict):
     df = sample_sets_info["dataframe"]
@@ -116,6 +117,7 @@ def test_get_sv_recommender_metrics(sample_sets_info: dict):
     )
 
     assert dataframe_metrics == expected_metrics
+
 
 def test_get_sv_recommender_invalid_method(sv_recommender):
     order = ['apple', 'banana']
@@ -132,10 +134,8 @@ def test_description(sv_recommender, small_sample_items, small_sample_descriptio
 
 
 def test_get_sv_recommender_invalid_item(
-    sv_recommender,
-    small_sample_items,
-    small_sample_description
+    sv_recommender, small_sample_items, small_sample_description
 ):
     descriptions = sv_recommender.describe(small_sample_items)
 
-    assert descriptions == small_sample_description 
+    assert descriptions == small_sample_description

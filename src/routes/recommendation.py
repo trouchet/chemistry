@@ -14,6 +14,7 @@ from src.utils.routes import get_client_data
 
 router = APIRouter()
 
+
 @router.post(
     "/affiliates",
     tags=["recommendation"],
@@ -27,12 +28,12 @@ async def recommend_basket(basket_product: Union[Product, Basket]) -> Recommenda
             items_basket = product_to_basket(basket_product)
         else:
             items_basket = basket_product
-    
+
         sets_col, items_col, description_col, df = get_client_data(items_basket)
         recommender = SVRecommender(df, sets_col, items_col, description_col)
 
         items = items_basket.model_dump().get('items', [])
-        
+
         is_empty_basket = len(items) == 0
         recommendation_items = [] if is_empty_basket else recommender.recommend(items)
 

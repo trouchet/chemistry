@@ -47,13 +47,14 @@ Base.metadata.create_all(bind=engine)
 
 Base = declarative_base()
 
+
 class TabelaUsuarios(Base):
     __tablename__ = "usuarios"
 
     user_id = Column(Integer, primary_key=True, index=True)
     user_signup_timestamp = Column(DateTime)
     user_token_str = Column(String)
-    
+
 
 class TabelaFornecedores(Base):
     __tablename__ = "fornecedores"
@@ -124,6 +125,7 @@ class TabelaHistoricoVendaArquivo(Base):
     hvar_status = Column(Text, nullable=False)
     hvar_tamanho = Column(Decimal, nullable=False)
 
+
 class ArquivoRecomendacoes(Base):
     __tablename__ = "recomendacoes"
 
@@ -142,6 +144,6 @@ class ArquivoRecomendacoes(Base):
     reco_forecast_ticket_medio = Column(JSON)
     reco_forecast_proxima_compra = Column(JSON)
 
+
 # Encerre a sessão após o uso
 session.close()
-

@@ -8,12 +8,14 @@ from src.app import app
 # Start Prometheus logging metrics
 Instrumentator().instrument(app).expose(app)
 
+
 # Start the scheduler in a separate thread
 def start_scheduler():
     scheduler.start()
 
+
 scheduler_thread = threading.Thread(target=start_scheduler)
-scheduler_thread.daemon = True 
+scheduler_thread.daemon = True
 scheduler_thread.start()
 
 # Run the application
