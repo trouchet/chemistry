@@ -5,10 +5,13 @@ import pytest
 import os
 from os import getcwd, path
 
-from src.app import app
-from src.core.recommendation.models import SVRecommender, Product, Item, Basket
+from src.api.app import app
+from src.core.recommendation.models import SVRecommender
+from src.core.recommendation.schemas import (
+    Product, Item, Basket
+)
 
-from src.core.recommendation.metrics import (
+from api.core.recommendation.metrics import (
     get_neighbor_association_metrics,
 )
 

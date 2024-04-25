@@ -1,5 +1,5 @@
-from src.core.recommendation.itemset_factory import ItemSetsFactory
-from src.utils.dataframe import get_unique_elements
+from api.core.recommendation.itemset_factory import ItemSetsFactory
+from api.utils.dataframe import get_unique_elements
 
 
 def test_itemset_generator():

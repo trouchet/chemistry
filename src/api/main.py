@@ -2,8 +2,8 @@ import threading
 from prometheus_fastapi_instrumentator import Instrumentator
 from uvicorn import run
 
-from src.setup.scheduler import scheduler
-from src.app import app
+from api.setup.scheduler import scheduler
+from api.app import app
 
 # Start Prometheus logging metrics
 Instrumentator().instrument(app).expose(app)

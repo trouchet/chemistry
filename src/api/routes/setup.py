@@ -2,7 +2,7 @@
 from fastapi import APIRouter
 import toml
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 
 @router.get('/ping')

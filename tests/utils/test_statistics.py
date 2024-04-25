@@ -1,4 +1,4 @@
-from src.utils.statistics import get_list_statistics, print_list_statistics
+from api.utils.statistics import get_list_statistics, print_list_statistics
 
 
 def test_get_list_statistics(sample_list):

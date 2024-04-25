@@ -3,12 +3,12 @@ from reprlib import repr
 from pydantic import BaseModel, Field, model_validator
 from typing import Optional, List
 
-from src.core.recommendation.constants import (
+from api.core.recommendation.constants import   (
         RECOMMENDATION_ALGO_DEFAULT, \
         N_BEST_NEIGHBORS_DEFAULT
     )
 
-from src.constants import VALID_AGE_MONTHS, DEFAULT_AGE
+from api.constants import VALID_AGE_MONTHS, DEFAULT_AGE
 
 class RecommendationResource(BaseModel):
     company_id: str = Field(default='demo')

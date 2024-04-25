@@ -1,11 +1,14 @@
-# Use python base image
-FROM python:3.9-slim
+FROM python:3.11.3-slim-buster as base
+
+WORKDIR /code
+
+# Set env variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH="/code"
 
 # Create non-root user
 RUN adduser --disabled-password appuser
-
-# Set working directory
-WORKDIR /app
 
 # Copy application code and requirements
 COPY . .
@@ -18,9 +21,5 @@ RUN pip install --upgrade pip && \
 # Switch to non-root user
 USER appuser
 
-# Get APP_COUNTS from environment
-# Use default value if not set
-ENV APP_COUNTS ${APP_COUNTS:-1}
-
 # Run each app individually
-CMD [ "/usr/local/bin/uvicorn", "src.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000" ]
+CMD [ "uvicorn", "api.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000" ]
