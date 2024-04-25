@@ -1,4 +1,4 @@
-from api.setup.logging import logging
+from src.api.setup.logging import logging
 
 
 # Function to be executed as a scheduled task

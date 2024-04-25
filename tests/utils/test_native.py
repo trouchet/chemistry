@@ -1,5 +1,5 @@
 import pytest
-from api.utils.native import (
+from src.api.utils.native import (
     invert_dict,
     flatten_list,
     sum_dicts,

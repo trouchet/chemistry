@@ -1,4 +1,4 @@
-from api.core.recommendation.extract_transform import get_items_sample
+from src.api.core.recommendation.extract_transform import get_items_sample
 
 
 def test_get_items_sample(simplest_dataframe):

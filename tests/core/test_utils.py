@@ -1,5 +1,5 @@
 import pandas as pd
-from api.core.recommendation.utils import (
+from src.api.core.recommendation.utils import (
     get_items_sample,
     get_sets_count_per_items_dict,
     get_items_neighbors_count,

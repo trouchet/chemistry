@@ -1,9 +1,9 @@
 from os import path, getcwd
 from fastapi.responses import JSONResponse
 
-from api.utils.dataframe import read_data_from_file
-from api.core.recommendation.schemas import Basket
-from api.utils.dataframe import get_itemsets_with_items
+from src.api.utils.dataframe import read_data_from_file
+from src.api.core.recommendation.schemas import Basket
+from src.api.utils.dataframe import get_itemsets_with_items
 
 
 def make_json_response(status_: int, content_: dict) -> JSONResponse:
@@ -17,6 +17,17 @@ def make_json_response(status_: int, content_: dict) -> JSONResponse:
     '''
     return JSONResponse(status_code=status_, content=content_)
 
+def make_error_response(content_: dict):
+    '''
+    Descrição: Retorna uma resposta de erro com o conteúdo especificado.
+
+    Parâmetros:
+        content_ (dict): O conteúdo da resposta em formato de dicionário.
+
+    Retorna:
+        JSONResponse: Uma resposta de erro com o conteúdo especificado.
+    '''
+    return make_json_response(400, content_)
 
 def demo_client_data(basket: Basket):
     '''

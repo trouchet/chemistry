@@ -1,9 +1,9 @@
-from api.core.recommendation.algorithms import (
+from src.api.core.recommendation.algorithms import (
     get_k_best_metrics,
     get_frequent_items_and_rules_dict,
 )
-from api.core.recommendation.utils import get_items_neighbors_count
-from api.core.recommendation.metrics import get_association_metrics
+from src.api.core.recommendation.utils import get_items_neighbors_count
+from src.api.core.recommendation.metrics import get_association_metrics
 
 
 def test_get_frequent_items_and_rules_dict(recommendation_dataframe):

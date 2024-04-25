@@ -11,7 +11,7 @@ from src.core.recommendation.schemas import (
     Product, Item, Basket
 )
 
-from api.core.recommendation.metrics import (
+from src.api.core.recommendation.metrics import (
     get_neighbor_association_metrics,
 )
 

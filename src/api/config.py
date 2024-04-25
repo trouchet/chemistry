@@ -1,9 +1,8 @@
 from pydantic_settings import BaseSettings
 
-from api.setup.logging import logging
+from src.api.setup.logging import logging
 
 logging.basicConfig(level=logging.INFO)
-
 class Settings(BaseSettings):
     """App settings."""
 

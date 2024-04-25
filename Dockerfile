@@ -21,5 +21,5 @@ RUN pip install --upgrade pip && \
 # Switch to non-root user
 USER appuser
 
-# Run each app individually
-CMD [ "uvicorn", "api.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000" ]
+# Run the application
+CMD ["bash", "scripts/run.sh"]
