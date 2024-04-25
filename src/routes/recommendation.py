@@ -3,12 +3,14 @@ from fastapi import APIRouter
 from typing import Union
 from about_time import about_time
 
-from src.core.recommendation.models import (
+from src.core.recommendation.schemas import (
     Product,
     Basket,
     Recommendation,
-    SVRecommender,
     product_to_basket,
+)
+from src.core.recommendation.models import (
+    SVRecommender
 )
 from src.utils.routes import get_client_data
 

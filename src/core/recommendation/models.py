@@ -1,10 +1,6 @@
 # Description: Recommendation models for the recommender system.
 import pandas as pd
 import logging
-from reprlib import repr
-
-from pydantic import BaseModel, Field, model_validator
-from typing import Optional, List
 
 from src.core.recommendation.algorithms import get_k_best_neighbors
 from .extract_transform import get_sets_count_per_items_dict, get_items_neighbors_count

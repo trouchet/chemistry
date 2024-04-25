@@ -4,9 +4,12 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from src.routes import setup, auth, recommendation
-
+from src.database.engine import Base, engine
 
 def create_app():
+    # Crie o banco de dados e as tabelas
+    Base.metadata.create_all(bind=engine)
+
     app_ = FastAPI()
 
     app_.include_router(setup.router, prefix="/api", tags=["setup"])
