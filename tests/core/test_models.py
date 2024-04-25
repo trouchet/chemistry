@@ -117,11 +117,11 @@ def test_get_sv_recommender_metrics(sample_sets_info: dict):
 
     assert dataframe_metrics == expected_metrics
 
+def test_get_sv_recommender_invalid_method(sv_recommender):
+    order = ['apple', 'banana']
 
-def test_get_sv_recommender_invalid_method(sv_recommender, small_sample_items):
     with pytest.raises(ValueError):
-        sv_recommender._update_neighbors()
-        sv_recommender.recommend(small_sample_items, method='invalid_method')
+        sv_recommender.recommend(order, 'invalid_method')
 
 
 def test_description(sv_recommender, small_sample_items, small_sample_description):
