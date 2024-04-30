@@ -4,11 +4,14 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from src.api.routes import setup, auth, recommendation, file
+from src.api.routes import \
+    auth, \
+    setup, \
+    recommendation, \
+    file
 from src.database.models import Base
 from src.database.engine import engine
 from src.api.config import settings
-
 
 def create_app():
     # Crie o banco de dados e as tabelas
@@ -23,6 +26,7 @@ def create_app():
     app_.include_router(setup.router)
     app_.include_router(auth.router)
     app_.include_router(recommendation.router)
+    app_.include_router(file.router)
     
     app_.add_middleware(CORSMiddleware)
 
