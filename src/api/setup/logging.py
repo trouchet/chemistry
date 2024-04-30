@@ -1,14 +1,19 @@
-# Description: Configure the root logger to send logs to Logstash
+from loguru import logger
+from os import environ
 import logging
 from logging.handlers import SocketHandler
 
-from os import environ
-from dotenv import load_dotenv
+LOGSTASH_HOST = environ.get('LOGSTASH_HOST', 'localhost')
+LOGSTASH_PORT = int(environ.get('LOGSTASH_PORT', 5959))
 
-load_dotenv()
+# Configure the Logstash handler
+logstash_handler = SocketHandler(LOGSTASH_HOST, LOGSTASH_PORT)
+logstash_handler.setLevel(logging.INFO)
 
-# Configure the root logger
-logger = logging.getLogger('gunicorn.error')
+# Add the Logstash handler to the logger
+logger.add(logstash_handler)
 
-# Set the log level
-logger.setLevel(logging.INFO)
+# Log some messages
+logger.info("[TEST] Logging with Loguru and sending to Logstash")
+logger.warning("[TEST] This is a warning message")
+logger.error("[TEST] This is an error message")
