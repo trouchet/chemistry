@@ -4,7 +4,6 @@ x-default-app:
   &default-app
   build:
     context: .
-    target: dev
   volumes:
     - .:/code
   stdin_open: true

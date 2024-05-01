@@ -1,4 +1,4 @@
-CONTAINER_NAME := myapi-container
+CONTAINER_NAME := api-backend-app-1
 
 .PHONY: build run stop ps host
 
@@ -74,8 +74,8 @@ lint: ## perform inplace lint fixes
 
 ptw-watch: ## Run tests on watchdog mode. Usage: make ptw-watch
 	ptw --quiet --spool 200 --clear --nobeep \
-	--config pytest.ini --ext=.py \
-	--onfail="echo Tests failed, fix the issues"
+    --config pytest.ini --ext=.py \
+    --onfail="echo Tests failed, fix the issues"
 
 script-watch: ## Run tests on watchdog mode. Usage: make script-watch
 	./scripts/watch_tests.sh
@@ -92,6 +92,9 @@ ps: ## List containers. Usage: make ps
 up: ## Docker up containers. Usage: make up
 	docker-compose up -d
 
+down: ## Docker down containers. Usage: make down
+	docker-compose down
+
 enter: ## Enter the container. Usage: make enter
 	docker exec -it $(CONTAINER_NAME) /bin/bash
 
@@ -100,5 +103,3 @@ migrate: ## Run migrations. Usage: make migrate
 
 restart: down build up ## Add a rule to docker restart containers. Usage: make restart
 
-down: ## Docker down containers. Usage: make down
-	docker-compose down
