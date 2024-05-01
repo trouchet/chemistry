@@ -28,9 +28,7 @@ def test_read_data_to_dataframe_gen(tmpdir):
 
     # Test the function
     columns = ["sets_column", "items_column"]
-    results = list(
-        read_data_to_dataframe_gen(str(data_folder))
-    )
+    results = list(read_data_to_dataframe_gen(str(data_folder)))
 
     # Check if the results are as expected
     assert len(results) == 2
@@ -102,7 +100,7 @@ def test_read_data_to_dataframe_gen_folder_not_found():
     with patch('os.listdir') as mock_listdir:
         mock_listdir.side_effect = FileNotFoundError
         data_folder = 'purchase_date'
-        dataset_columns = [ 'order_id', 'item_id' ]
+        dataset_columns = ['order_id', 'item_id']
         extension = 'xlsx'
 
         gen = read_data_to_dataframe_gen(data_folder, extension)

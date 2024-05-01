@@ -64,13 +64,8 @@ replace_token: ## Replaces a token in the code. Usage: make replace token=your_t
 test: ## Test the application. Usage: make test
 	poetry run coverage run --rcfile=.coveragerc -m pytest
 
-requirements: ## Generates minimal requirements. Usage: make requirements
-	pip-compile --output-file=requirements-minimal.txt requirements.txt
-	grep -B1 '# via -r requirements.txt' requirements-minimal.txt | \
-		grep -v '\-\-' | cut -d'#' -f1 | \
-		sed -e 's/^[[:space:]]*//' -e 's/ //' | \
-		tr -s '\n' > requirements.txt
-	rm requirements-minimal.txt
+minimal-requirements: ## Generates minimal requirements. Usage: make requirements
+	python scripts/clean_packages.py requirements.txt requirements.txt
 
 lint: ## perform inplace lint fixes
 	black --skip-string-normalization .

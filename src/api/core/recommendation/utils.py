@@ -45,11 +45,7 @@ def get_sets_count_per_items_dict(
     return result_dict
 
 
-def get_items_neighbors_count(
-        df_: pd.DataFrame, 
-        sets_column: str, 
-        items_column: str
-):
+def get_items_neighbors_count(df_: pd.DataFrame, sets_column: str, items_column: str):
     """
     Retorna um dicionário onde as chaves são os item_ids e os valores são outro dicionário
     representando os vizinhos de cada item e a contagem de vezes que eles aparecem nos mesmos conjuntos.
@@ -113,7 +109,7 @@ def get_sets_count_per_items(df_: pd.DataFrame, sets_column: str, items_column: 
 
 def get_sets_to_items_dict(df_: pd.DataFrame, sets_column: str, items_column: str):
     '''
-    Retorna um dicionário onde as chaves são os conjuntos únicos no DataFrame e os 
+    Retorna um dicionário onde as chaves são os conjuntos únicos no DataFrame e os
     valores são as listas de itens associadas a cada conjunto.
 
     Parâmetros:
@@ -122,7 +118,7 @@ def get_sets_to_items_dict(df_: pd.DataFrame, sets_column: str, items_column: st
     - items_column: str: O nome da coluna que contém os itens.
 
     Retorna:
-    - dict: Um dicionário onde as chaves são os conjuntos e os valores são listas de 
+    - dict: Um dicionário onde as chaves são os conjuntos e os valores são listas de
     itens associadas a cada conjunto.
     '''
 

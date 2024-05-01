@@ -9,17 +9,17 @@ from collections import defaultdict
 
 from src.api.utils.constants import DEFAULT_TOKEN_LENGTH
 
-def remove_duplicates_and_select_max(
-    tuples_list: tuple
-) -> list:
+
+def remove_duplicates_and_select_max(tuples_list: tuple) -> list:
     # Convert the list of tuples into a dictionary
     tuples_dict = defaultdict(int)
     for string, number in tuples_list:
         tuples_dict[string] = max(tuples_dict[string], number)
-    
+
     # Convert the dictionary back to a list of tuples
     result = [(string, number) for string, number in tuples_dict.items()]
     return result
+
 
 def setify_list(lst: list) -> list:
     return list(set(lst))

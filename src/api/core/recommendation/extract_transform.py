@@ -12,7 +12,7 @@ def get_items_sample(df_: pd.DataFrame, column: str, sample_count: int):
     Função: get_items_sample
 
     Descrição:
-    Esta função recebe um DataFrame, o nome de uma coluna e um número de amostras e 
+    Esta função recebe um DataFrame, o nome de uma coluna e um número de amostras e
     retorna uma lista com uma amostra aleatória de itens únicos da coluna especificada.
 
     Parâmetros:
@@ -35,8 +35,8 @@ def get_sets_count_per_items_dict(
     Função: get_sets_count_per_items_dict
 
     Descrição:
-    Esta função recebe um DataFrame, o nome de uma coluna de conjuntos, e o nome de uma 
-    coluna de itens, e retorna um dicionário onde as chaves são os itens e os valores são 
+    Esta função recebe um DataFrame, o nome de uma coluna de conjuntos, e o nome de uma
+    coluna de itens, e retorna um dicionário onde as chaves são os itens e os valores são
     o número de conjuntos em que cada item aparece.
 
     Parâmetros:
@@ -45,7 +45,7 @@ def get_sets_count_per_items_dict(
     - items_column (str): O nome da coluna que contém os itens.
 
     Retorno:
-    - dict: Um dicionário onde as chaves são os itens e os valores são o número de conjuntos 
+    - dict: Um dicionário onde as chaves são os itens e os valores são o número de conjuntos
     em que cada item aparece.
     '''
 
@@ -60,8 +60,8 @@ def get_items_neighbors_count(df_: pd.DataFrame, sets_column: str, items_column:
     Função: get_items_neighbors_count
 
     Descrição:
-    Esta função recebe um DataFrame, o nome de uma coluna de conjuntos, e o nome de uma coluna 
-    de itens, e retorna um dicionário onde as chaves são os itens e os valores são outros 
+    Esta função recebe um DataFrame, o nome de uma coluna de conjuntos, e o nome de uma coluna
+    de itens, e retorna um dicionário onde as chaves são os itens e os valores são outros
     dicionários contendo o número de vizinhos de cada item.
 
     Parâmetros:
@@ -70,7 +70,7 @@ def get_items_neighbors_count(df_: pd.DataFrame, sets_column: str, items_column:
     - items_column (str): O nome da coluna que contém os itens.
 
     Retorno:
-    - dict: Um dicionário onde as chaves são os itens e os valores são dicionários contendo o 
+    - dict: Um dicionário onde as chaves são os itens e os valores são dicionários contendo o
     número de vizinhos de cada item.
     '''
     item_ids = get_unique_elements(df_, items_column)

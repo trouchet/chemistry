@@ -44,11 +44,10 @@ def demo_client_data(basket: Basket):
 
     # Data file path
     filename = f'{basket.demo_type}_order_sample.xlsx'
-    foldername = 'data'
-    filepath = path.join(getcwd(), foldername, filename)
+    filepath = path.join(getcwd(), 'src', 'data', filename)
 
     df = read_data_from_file(filepath)
-    
+
     # Filter the dataframe by the basket items
     order = basket.model_dump()["items"]
 
@@ -60,7 +59,7 @@ def demo_client_data(basket: Basket):
 # NOTE: Replace this function by database query or any source data loading
 def retrieve_data(basket: Basket):
     '''
-    Descrição: Esta função deve ser substituída por uma consulta ao banco de dados 
+    Descrição: Esta função deve ser substituída por uma consulta ao banco de dados
     ou qualquer outra fonte de carregamento de dados.
     Parâmetros:
         basket (Basket): O objeto da cesta que contém informações sobre a consulta de dados.
@@ -72,12 +71,12 @@ def retrieve_data(basket: Basket):
 
 def get_client_data(basket: Basket):
     '''
-    Descrição: Retorna os dados do cliente, seja dos dados de demonstração ou da consulta de dados, 
+    Descrição: Retorna os dados do cliente, seja dos dados de demonstração ou da consulta de dados,
     dependendo do tipo de cesta.
     Parâmetros:
         basket (Basket): O objeto da cesta que contém informações sobre a consulta de dados.
     Retorna:
-        Os dados do cliente obtidos da função de demonstração ou da consulta de dados, dependendo 
+        Os dados do cliente obtidos da função de demonstração ou da consulta de dados, dependendo
         do tipo de cesta.
     '''
     return demo_client_data(basket) if basket.is_demo else retrieve_data(basket)

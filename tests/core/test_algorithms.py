@@ -14,9 +14,7 @@ def test_get_frequent_items_and_rules_dict(recommendation_dataframe):
     items_column = 'item_id'
 
     result = get_frequent_items_and_rules_dict(
-        recommendation_dataframe, 
-        sets_column, items_column, 
-        min_support, min_threshold
+        recommendation_dataframe, sets_column, items_column, min_support, min_threshold
     )
 
     assert isinstance(result, dict)
@@ -28,15 +26,10 @@ def test_get_frequent_items_and_rules_dict(recommendation_dataframe):
 
 def test_get_k_best_metrics(simple_dataframe):
     items_neighbors_count = get_items_neighbors_count(
-        simple_dataframe, 
-        "order_id", 
-        "item_id"
+        simple_dataframe, "order_id", "item_id"
     )
     metrics = get_association_metrics(
-        simple_dataframe, 
-        items_neighbors_count, 
-        'order_id', 
-        'item_id'
+        simple_dataframe, items_neighbors_count, 'order_id', 'item_id'
     )
 
     k_best_metrics = get_k_best_metrics(metrics, 3)

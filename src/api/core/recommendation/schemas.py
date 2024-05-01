@@ -123,10 +123,13 @@ class Item(BaseModel):
         description (str): A descrição do item (padrão: 'Description of {identifier}').
 
     """
+    identifier: str
+    value: float
+    description: str = None
+
     def __init__(self, identifier: str, value: float, description: str = None):
-        self.identifier = identifier
-        self.value = value
-        self.description = description or f"Description of {identifier}"
+        description_ = description or f"Description of {identifier}"
+        super().__init__(identifier=identifier, value=value, description=description_)
 
     def __repr__(self):
         return f"Item(identifier={self.identifier}, value={self.value})"

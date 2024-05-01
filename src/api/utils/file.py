@@ -10,7 +10,7 @@ def get_filename(filename: str) -> str:
 
 def extend_filename(filename: str, token: str, delimiter: str = '.') -> str:
     '''
-    Estende o nome do arquivo adicionando um token antes da extensão, 
+    Estende o nome do arquivo adicionando um token antes da extensão,
     mantendo o nome original e a extensão.
     '''
 
@@ -24,7 +24,7 @@ def extend_filename(filename: str, token: str, delimiter: str = '.') -> str:
 
 def create_folder(directory_name: str) -> str:
     '''
-    Cria um diretório com o nome fornecido se ele não existir, e exibe 
+    Cria um diretório com o nome fornecido se ele não existir, e exibe
     uma mensagem indicando se o diretório foi criado ou se já existe.
     '''
     from os import path

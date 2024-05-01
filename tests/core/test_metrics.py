@@ -73,7 +73,7 @@ def test_association_metrics(sample_sets_info):
     item_column = sample_sets_info["item_column"]
     sets_neighbors_dict = sample_sets_info["neighbors"]
     expected_metrics = sample_sets_info["expected_metrics"]
-    
+
     dataframe_metrics = get_association_metrics(
         df, sets_neighbors_dict, set_column, item_column
     )

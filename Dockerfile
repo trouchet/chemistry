@@ -7,6 +7,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH="/code"
 
+WORKDIR /code
+
+# Set env variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH="/code"
+
 # Create non-root user
 RUN adduser --disabled-password appuser
 
@@ -23,3 +30,5 @@ USER appuser
 
 # Run the application
 CMD ["bash", "scripts/run.sh"]
+
+

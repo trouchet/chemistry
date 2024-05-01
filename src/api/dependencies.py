@@ -3,11 +3,12 @@ from collections.abc import Callable
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import models, session
-from database.base.repository import DatabaseRepository
+from database import schemas
+from src.database import session
+from src.database.base.repository import DatabaseRepository
 
 def get_repository(
-    model: type[models.Base],
+    model: type[schemas.Base],
 ) -> Callable[[AsyncSession], DatabaseRepository]:
     def func(session: AsyncSession = Depends(session.get_db_session)):
         return DatabaseRepository(model, session)

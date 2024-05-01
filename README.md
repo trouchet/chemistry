@@ -24,8 +24,12 @@ Run command `docker compose up`
 
 ## Build and Tests
 
-Under construction
+Em construção
 
 ## TODO
 
-Under construction
+[ ] (Fácil) Usar biblioteca Loguru para logs;
+[ ] (Médio) Validar inserção de dados no banco;
+[ ] (Difícil) Criar endponit de importação de dados;
+[ ] (Difícil) Criar rotina periódica (paralela) para processamento de dados;
+ 

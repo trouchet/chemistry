@@ -7,7 +7,7 @@ from random import uniform, randint
 import uuid
 from datetime import datetime, timedelta
 
-from src.api.core.recommendation.models import Item
+from src.api.core.recommendation.schemas import Item
 from src.api.core.recommendation.constants import MEAN_ITEMS_PER_ITEMSET
 from src.api.utils.native import generate_random_tokens, get_random_element
 
@@ -15,6 +15,7 @@ from src.api.utils.native import generate_random_tokens, get_random_element
 # Tipos
 ItemsetSizeType = Union[int, float]
 StringOrUUIDList = List[Union[str, uuid.UUID]]
+
 
 def get_itemset_size(mean_items_per_itemset: int):
     return poisson.rvs(mean_items_per_itemset, size=1)[0]
@@ -51,7 +52,7 @@ def generate_items(
         value = item_props[1]
 
         return Item(identifier, value)
-    
+
     min_value, max_value = value_interval
 
     value_gen = generate_value(min_value, max_value)
@@ -62,7 +63,10 @@ def generate_items(
 
 
 def generate_item_dict(
-    itemset_id: Union[int, str], agent_id: str, item: Item, quantity: int
+    itemset_id: Union[int, str], 
+    agent_id: str, 
+    item: Item, 
+    quantity: int
 ):
     return {
         'itemset_id': itemset_id,
@@ -73,12 +77,14 @@ def generate_item_dict(
         'item_value': item.value,
     }
 
+
 def generate_set_timestamp(start_year: int, end_year: int):
     start_date = datetime(start_year, 1, 1)
     end_date = datetime(end_year, 12, 31)
     days_between = (end_date - start_date).days
     random_days = randint(0, days_between)
     return start_date + timedelta(days=random_days)
+
 
 def generate_quantified_item(items: List[Item], quantity_interval: Tuple[float]):
     item = get_random_element(items)
@@ -113,6 +119,7 @@ class ItemSetsFactory:
     Retorno:
     - pd.DataFrame: Um DataFrame contendo os conjuntos de itens gerados.
     '''
+
     def __init__(
         self,
         year_interval: Tuple[int],
@@ -123,7 +130,7 @@ class ItemSetsFactory:
         value_interval: Tuple[float],
         mean_items_per_itemset: int = MEAN_ITEMS_PER_ITEMSET,
     ):
-    
+
         self.year_interval = year_interval
         self.num_itemsets = num_itemsets
         self.num_items = num_items
