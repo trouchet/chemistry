@@ -1,9 +1,18 @@
 from typing import Annotated
 from fastapi import Depends
+from collections.abc import Callable
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import schemas as db_models
-from src.database.base.repository import DatabaseRepository
-from src.api.dependencies import get_repository
+from database import schemas, session
+from database.base.repository import DatabaseRepository
+
+def get_repository(
+    model: type[schemas.Base],
+) -> Callable[[AsyncSession], DatabaseRepository]:
+    def func(session: AsyncSession = Depends(session.get_db_session)):
+        return DatabaseRepository(model, session)
+
+    return func
 
 def create_repository(model):
     return Annotated[
@@ -12,11 +21,9 @@ def create_repository(model):
     ]
 
 # Repositórios
-UsuariosRepository = create_repository(db_models.Usuarios)
-FornecedoresRepository = create_repository(db_models.Fornecedores)
-FornecedoresRepository = create_repository(db_models.Fornecedores)
-RepositorioClientes = create_repository(db_models.Clientes)
-RepositorioProdutos = create_repository(db_models.Produtos)
-RepositorioHistoricoVenda = create_repository(db_models.HistoricoVenda)
-RepositorioArquivoHistoricoVenda = create_repository(db_models.HistoricoVendaArquivo)
-RepositorioRecomendacoes = create_repository(db_models.Recomendacoes)
+providers_repository = create_repository(schemas.Provider)
+providers_clients_repository = create_repository(schemas.Companies)
+products_repository = create_repository(schemas.Product)
+TransactionHistoryRepository = create_repository(schemas.TransactionHistory)
+transaction_history_files_repository = create_repository(schemas.TransactionHistoryFile)
+product_predictions_repository = create_repository(schemas.ProductPrediction)

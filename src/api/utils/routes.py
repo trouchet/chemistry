@@ -1,5 +1,7 @@
 from os import path, getcwd
 from fastapi.responses import JSONResponse
+from fastapi import UploadFile
+import shutil
 
 from src.api.utils.dataframe import read_data_from_file
 from src.api.core.recommendation.schemas import Basket
@@ -80,3 +82,12 @@ def get_client_data(basket: Basket):
         do tipo de cesta.
     '''
     return demo_client_data(basket) if basket.is_demo else retrieve_data(basket)
+
+def save_client_data(
+    provider_id: str,
+    client_id: str,
+    file: UploadFile
+):
+    file_path = f"uploads/{provider_id}_{client_id}_{file.filename}"
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
