@@ -40,13 +40,18 @@ def sample_dataframe():
 
 @pytest.fixture
 def simple_dataframe():
-    data = {'order_id': [1, 1, 2, 2, 3], 'item_id': ['A', 'B', 'A', 'B', 'C']}
+    data = {
+        'order_id': [1, 1, 2, 2, 3], 
+        'item_id': ['A', 'B', 'A', 'B', 'C']
+    }
     return pd.DataFrame(data)
 
 
 @pytest.fixture
 def simplest_dataframe():
-    data = {'column_name': ['A', 'B', 'C', 'D', 'E']}
+    data = {
+        'column_name': ['A', 'B', 'C', 'D', 'E']
+    }
     return pd.DataFrame(data)
 
 
@@ -106,7 +111,8 @@ def sample_dict():
 
 @pytest.fixture
 def mangled_sample_dict():
-    return {'a': [1, 2, 3], 'b': [2, 4, 6], 'c': {'foo': 'bar'}}  # Value is not a list
+    # Value is not a list
+    return {'a': [1, 2, 3], 'b': [2, 4, 6], 'c': {'foo': 'bar'}}
 
 
 @pytest.fixture
