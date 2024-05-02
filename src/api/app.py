@@ -4,14 +4,14 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from src.api.routes import \
+from src.api.endpoints import \
     auth, \
     setup, \
     recommendation, \
     file
-from database.schemas import Base
+from src.database.schemas import Base
 from src.database.engine import engine
-from src.api.config import settings
+from core.config import settings
 
 def create_app():
     # Crie o banco de dados e as tabelas
