@@ -17,3 +17,7 @@ VALID_CONTENT_TYPES = [
 VALID_FILE_TYPES = [
     'csv', 'xls', 'xlsx'
 ]
+
+# Número máximo de arquivos de log
+MAX_LOG_FILES = 10
+MAX_LOG_FOLDER_SIZE_MB = 10
