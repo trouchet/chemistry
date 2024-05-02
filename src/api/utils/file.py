@@ -1,5 +1,5 @@
 from os import path, makedirs
-
+import os
 
 def get_filename(filename: str) -> str:
     '''
@@ -34,3 +34,21 @@ def create_folder(directory_name: str) -> str:
         print(f"Directory '{directory_name}' created!")
     else:
         print(f"Directory '{directory_name}' already exists.")
+
+def get_file_size(file_path):
+    """
+    Gets the size of a file in bytes using os.path.getsize.
+
+    Args:
+        file_path (str): The path to the file.
+
+    Returns:
+        int: The size of the file in bytes.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+    """
+    try:
+        return os.path.getsize(file_path)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File not found: {file_path}")

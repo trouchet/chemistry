@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from src.api.models import ProviderRequestModel
-from api.services.providers import register_provider
+from src.api.services.providers import register_provider
 from src.api.models import ProviderRequestModel
 from src.database.repositories import providers_repository
 

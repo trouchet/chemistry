@@ -11,7 +11,7 @@ from src.api.endpoints import \
     file
 from src.database.schemas import Base
 from src.database.engine import engine
-from core.config import settings
+from src.core.config import settings
 
 def create_app():
     # Crie o banco de dados e as tabelas

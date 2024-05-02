@@ -4,8 +4,7 @@ from functools import partial
 from pydantic import ConfigDict
 from pydantic import BaseModel
 
-from src.utils.camelcase import snake2camel
-
+from src.api.utils.misc import snake2camel
 
 class APIModel(BaseModel):
     """

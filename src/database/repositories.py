@@ -3,27 +3,34 @@ from fastapi import Depends
 from collections.abc import Callable
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import schemas, session
-from database.base.repository import DatabaseRepository
+from typing import TypeVar
 
-def get_repository(
-    model: type[schemas.Base],
-) -> Callable[[AsyncSession], DatabaseRepository]:
-    def func(session: AsyncSession = Depends(session.get_db_session)):
-        return DatabaseRepository(model, session)
+from src.database.schemas import (
+    Base,
+    Provider,
+    Companies,
+    Product,
+    TransactionHistory,
+    TransactionHistoryFile,
+    ProductPrediction
+)
+from src.database.session import get_db_session
+from .base.repository import DatabaseRepository
 
-    return func
+# Generic type for model
+ModelType = TypeVar("ModelType", bound=Base)  
 
-def create_repository(model):
-    return Annotated[
-        DatabaseRepository[model],
-        Depends(get_repository(model)),
-    ]
+class AsyncRepositoryFactory:
+    def __init__(self, model: ModelType):
+        self.model = model
+
+    async def create_repository(self, session: AsyncSession = Depends(get_db_session)):
+        return DatabaseRepository(self.model, session)
 
 # Repositórios
-providers_repository = create_repository(schemas.Provider)
-providers_clients_repository = create_repository(schemas.Companies)
-products_repository = create_repository(schemas.Product)
-TransactionHistoryRepository = create_repository(schemas.TransactionHistory)
-transaction_history_files_repository = create_repository(schemas.TransactionHistoryFile)
-product_predictions_repository = create_repository(schemas.ProductPrediction)
+providers_repository = AsyncRepositoryFactory(Provider)
+providers_clients_repository = AsyncRepositoryFactory(Companies)
+products_repository = AsyncRepositoryFactory(Product)
+TransactionHistoryRepository = AsyncRepositoryFactory(TransactionHistory)
+transaction_history_files_repository = AsyncRepositoryFactory(TransactionHistoryFile)
+product_predictions_repository = AsyncRepositoryFactory(ProductPrediction)

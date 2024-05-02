@@ -1,8 +1,8 @@
-from pydantic import BaseModel, Optional
+from pydantic import BaseModel
 
-from src.database.utils import sqlalchemy_to_pydantic
-from src.database.schemas import Provider
-from core.security import (
+from ..database.utils import sqlalchemy_to_pydantic
+from ..database.schemas import Provider
+from .utils.security import (
     is_password_strong_dict,
     is_password_strong
 )
@@ -13,7 +13,7 @@ class ErrorResponse(BaseModel):
 
 class WeakPasswordException(Exception):
     error: str = "Password does not meet security requirements."
-    requirements: Optional[dict] = {
+    requirements: dict = {
         "min_length": 8,
         "min_uppercase": 1,
         "min_lowercase": 1,
@@ -24,13 +24,7 @@ class WeakPasswordException(Exception):
     def __init__(self, password: str):
         super().__init__(self.error)  # Use pre-defined error message
         if not is_password_strong(password):
-            self.requirements = {
-                "min_length": 8,
-                "min_uppercase": 1,
-                "min_lowercase": 1,
-                "min_digits": 1,
-                "min_special_chars": 1,
-            }
+            self.requirements = is_password_strong_dict(password)
 
 # Response model
 class MessageResponse(BaseModel):

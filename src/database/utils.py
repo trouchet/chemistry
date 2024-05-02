@@ -17,7 +17,7 @@ def sqlalchemy_to_pydantic(model: DeclarativeMeta) -> Type[T]:
     """
     class PydanticModel(BaseModel):
         class Config:
-            orm_mode = True
+            from_attributes = True
 
     for column_name in model.__table__.columns.keys():
         column = getattr(model, column_name)

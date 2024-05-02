@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.schemas import Base, PRIMARY_KEY_TYPE
+from src.database.schemas import Base, PrimaryKeyType
 
 
 Model = TypeVar("Model", bound= Base)
@@ -42,7 +42,7 @@ class DatabaseRepository(BaseRepository):
             self.model = model
             self.session = session
         
-        async def get(self, pk: PRIMARY_KEY_TYPE) -> Model:
+        async def get(self, pk: PrimaryKeyType) -> Model:
             try:
                 return await self.session.get(self.model, pk)
 
@@ -72,7 +72,7 @@ class DatabaseRepository(BaseRepository):
                 fail_save_message = fail_message(action, e)
                 raise RepositoryException(fail_save_message)
 
-        async def exists(self, pk: PRIMARY_KEY_TYPE) -> bool:
+        async def exists(self, pk: PrimaryKeyType) -> bool:
             try:
                 entity = await self.session.get(self.model, pk)
                 return entity is not None
@@ -82,7 +82,7 @@ class DatabaseRepository(BaseRepository):
                 fail_check_message = fail_message(action, e)
                 raise RepositoryException(fail_check_message)
 
-        async def delete(self, pk: PRIMARY_KEY_TYPE) -> None:
+        async def delete(self, pk: PrimaryKeyType) -> None:
             try:
                 entity = await self.session.get(self.model, pk)
                 if entity is not None:
