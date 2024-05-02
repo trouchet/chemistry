@@ -6,8 +6,10 @@ from src.database.repositories import providers_repository
 
 router = APIRouter(prefix="/api", tags=["auth"])
 
+# Continua ... 
+# https://github.com/BadassHenkka/improvement-api
 @router.post('/register')
-def signup(form_data: ProviderRequestModel):
+async def signup(form_data: ProviderRequestModel):
     provider_exists = await providers_repository.get()
     
     if provider_exists:
@@ -20,11 +22,3 @@ def signup(form_data: ProviderRequestModel):
 
     {"message": "Provider registered successfully!"}
     return 
-
-@router.post('/login')
-def login(token_json: TokenRequest):
-    # subject identifier for who this token is for example id or username from database
-    
-    provider_id = get_current_provider(token, )
-    
-    return {"access_token": access_token}
