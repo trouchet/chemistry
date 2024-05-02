@@ -5,110 +5,254 @@ from sqlalchemy import (
     Text,
     String,
     DateTime,
-    JSON,
-    ForeignKey,
+    JSON
 )
 from sqlalchemy.dialects.postgresql import NUMERIC
-import uuid
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, ForeignKey
 
-# Tipos 
+import datetime
+
+# Types 
 PrimaryKeyType = UUID(as_uuid=True)
 Decimal = NUMERIC(precision=10, scale=2)
 
-Base = declarative_base()
+Base = declarative_base()    
 
-class Usuarios(Base):
-    __tablename__ = "usuarios"
+def get_current_timestamp():
+    return datetime.now()
 
-    user_id = Column(PrimaryKeyType, primary_key=True, index=True)
-    user_signup_timestamp = Column(DateTime)
-    user_token_str = Column(String)
+class Provider(Base):
+    """
+    ERP que usa este serviço. Exemplo: sv
+    """
+    __tablename__ = "providers"
 
+    prov_id = Column(
+        PrimaryKeyType, 
+        primary_key=True, 
+        index=True,
+        comment='ID primário do fornecedor no banco'
+    )
+    prov_name = Column(String, comment='Nome do ERP que usa o SV Recommender. Exemplo: sv')
+    prov_signup_at = Column(
+        DateTime, 
+        comment='Data e hora do cadastro do fornecedor',
+        default=get_current_timestamp
+    )
+    prov_password = Column(
+        String, 
+        nullable=False, 
+        comment='Senha do fornecedor'
+    )
+    prov_hashed_password = Column(
+        String, 
+        nullable=False, 
+        comment='Senha do fornecedor criptografada'
+    )
+    prov_token_str = Column(
+        String, 
+        nullable=False,
+        comment='Token de acesso do fornecedor'
+    )
+    
+class Companies(Base):
+    """
+    Empresas que usam o ERP.
+    """
+    __tablename__ = "companies"
 
-class Fornecedores(Base):
-    __tablename__ = "fornecedores"
+    comp_id = Column(
+        PrimaryKeyType, 
+        primary_key=True, 
+        index=True,
+        comment='ID primário da empresa no banco'
+    )
+    comp_prov_id = Column(
+        PrimaryKeyType, 
+        index=True,
+        comment='ID do ERP que a empresa usa'
+    )
+    comp_prco_id = Column(
+        PrimaryKeyType, 
+        primary_key=True, 
+        index=True,
+        comment='ID da empresa no ERP'
+    )
 
-    forn_id = Column(PrimaryKeyType, primary_key=True, index=True)
-    forn_companies = relationship("EmpresaDB", back_populates="fornecedores")
-
-
-class Empresas(Base):
-    __tablename__ = "empresas"
-
-    empr_id = Column(PrimaryKeyType, primary_key=True, index=True)
-    empr_fornecedor_id = Column(PrimaryKeyType, ForeignKey('fornecedores.forn_id'))
-    empr_fornecedor = relationship("FornecedorDB", back_populates="empresas")
-
-
-class Clientes(Base):
-    __tablename__ = "clientes"
-
-    clie_id = Column(PrimaryKeyType, primary_key=True, index=True)
-    clie_token = Column(String)
-    clie_status = Column(String)
-
-
-class Produtos(Base):
-    __tablename__ = "produtos"
+class Product(Base):
+    """
+    Produtos vendidos pelas empresas.
+    """
+    __tablename__ = "products"
 
     prod_id = Column(PrimaryKeyType, primary_key=True, index=True)
+    prod_prov_id = Column(PrimaryKeyType)
     prod_sku = Column(String, index=True)
-    prod_nome = Column(String)
-    prod_descricao = Column(String)
-    prod_fornecedor = Column(String)
-    prod_categoria = Column(String)
-
-
-class HistoricoVenda(Base):
-    __tablename__ = "historico_venda"
-
-    hive_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
-    hive_transacao_id = Column(Text, nullable=False)
-    hive_consumidor = Column(Text, nullable=False)
-    hive_sku = Column(Text, nullable=False)
-    hive_data_venda = Column(DateTime, nullable=False)
-    hive_datahora_inclusao = Column(DateTime)
-    hive_ordem = Column(Integer)
-    hive_valor = Column(Decimal)
-    hive_quantidade = Column(Decimal)
-    hive_fornecedor = Column(Text, nullable=False)
-    hive_data_processamento = Column(DateTime)
-    hive_sku_categoria = Column(Text)
-    hive_status = Column(Text, nullable=False)
-    hive_erp_cliente_id = Column(Text, nullable=False)
-    hive_erp = Column(Text, nullable=False)
-
-
-class ArquivoHistoricoVenda(Base):
-    __tablename__ = "arquivo_historico_venda"
-
-    hvar_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
-    hvar_erp = Column(Text, nullable=False)
-    hvar_erp_cliente_id = Column(Text, nullable=False)
-    hvar_nome_arquivo = Column(Text, nullable=False)
-    hvar_url = Column(Text, nullable=False)
-    hvar_data_envio = Column(DateTime, nullable=False)
-    hvar_status = Column(Text, nullable=False)
-    hvar_tamanho = Column(Decimal, nullable=False)
+    prod_name = Column(String)
+    prod_description = Column(String)
+    prod_category = Column(String, nullable = True)
     
 
-class Recomendacoes(Base):
-    __tablename__ = "recomendacoes"
+class TransactionHistory(Base):
+    """
+    Transações realizadas pelas empresas.
+    """
+    __tablename__ = "transactions_history"
 
-    reco_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
-    reco_erp = Column(Text, nullable=False)
-    reco_erp_cliente_id = Column(Text, nullable=False)
-    reco_consumidor = Column(Text)
-    reco_fornecedor = Column(Text)
-    reco_sku = Column(Text, nullable=False)
-    reco_hash_sku = Column(Text, nullable=False)
-    reco_data_processamento = Column(DateTime, nullable=False)
-    reco_recomendacao_json = Column(JSON, nullable=False)
-    reco_recomendacao_tipo = Column(Text, nullable=False)
-    reco_recomendacao_threshold = Column(Integer)
-    reco_forecast_quantidade = Column(JSON)
-    reco_forecast_ticket_medio = Column(JSON)
-    reco_forecast_proxima_compra = Column(JSON)
+    trhi_id = Column(
+        PrimaryKeyType, 
+        primary_key=True, 
+        nullable=False, 
+        index=True
+    )
+    trhi_inserted_at = Column(DateTime, default=get_current_timestamp)
+    trhi_processed_at = Column(DateTime)
+    # Information provided by ERP
+    trhi_tran_id = Column(
+        Text, 
+        nullable=False,
+        comment='Número do Pedido ou NFe'
+    )
+    trhi_transated_at = Column(DateTime, nullable=False)
+    trhi_prov_id = Column(
+        Text, 
+        nullable=False,
+        comment='ID do fornecedor que enviou o arquivo'
+    )
+    trhi_comp_id = Column(
+        Text, 
+        nullable=False,
+        comment='ID da empresa que enviou o arquivo'
+    )
+    trhi_salesperson_id = Column(
+        Decimal,
+        comment='ID do vendedor'
+    )
+    trhi_clie_id = Column(
+        Text,
+        comment='ID do Consumidor (CNPJ, CPF, COD)'
+    )
+    trhi_prod_sku = Column(
+        Text, 
+        nullable=False,
+        comment='SKU do produto'
+    )
+    trhi_prod_sku_category = Column(
+        Text,
+        comment='Categoria do SKU do produto'
+    )
+    trhi_prod_price = Column(
+        Decimal,
+        default=0,
+        comment='Preço do produto'
+    )
+    trhi_prod_quantity = Column(
+        Decimal, 
+        default=1,
+        comment='Quantidade de produtos vendidos'
+    )
+    trhi_prod_order = Column(
+        Integer, 
+        default=0,
+        comment='Ordem do produto no pedido'
+    )
+    trhi_freight_type = Column(
+        Text, 
+        default='',
+        comment='Tipo de frete'
+    )
+    trhi_freight_value = Column(
+        Decimal, 
+        default=0,
+        comment='Valor do frete'
+    )
+    trhi_commission = Column(
+        Decimal, 
+        default=0,
+        comment='Comissão do vendedor'
+    )
+    trhi_remarks = Column(
+        Text, 
+        nullable=False, 
+        default='',
+        comment='Observações sobre o pedido ou item'
+    )
+
+class TransactionHistoryFile(Base):
+    """ 
+    Arquivos de histórico de transações enviados pelos fornecedores.
+    """
+
+    __tablename__ = "transactions_history_files"
+
+    trhf_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
+    trhf_sent_at = Column(
+        DateTime, 
+        nullable=False,
+        default=get_current_timestamp,
+        comment='Data e hora do envio do arquivo'
+    )
+    trhf_processed_at = Column(
+        Text, nullable=False,
+        comment='Data e hora do processamento do arquivo'
+    )
+    trhf_prov_id = Column(
+        Text, 
+        nullable=False,
+        comment='ID do fornecedor que enviou o arquivo'
+    )
+    trhf_comp_id = Column(
+        Text, nullable=False,
+        comment='ID da empresa que enviou o arquivo'
+    )
+    trhf_filename = Column(
+        Text, nullable=False, 
+        comment='Nome do arquivo armazenado, a ser processado. Este arquivo será enviado pelo ERP'
+    )
+    trhf_url = Column(
+        Text, nullable=False,
+        comment='URL do arquivo armazenado, a ser processado. Este arquivo será enviado pelo ERP'
+    )
+    trhf_status = Column(
+        Text, nullable=False, comment='Não Processado | Processado | Erro'
+    )
+    trhf_size_kilobytes = Column(
+        Decimal, nullable=False,
+        comment='Tamanho do arquivo em kilobytes'
+    )
+    
+
+class ProductPrediction(Base):
+    """
+    Recomendações e previsões de vendas de produtos.
+    """
+
+    __tablename__ = "product_predictions"
+
+    pred_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
+    pred_prov_id = Column(
+        Text, 
+        nullable=False,
+        comment='ID do fornecedor que enviou o arquivo'
+    )
+    pred_prco_id = Column(
+        Text, 
+        nullable=False,
+        comment='ID do produto recomendado'
+    )
+    pred_clie_id = Column(
+        Text,
+        comment='ID do cliente que comprou o produto'
+    )
+    pred_prov_id = Column(Text)
+    pred_prod_id = Column(Text, nullable=False)
+    pred_hash_sku = Column(Text, nullable=False)
+    pred_recommendation_json = Column(JSON, nullable=False)
+    pred_recommendation_type = Column(Text, nullable=False)
+    pred_recommendation_threshold = Column(Integer)
+    
+    # TODO: Implementar essas colunas
+    # pred_forecast_quantity = Column(JSON)
+    # pred_forecast_average_ticket = Column(JSON)
+    # pred_forecast_next_purchase = Column(JSON)
