@@ -7,9 +7,8 @@ from sqlalchemy import (
     DateTime,
     JSON
 )
-from sqlalchemy.dialects.postgresql import NUMERIC
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, NUMERIC
 
 import datetime
 
@@ -29,19 +28,19 @@ class Provider(Base):
     __tablename__ = "providers"
 
     prov_id = Column(
-        PrimaryKeyType, 
+        UUID, 
         primary_key=True, 
         index=True,
         comment='ID primário do fornecedor no banco'
     )
-    prov_name = Column(String, comment='Nome do ERP que usa o SV Recommender. Exemplo: sv')
     prov_signup_at = Column(
         DateTime, 
         comment='Data e hora do cadastro do fornecedor',
         default=get_current_timestamp
     )
+    prov_username = Column(String, comment='Nome do ERP que usa o SV Recommender. Exemplo: sv')
     prov_password = Column(
-        String, 
+        String,
         nullable=False, 
         comment='Senha do fornecedor'
     )
@@ -63,18 +62,18 @@ class Companies(Base):
     __tablename__ = "companies"
 
     comp_id = Column(
-        PrimaryKeyType, 
+        UUID, 
         primary_key=True, 
         index=True,
         comment='ID primário da empresa no banco'
     )
     comp_prov_id = Column(
-        PrimaryKeyType, 
+        UUID, 
         index=True,
         comment='ID do ERP que a empresa usa'
     )
     comp_prco_id = Column(
-        PrimaryKeyType, 
+        UUID, 
         primary_key=True, 
         index=True,
         comment='ID da empresa no ERP'
@@ -86,7 +85,7 @@ class Product(Base):
     """
     __tablename__ = "products"
 
-    prod_id = Column(PrimaryKeyType, primary_key=True, index=True)
+    prod_id = Column(UUID, primary_key=True, index=True)
     prod_prov_id = Column(PrimaryKeyType)
     prod_sku = Column(String, index=True)
     prod_name = Column(String)
@@ -101,7 +100,7 @@ class TransactionHistory(Base):
     __tablename__ = "transactions_history"
 
     trhi_id = Column(
-        PrimaryKeyType, 
+        UUID, 
         primary_key=True, 
         nullable=False, 
         index=True
@@ -186,7 +185,7 @@ class TransactionHistoryFile(Base):
 
     __tablename__ = "transactions_history_files"
 
-    trhf_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
+    trhf_id = Column(UUID, primary_key=True, nullable=False, index=True)
     trhf_sent_at = Column(
         DateTime, 
         nullable=False,
@@ -230,7 +229,7 @@ class ProductPrediction(Base):
 
     __tablename__ = "product_predictions"
 
-    pred_id = Column(PrimaryKeyType, primary_key=True, nullable=False, index=True)
+    pred_id = Column(UUID, primary_key=True, nullable=False, index=True)
     pred_prov_id = Column(
         Text, 
         nullable=False,

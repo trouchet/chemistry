@@ -1,14 +1,6 @@
 from src.api.core.recommendation.constants import N_BEST_NEIGHBORS_DEFAULT
 from fastapi.testclient import TestClient
 
-'''
-# TO FIX: Add authentication to the API
-def test_token_endpoint(client):
-    # Simulate a request with a user object
-    response = client.post("/api/token", json={"username": "test_user"})
-    assert response.status_code == 200
-    assert "access_token" in response.json()
-'''
 
 BASKET_ROUTE = "/api/recommendation/affiliates"
 
@@ -68,29 +60,3 @@ def test_recommend_product_invalid_request(client: TestClient):
     response = client.post(BASKET_ROUTE, json=invalid_basket)
     assert response.status_code == 422
 
-
-"""
-def test_create_user(client: TestClient):
-    # Define a user object to send in the request
-    user_data = {
-        "username": "testuser",
-        "password": "testpassword"
-    }
-
-    # Send a POST request to the /users endpoint
-    response = client.post("/api/users", json=user_data)
-
-    # Assert the response status code and content
-    assert response.status_code == 201
-    assert response.json() == {"message": "User created successfully"}
-
-    # Test case where user already exists
-    response = client.post("/users", json=user_data)
-    assert response.status_code == 400
-    assert response.json() == {"error": "User already exists"}
-
-    # Test case where an exception is raised
-    response = client.post("/users", json={"username": "testuser"})
-    assert response.status_code == 500
-    assert response.json() == {"error": "Column 'password' cannot be null"}
-"""

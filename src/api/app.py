@@ -4,11 +4,7 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from src.api.endpoints import \
-    auth, \
-    setup, \
-    recommendation, \
-    file
+from src.api.endpoints import setup, recommendation, file, signup
 from src.database.schemas import Base
 from src.database.engine import engine
 from src.core.config import settings
@@ -24,7 +20,7 @@ def create_app():
     )
 
     app_.include_router(setup.router)
-    app_.include_router(auth.router)
+    app_.include_router(signup.router)
     app_.include_router(recommendation.router)
     app_.include_router(file.router)
     

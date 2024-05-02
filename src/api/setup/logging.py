@@ -1,4 +1,4 @@
-from os import path, 
+from os import path
 import time
 from loguru import logger
 
@@ -14,8 +14,9 @@ def get_log_filename():
 
 # Configure the root logger with rotation and timestamped filenames
 logger.add(
-    get_log_filename,
+    'loginfo.log',
     level="DEBUG",
-    rotation="10 MB",
+    rotation="50 MB",
+    compression="zip",
     format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
 )

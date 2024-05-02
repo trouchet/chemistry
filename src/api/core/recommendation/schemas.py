@@ -24,9 +24,9 @@ class RecommendationResource(BaseModel):
         is_demo = values.get('is_demo')
         demo_type = values.get('demo_type')
 
-        if demo_type is not None and \
-            demo_type not in ['small', 'medium', 'big', 'huge']:
-            raise ValueError("demo_type must be one of: small, medium, big, huge")
+        DEMO_TYPES = ['small', 'medium', 'big', 'huge']
+        if demo_type is not None and demo_type not in DEMO_TYPES:
+            raise ValueError(f"demo_type must be one of: {DEMO_TYPES}")
 
         if is_demo and not demo_type:
             values['demo_type'] = 'small'
