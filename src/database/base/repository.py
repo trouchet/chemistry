@@ -43,6 +43,8 @@ class RepositoryException(Exception):
 def fail_message(action, e):
     return f"Failed to {action}: {e}"
 
+# NOTE: Refactor this: 
+# https://medium.com/@lawsontaylor/the-factory-and-repository-pattern-with-sqlalchemy-and-pydantic-33cea9ae14e0
 class DatabaseRepository(BaseRepository):
         def __init__(self, model: type[Model]) -> None:
             self.model = model
