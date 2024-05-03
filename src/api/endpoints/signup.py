@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.session import get_db_session
-from src.database.repositories import providers_repository
+from src.db.session import get_db_session
+from src.db.repositories import providers_repository
 from src.api.models import ProviderRequestModel, WeakPasswordException
 from src.api.constants import USERNAME_MIN_LENGTH
 from src.api.utils.security import is_password_strong

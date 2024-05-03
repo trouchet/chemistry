@@ -1,35 +1,97 @@
-x-default-app:
-  &default-app
+version: "3.9"
+
+x-postgres-base: &postgres-base
+  image: postgis/postgis:15-3.3-alpine
+  restart: always
+  healthcheck:
+    test:
+      - CMD-SHELL
+      - pg_isready -U postgres
+    interval: 10s
+    timeout: 5s
+    retries: 5
+
+x-app-base: &app-base
   build:
-    context: .
-  volumes:
-    - .:/code
-  stdin_open: true
-  tty: true
+    context: ./src
+  restart: always
 
 services:
-  postgres:
-    image: postgres:13
-    restart: on-failure
+  postgres-test:
+    profiles: ["test"]
+    <<: *postgres-base
+    env_file: "./src/.env"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      # Run a command after the container starts to create the test database
-      - ./scripts/create_test_db.sh:/docker-entrypoint-initdb.d/create_test_db.sh
+      - POSTGRES_HOST=postgres-test
+      - GUNICORN_WORKERS=1
+    networks:
+      - test
 
-  backend-app:
-    <<: *default-app
+  app-test:
+    profiles: ["test"]
+    <<: *app-base
+    command: sh -c "python -m pytest -s -vv"
+    build:
+      context: ./src
+      args:
+        ENV: test
+    env_file: "./.env"
+    environment:
+      - POSTGRES_HOST=postgres-test
+      - GUNICORN_WORKERS=1
+    volumes:
+      - ./src:/src
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    networks:
+      - test
+
+  postgres-dev:
+    profiles: ["dev"]
+    <<: *postgres-base
+    env_file: "./src/.env"
+    environment:
+      - POSTGRES_HOST=postgres-dev
+      - GUNICORN_WORKERS=4
     ports:
-      - "8000:8000"
-    depends_on: 
-      - postgres
-    env_file:
-      - .env
+      - 5432:5432
+    expose:
+      - 5432
+    volumes:
+      - ./postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+      - pgdata-dev:/var/lib/postgresql/data
+    networks:
+      - dev
+
+  app-dev:
+    profiles: ["dev"]
+    <<: *app-base
+    command:
+      [
+        "uvicorn",
+        "api.server:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+      ]
+    env_file: "./src/.env"
+    environment:
+      - POSTGRES_HOST=postgres-dev
+      - GUNICORN_WORKERS=4
+    volumes:
+      - ./src:/src
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+    networks:
+      - dev
 
   prometheus:
     image: prom/prometheus
@@ -42,4 +104,8 @@ services:
       - '--web.enable-lifecycle'
 
 volumes:
-  postgres_data:
+  pgdata-dev:
+
+networks:
+  test:
+  dev:

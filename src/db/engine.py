@@ -3,9 +3,13 @@ from os import environ
 
 from dotenv import load_dotenv
 
-from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import (
+    create_async_engine, AsyncSession
+)
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker
+
+from src.core.config import settings
 
 load_dotenv()
 
@@ -25,9 +29,20 @@ database_url = URL.create(
 )
 
 # Cria uma instância de engine do banco de dados
-engine = create_engine(database_url)
+engine = create_async_engine(
+    settings.ASYNC_POSTGRES_URI,
+    echo=settings.POSTGRES_ECHO,
+    future=True,
+    pool_size=max(5, settings.POSTGRES_POOL_SIZE),
+)
+
 
 # Crie uma sessão para interagir com o banco de dados
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = SessionLocal()
+SessionLocal = sessionmaker(
+    autocommit=False, 
+    autoflush=False, 
+    bind=engine,
+    expire_on_commit=False,
+    class_=AsyncSession,
+)
 

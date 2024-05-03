@@ -7,9 +7,9 @@ from src.core.security import (
     hash_password, 
     create_access_token
 )
-from src.database.session import get_db_session
-from src.database.repositories import providers_repository
-from src.database.schemas import Provider
+from src.db.session import get_db_session
+from src.db.repositories import providers_repository
+from src.db.schemas import Provider
 from src.api.models import (
     ProviderRequestModel, 
     WeakPasswordException

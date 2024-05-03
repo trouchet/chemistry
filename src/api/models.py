@@ -3,8 +3,8 @@ from pydantic import ConfigDict, BaseModel
 from fastapi import HTTPException
 from functools import partial
 
-from ..database.utils import sqlalchemy_to_pydantic
-from ..database.schemas import Provider
+from ..db.utils import sqlalchemy_to_pydantic
+from ..db.schemas import Provider
 from .utils.security import (
     is_password_strong_dict,
     is_password_strong

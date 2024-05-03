@@ -10,7 +10,7 @@ from ..models import (
 )
 
 from core.config import settings
-from src.database.repositories import providers_repository
+from src.db.repositories import providers_repository
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
 

@@ -4,7 +4,7 @@ from unittest.mock import patch  # For mocking functions
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.services.providers import ProviderService
-from src.database.schemas import Provider
+from src.db.schemas import Provider
 from src.api.models import ProviderRequestModel
 
 

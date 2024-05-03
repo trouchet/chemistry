@@ -2,6 +2,8 @@
 from fastapi import APIRouter
 import toml
 
+from src.core.config import settings    
+
 router = APIRouter(prefix="/api")
 
 @router.get('/ping')
@@ -11,7 +13,12 @@ async def pong():
 
 @router.get("/health")
 async def health_check():
-    return {"status": "ok"}
+    return dict(
+        name=settings.PROJECT_NAME,
+        version=settings.VERSION,
+        status="OK",
+        message="Visit /docs for more information.",
+    )
 
 
 @router.get("/info")

@@ -1,10 +1,6 @@
-from typing import Annotated
-from collections.abc import Callable
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from typing import TypeVar
 
-from src.database.schemas import (
+from src.db.schemas import (
     Base,
     Provider,
     Companies,

@@ -14,7 +14,13 @@ def test_pong(client):
 def test_health_check(client):
     response = client.get("/api/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    assert response.json() == {
+        'message': 'Visit /docs for more information.',
+        'name': 'fastapi-API',
+        'status': 'OK',
+        'version': '0.0.1',
+    }
+
 
 
 def test_info(client):

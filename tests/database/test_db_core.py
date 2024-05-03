@@ -4,13 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from unittest.mock import AsyncMock, MagicMock
 
-from src.database.base.repository import (
+from src.db.base.repository import (
     BaseRepository,
     DatabaseRepository,
     RepositoryException,
 )
 
-from src.database.repositories import (
+from src.db.repositories import (
     providers_repository
 )
 

@@ -1,5 +1,8 @@
-from fastapi import File, UploadFile, APIRouter
+from fastapi import (
+        File, UploadFile, APIRouter, status
+    )
 from fastapi.responses import FileResponse
+
 from src.api.utils.routes import (
     make_json_response, 
     make_error_response
@@ -12,7 +15,11 @@ from src.api.utils.routes import save_client_data
 
 router = APIRouter(prefix="/api", tags=["file"])
 
-@router.post("/dataset/upload")
+@router.post(
+    "/dataset/upload",
+    summary="Uploads a \{csv, xls, xlsx\} file.",
+    status_code=status.HTTP_200_OK,
+)
 async def upload_file(file: UploadFile = File(...)):
     """
     Endpoint para fazer upload de um arquivo.
@@ -35,7 +42,11 @@ async def upload_file(file: UploadFile = File(...)):
         content = {"error": message}
         return make_error_response(content)
 
-@router.get("/dataset/download")
+@router.get(
+    "/dataset/download",
+    summary="Downloads a file.",
+    status_code=status.HTTP_200_OK,
+)
 async def download_file(file_name: str):
     """
     Endpoint para baixar um arquivo.

@@ -9,9 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 from sqlalchemy import select
 
-from src.database.schemas import Base
-from src.database.session import get_db_session
-from fastapi import Depends
+from src.db.schemas import Base
 
 PrimaryKeyType = Union[int, str, UUID]
 Model = TypeVar("Model", bound= Base)
@@ -46,7 +44,7 @@ def fail_message(action, e):
 # NOTE: Refactor this: 
 # https://medium.com/@lawsontaylor/the-factory-and-repository-pattern-with-sqlalchemy-and-pydantic-33cea9ae14e0
 class DatabaseRepository(BaseRepository):
-        def __init__(self, model: type[Model]) -> None:
+        def __init__(self, model: Model) -> None:
             self.model = model
             self.model_name = model.__class__.__name__
         
@@ -131,11 +129,11 @@ class DatabaseRepository(BaseRepository):
                     # Assuming key is the column name and value is the filter value
                     query = query.filter(getattr(self.model, key) == value)
                 
-                data = await query.fetch_all()  # Use fetch_all if available
+                # Use fetch_all if available
+                data = await query.fetch_all()
                 return data
             except SQLAlchemyError as e:
                 action = f'find {self.model_name} by filters: {e}'
                 fail_save_message = fail_message(action, e)
-                fail_message = f"Failed to "
-                raise RepositoryException(fail_message)
+                raise RepositoryException(fail_save_message)
 

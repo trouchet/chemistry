@@ -1,66 +1,70 @@
 from pydantic_settings import BaseSettings
-from pydantic import field_validator
-from typing import Optional, Union, List
-from os import environ
-from dotenv import load_dotenv
+from pydantic import Field, PostgresDsn, field_validator
 from sqlalchemy.engine import URL
-from asyncpg.pool import Pool
-from aioredis import Redis
+
+from dotenv import load_dotenv
+from typing import Dict, Any, Union
 import toml
 
 load_dotenv()
 
-# Database information
-POSTGRES_DB = environ.get("POSTGRES_DB")
-POSTGRES_USER = environ.get("POSTGRES_USER")
-POSTGRES_PASSWORD = environ.get("POSTGRES_PASSWORD")
-POSTGRES_HOST = environ.get("POSTGRES_HOST", "localhost")
-POSTGRES_PORT = environ.get("POSTGRES_PORT", 5432)
-
-DATABASE_URL = str(URL.create(
-    drivername="postgresql",
-    username=POSTGRES_USER,
-    password=POSTGRES_PASSWORD,
-    host=POSTGRES_HOST,
-    database=POSTGRES_DB,
-    port=POSTGRES_PORT
-))
-
-# Environment information: development, testing, production
-ENVIRONMENT = environ.get("ENVIRONMENT", 'development')
-
-# JWT information: secret key, algorithm, and expiration time
-SECRET_KEY = environ.get("SECRET_KEY")
-JWT_ALGORITHM = environ.get("JWT_ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 60)
-
 with open("pyproject.toml", "r") as f:
     config = toml.load(f)
-
 
 # Settings class
 class Settings(BaseSettings):
     """App settings."""
+    VERSION: str = config["tool"]["poetry"]["version"]
 
-    project_name: str = config["tool"]["poetry"]["name"]
-    debug: bool = False
-    environment: str = ENVIRONMENT
+    PROJECT_NAME: str = config["tool"]["poetry"]["name"]
 
-    # Database
-    DATABASE_URL: str = DATABASE_URL
+    ENVIRONMENT = "development"
+    APP_HOST: str = Field('0.0.0.0', env='APP_HOST')
+    APP_PORT: int = Field(8000, env='APP_PORT')
+
+    # Environment information: development, testing, production
+    ENVIRONMENT: str = Field("development", env="ENVIRONMENT")
+ 
+    POSTGRES_DB: str = Field("postgres", env="POSTGRES_DB")
+    POSTGRES_HOST: str = Field("localhost", env="POSTGRES_HOST")
+    POSTGRES_PORT: Union[int, str] = Field(5432, env="POSTGRES_PORT")
+    POSTGRES_USER: str = Field("postgres", env="POSTGRES_USER")
+    POSTGRES_PASSWORD: str = Field("postgres", env="POSTGRES_PASSWORD")
+
+    POSTGRES_ECHO: bool = Field(False, env="POSTGRES_ECHO")
+    POSTGRES_POOL_SIZE: int = Field(10, env="POSTGRES_POOL_SIZE")
+    ASYNC_POSTGRES_URI: Union[None, str] = None
     
     # JWT
-    SECRET_KEY: str = SECRET_KEY
-    JWT_ALGORITHM: str = JWT_ALGORITHM
+    SECRET_KEY: str = Field('12345', env="SECRET_KEY")
+    JWT_ALGORITHM: str = Field('HS256', env="JWT_ALGORITHM")
 
-    # 60 minutes * 24 hours * 8 days = 8 days
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    # 60 minutes * 24 hours * 7 days = 7 days
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
-    def create_app_redis(self):
-        self.REDIS = Redis.from_url(self.REDIS_URL, max_connections=10, decode_responses=True)
+    @field_validator("ASYNC_POSTGRES_URI")
+    def assemble_db_connection(
+        cls, v: Union[None, str], 
+        values: Dict[str, Any]
+    ) -> Any:
+        if isinstance(v, str):
+            return v
+        data = values.data
+        
+        return str(URL.create(
+            drivername="postgresql+asyncpg",
+            username=data.get("POSTGRES_USER"),
+            password=data.get("POSTGRES_PASSWORD"),
+            host=data.get("POSTGRES_HOST"),
+            database=data.get("POSTGRES_DB"),
+            port=int(data.get("POSTGRES_PORT"))
+        ))
 
     class Config:
         case_sensitive = True
+        env_file = ".env"
 
 settings = Settings()
+
+
 
