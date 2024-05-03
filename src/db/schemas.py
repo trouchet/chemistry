@@ -4,10 +4,13 @@ from sqlalchemy import (
     Text,
     String,
     DateTime,
-    JSON
+    JSON,
 )
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.dialects.postgresql import UUID, NUMERIC
+from pydantic.functional_validators import field_validator
+from email_validator import validate_email, EmailNotValidError
+
 
 import datetime
 
@@ -43,6 +46,11 @@ class Provider(Base):
         nullable=False, 
         comment='Senha do fornecedor'
     )
+    prov_email = Column(
+        String,
+        nullable=False, 
+        comment='Senha do fornecedor'
+    )
     prov_hashed_password = Column(
         String, 
         nullable=False, 
@@ -53,6 +61,15 @@ class Provider(Base):
         nullable=False,
         comment='Token de acesso do fornecedor'
     )
+    
+    @field_validator("prov_email")
+    @classmethod
+    def validate_email(cls, value):
+        try:
+            validate_email(value)
+        except EmailNotValidError:
+            raise ValueError("Invalid email format")
+        return value
     
 class Companies(Base):
     """

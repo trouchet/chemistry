@@ -13,6 +13,7 @@ connexion==2.14.2
 databases==0.6.0
 dill==0.3.8
 execnet==2.0.2
+email_validator==2.1.1
 fastapi==0.110.1
 flask-caching==2.1.0
 flask-session==0.7.0
