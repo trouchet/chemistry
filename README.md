@@ -28,8 +28,6 @@ Em construção
 
 ## TODO
 
-[ ] (Fácil) Usar biblioteca Loguru para logs;
 [ ] (Médio) Validar inserção de dados no banco;
-[ ] (Difícil) Criar endponit de importação de dados;
-[ ] (Difícil) Criar rotina periódica (paralela) para processamento de dados;
- 
+[ ] (Difícil) Criar endpoint de importação de dados;
+[ ] (Difícil) Criar rotina periódica (paralela) para processamento de dados (Opções: Apscheduler/Celery);
