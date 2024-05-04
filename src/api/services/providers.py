@@ -1,13 +1,11 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import uuid4
-from fastapi import Depends
  
 from src.core.security import (
     hash_password, 
     create_access_token
 )
-from src.db.session import get_db_session
 from src.db.repositories import providers_repository
 from src.db.schemas import Provider
 from src.api.models import (

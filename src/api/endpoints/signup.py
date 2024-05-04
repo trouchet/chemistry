@@ -2,12 +2,10 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.models import ProviderRequestModel, WeakPasswordException
-from src.api.utils.security import is_password_strong
 from src.api.setup.logging import logger
 from src.api.services.providers import ProviderService
 from src.api.dependencies import get_provider_service
 from src.db.session import get_db_session
-from src.db.repositories import providers_repository
 
 
 router = APIRouter(prefix="/api", tags=["auth"])
