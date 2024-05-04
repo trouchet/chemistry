@@ -1,6 +1,6 @@
 from os import getcwd, path
 
-from src.api.tasks.logs_clean_task import manage_files
+from src.api.utils.logs import manage_files
 
 def manage_files_periodically():
   logs_path = path.join(getcwd(), 'logs')

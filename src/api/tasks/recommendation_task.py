@@ -1,6 +1,6 @@
 from os import listdir, path, getcwd
 
-from src.api.setup.logging import logging
+from src.api.setup.logging import logger
 from src.api.utils.dataframe import read_data_from_file
 
 # NOTE: The columns are hardcoded for now
@@ -16,7 +16,7 @@ dataset_columns = [
 
 
 def generate_recommendations():
-    logging.debug("Scheduled task: Generating recommendations...")
+    logger.debug("Scheduled task: Generating recommendations...")
     data_path = path.join(getcwd(), 'data')
 
     files_list = listdir(data_path)
@@ -31,4 +31,4 @@ def generate_recommendations():
             continue
 
     for file in files_list:
-        logging.debug(f"Processing file: {file}")
+        logger.debug(f"Processing file: {file}")

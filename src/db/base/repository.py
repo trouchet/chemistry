@@ -11,6 +11,7 @@ from sqlalchemy import select
 
 from src.db.schemas import Base
 
+# Repository types
 PrimaryKeyType = Union[int, str, UUID]
 Model = TypeVar("Model", bound= Base)
 
@@ -43,11 +44,15 @@ def fail_message(action, e):
 
 # NOTE: Refactor this: 
 # https://medium.com/@lawsontaylor/the-factory-and-repository-pattern-with-sqlalchemy-and-pydantic-33cea9ae14e0
-class DatabaseRepository(BaseRepository):
+class SQLRepository(BaseRepository):
         def __init__(self, model: Model) -> None:
             self.model = model
             self.model_name = model.__class__.__name__
         
+        async def __raise_repository_exception(self, action: str, e: Exception) -> None:
+            fail_message = f"Failed to {action}: {e}"
+            raise RepositoryException(fail_message)
+
         async def find_all(
             self,
             session: AsyncSession
@@ -58,21 +63,22 @@ class DatabaseRepository(BaseRepository):
                 data = query_result.scalars().all()
                 return data
             except SQLAlchemyError as e:
-                fail_find_all_message = f"Failed to find all {self.model_name}: {e}"
-                raise RepositoryException(fail_find_all_message)
+                action = f'find all {self.model_name}'
+                await self.__raise_repository_exception(action, e)
 
         async def find_by_id(
             self, 
             pk: PrimaryKeyType,
             session: AsyncSession
         ) -> Optional[Model]:
+            
             try:
-                return await session.get(self.model, pk)
+                data = await session.get(self.model, pk)
+                return data
             except SQLAlchemyError as e:
                 action = f'find {self.model_name} by id {pk}'
-                fail_find_message = fail_message(action, e)
-                raise RepositoryException(fail_find_message)
-        
+                await self.__raise_repository_exception(action, e)
+                
         async def exists_by_id(
             self, 
             pk: PrimaryKeyType,
@@ -83,8 +89,7 @@ class DatabaseRepository(BaseRepository):
                 return entity is not None
             except SQLAlchemyError as e:
                 action = f'check existence of {self.model_name} by id {pk}'
-                fail_check_message = fail_message(action, e)
-                raise RepositoryException(fail_check_message)
+                await self.__raise_repository_exception(action, e)
 
     
         async def delete_by_id(
@@ -99,8 +104,7 @@ class DatabaseRepository(BaseRepository):
                     await session.commit()
             except SQLAlchemyError as e:
                 action = f'delete {self.model_name} by id {pk}'
-                fail_delete_message = fail_message(action, e)
-                raise RepositoryException(fail_delete_message)
+                await self.__raise_repository_exception(action, e)
 
         async def save(
             self, 
@@ -108,15 +112,14 @@ class DatabaseRepository(BaseRepository):
             session: AsyncSession
         ) -> Model:
             try:            
-                session.add(entity)
+                await session.add(entity)
                 await session.commit()
                 await session.refresh(entity)
                 return entity
             
             except SQLAlchemyError as e:
                 action = f'save {self.model_name}'
-                fail_save_message = fail_message(action, e)
-                raise RepositoryException(fail_save_message)
+                await self.__raise_repository_exception(action, e)
             
         async def find_by_filters(
             self,

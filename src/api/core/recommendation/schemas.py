@@ -16,7 +16,7 @@ class RecommendationResource(BaseModel):
     neighbors_count: Optional[int] = N_BEST_NEIGHBORS_DEFAULT
     age_months: Optional[int] = DEFAULT_AGE
     is_demo: Optional[bool] = False
-    demo_type: str = Field('small', description='One of: small, medium, big, huge')
+    demo_type: str = Field(default='small', description='One of: small, medium, big, huge')
 
     @model_validator(mode="before")
     @classmethod

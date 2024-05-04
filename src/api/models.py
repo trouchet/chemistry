@@ -3,9 +3,7 @@ from pydantic import ConfigDict, BaseModel
 from fastapi import HTTPException
 from functools import partial
 
-from ..db.schemas import Provider
 from .utils.security import is_password_strong_dict
-from src.api.constants import PASSWORD_REQUIREMENTS_DICT
 from src.api.utils.misc import snake2camel
 
 class APIModel(BaseModel):

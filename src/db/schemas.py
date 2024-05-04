@@ -6,19 +6,16 @@ from sqlalchemy import (
     DateTime,
     JSON,
 )
-from sqlalchemy.orm import declarative_base
 from sqlalchemy.dialects.postgresql import UUID, NUMERIC
 from pydantic.functional_validators import field_validator
 from email_validator import validate_email, EmailNotValidError
-
+from src.db.engine import Base 
 
 import datetime
 
 # Types 
 PrimaryKeyType = UUID(as_uuid=True)
 Decimal = NUMERIC(precision=10, scale=2)
-
-Base = declarative_base()    
 
 def get_current_timestamp():
     return datetime.now()
@@ -40,7 +37,10 @@ class Provider(Base):
         comment='Data e hora do cadastro do fornecedor',
         default=get_current_timestamp
     )
-    prov_username = Column(String, comment='Nome do ERP que usa o SV Recommender. Exemplo: sv')
+    prov_username = Column(
+        String, 
+        comment='Nome do ERP que usa o SV Recommender. Exemplo: sv'
+    )
     prov_password = Column(
         String,
         nullable=False, 

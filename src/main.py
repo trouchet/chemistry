@@ -1,10 +1,8 @@
 from prometheus_fastapi_instrumentator import Instrumentator
-from fastapi import HTTPException
 from uvicorn import run
 
 from src.api.setup.scheduler import scheduler
 from src.api.app import app
-from src.core import settings
 
 # Start Prometheus logging metrics
 Instrumentator().instrument(app).expose(app)

@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import uuid4
  
-from src.core.security import (
+from src.api.utils.security import (
     hash_password, 
     create_access_token
 )
