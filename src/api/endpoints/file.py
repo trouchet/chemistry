@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api", tags=["file"])
 
 @router.post(
     "/dataset/upload",
-    summary="Uploads a \{csv, xls, xlsx\} file.",
+    summary="Uploads a {csv, xls, xlsx} file.",
     status_code=status.HTTP_200_OK,
 )
 async def upload_file(file: UploadFile = File(...)):

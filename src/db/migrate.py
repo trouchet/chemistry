@@ -1,19 +1,14 @@
 import asyncio
-import logging
-
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from src.core.config import settings
+from src.api.setup.logging import logger
 from src.db.schemas import Base
-
-logger = logging.getLogger()
-
+from src.db.engine import async_database_engine
 
 async def migrate_tables() -> None:
     logger.info("Starting to migrate")
 
-    engine = create_async_engine(settings.database_url)
-    async with engine.begin() as conn:
+    async with async_database_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
     logger.info("Done migrating")
