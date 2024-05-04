@@ -7,13 +7,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH="/code"
 
-WORKDIR /code
-
-# Set env variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONPATH="/code"
-
 # Create non-root user
 RUN adduser --disabled-password appuser
 
@@ -21,7 +14,6 @@ RUN adduser --disabled-password appuser
 COPY . .
 
 # Install dependencies
-RUN pip install uv
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 

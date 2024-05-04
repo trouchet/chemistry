@@ -5,11 +5,7 @@ import subprocess
 import os
 
 
-def run_pip_compile(input_file: str, output_file: str) -> None:
-    '''
-    Função para roda pip-compile programaticamente
-    '''
-
+def run_pip_compile(input_file: str, output_file):
     # Command to run pip-compile
     command = [
         "pip-compile",
@@ -25,6 +21,13 @@ def run_pip_compile(input_file: str, output_file: str) -> None:
     except subprocess.CalledProcessError as e:
         print(f"Error running pip-compile: {e}")
         raise
+
+    # Get package count after operation
+    with open(output_file, "r") as file:
+        lines = file.readlines()
+        package_count = len(lines)
+
+    return package_count
 
 
 def find_packages_with_comment(
@@ -54,6 +57,13 @@ def find_packages_with_comment(
                 # Write to file
                 out_file.write(package_name + '==' + version + "\n")
 
+    # Get package count after operation
+    with open(requirements_output_file, "r") as file:
+        lines = file.readlines()
+        package_count = len(lines)
+
+    return package_count
+
 
 if __name__ == "__main__":
     description = "Find packages with a specific comment in a requirements file."
@@ -66,10 +76,21 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # Get package count before operation
+    with open(args.requirements_file, "r") as file:
+        lines = file.readlines()
+        package_count_before = len(lines)
+
     # Temporary file for pip-compile output
     tmp_file = 'tmp.in'
-
     run_pip_compile(args.requirements_file, tmp_file)
-    find_packages_with_comment(args.requirements_file, tmp_file, args.output_file)
+
+    # Get package count after operation
+    package_count_after = find_packages_with_comment(
+        args.requirements_file, tmp_file, args.output_file
+    )
 
     os.remove(tmp_file)
+
+    print(f"Package count before operation: {package_count_before}")
+    print(f"Package count after operation: {package_count_after}")

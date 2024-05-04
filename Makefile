@@ -46,7 +46,7 @@ build: sanitize ## Builds the application. Usage: make build
 	docker-compose build --no-cache
 
 run: ## Run the application. Usage: make run
-	uvicorn src.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+	uvicorn src.server:app --reload --workers 1 --host 0.0.0.0 --port 8000
 
 search: ## Searchs for a token in the code. Usage: make search token=your_token
 	grep -rnw . \
@@ -55,7 +55,7 @@ search: ## Searchs for a token in the code. Usage: make search token=your_token
 	--exclude=poetry.lock \
 	-e "$(token)"
 
-replace_token: ## Replaces a token in the code. Usage: make replace token=your_token
+replace: ## Replaces a token in the code. Usage: make replace token=your_token
 	sed -i 's/$(token)/$(new_token)/g' $$(grep -rl "$(token)" . \
 		--exclude-dir=venv \
 		--exclude-dir=.git \
@@ -65,7 +65,7 @@ test: ## Test the application. Usage: make test
 	poetry run coverage run --rcfile=.coveragerc -m pytest
 
 minimal-requirements: ## Generates minimal requirements. Usage: make requirements
-	python scripts/clean_packages.py requirements.txt requirements.txt
+	python3 scripts/clean_packages.py requirements.txt requirements.txt
 
 lint: ## perform inplace lint fixes
 	black --skip-string-normalization .
@@ -84,7 +84,7 @@ report: test ## Generate coverage report. Usage: make report
 	coverage report --omit=$(OMIT_PATHS) --show-missing
 
 logs: ## Show logs. Usage: make logs
-	docker logs -f api-backend-app-1
+	docker logs -f api-app-1
 
 ps: ## List containers. Usage: make ps
 	docker ps -a

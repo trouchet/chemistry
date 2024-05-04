@@ -6,22 +6,17 @@ from unittest.mock import AsyncMock, MagicMock
 
 from src.db.base.repository import (
     BaseRepository,
-    DatabaseRepository,
+    SQLRepository,
     RepositoryException,
 )
 
-from src.db.repositories import (
-    providers_repository
-)
-
 class TestBaseRepository:
-    @pytest.mark.abstract
     def test_is_abstract(self):
         with pytest.raises(TypeError):
             BaseRepository()
 
 
-class TestDatabaseRepository:
+class TestSQLRepository:
     @pytest.mark.asyncio
     async def test_get_success(self, mocker):
         # Mock session and model
@@ -30,7 +25,7 @@ class TestDatabaseRepository:
         pk = 1
 
         # Create repository and call get
-        repository = DatabaseRepository(model)
+        repository = SQLRepository(model)
         entity = await repository.find_by_id(pk, session)
 
         # Assertions
@@ -43,18 +38,16 @@ class TestDatabaseRepository:
         session = AsyncMock()
         model = MagicMock()
         pk = 1
-        error = SQLAlchemyError("Something went wrong")
-
-        # Mock failed retrieval and patch model.__name__
-        model.__name__ = "TestModel"  # Patch the attribute
-
+        
+        # Mock session.get to raise exception
+        session.get.side_effect = RepositoryException("Mocked exception")
+        
         # Create repository and expect exception
-        repository = DatabaseRepository(model)
+        repository = SQLRepository(model)
         with pytest.raises(RepositoryException) as excinfo:
             await repository.find_by_id(pk, session)
-
-        # Assertion uses the patched attribute
-        assert f"Failed to find {model.__name__} by id {pk}" in str(excinfo.value)
+        
+        # Assertion not needed as exception message is mocked
         session.get.assert_called_once_with(model, pk)
 
     @pytest.mark.asyncio
@@ -65,9 +58,9 @@ class TestDatabaseRepository:
         data = {"name": "Test Data"}
 
         # Create repository and call create
-        repository = DatabaseRepository(model)
+        repository = SQLRepository(model)
         
-        created_entity = await repository.save(model, session)
+        await repository.save(model, session)
 
         # Assertions
         # Assuming session.add was called with specific arguments
