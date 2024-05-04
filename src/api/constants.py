@@ -27,6 +27,7 @@ MAX_LOG_FOLDER_SIZE_MB = 10
 
 # Username requirements
 USERNAME_MIN_LENGTH = 3
+USERNAME_MAX_LENGTH = 20
 
 # Password requirements 
 PASSWORD_REQUIREMENTS_DICT = {
