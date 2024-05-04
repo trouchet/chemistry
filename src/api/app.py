@@ -31,7 +31,7 @@ def create_app():
 # Get the number of applications from the environment variable
 app = create_app()
 
-@app.on_event("startup")
-async def on_startup():
-    # Crie o banco de dados e as tabelas
-    Base.metadata.create_all(bind=engine)
+@app.async_startup
+async def create_database_connection():
+  # Crie o banco de dados e as tabelas (Create your database and tables)
+  await Base.metadata.create_all(bind=engine)
