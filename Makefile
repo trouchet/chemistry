@@ -1,4 +1,4 @@
-CONTAINER_NAME := api-backend-app-1
+CONTAINER_NAME := api-app-1
 
 .PHONY: build run stop ps host
 
@@ -37,10 +37,8 @@ sanitize: # Remove dangling images and volumes
 clean: clean-logs clean-test clean-cache sanitize ## Add a rule to remove unnecessary assets. Usage: make clean
 
 env: ## Creates a virtual environment. Usage: make env
-	pip install virtualenv
-	virtualenv venv
-	@echo "Run 'source venv/bin/activate' to activate the virtual environment"
-	@echo "Run 'deactivate' to deactivate the virtual environment"
+	pip install uv
+	uv venv
 
 build: sanitize ## Builds the application. Usage: make build
 	docker-compose build --no-cache
@@ -84,7 +82,10 @@ report: test ## Generate coverage report. Usage: make report
 	coverage report --omit=$(OMIT_PATHS) --show-missing
 
 logs: ## Show logs. Usage: make logs
-	docker logs -f api-app-1
+	docker logs -f ${CONTAINER_NAME}
+
+enter: ## Enter the container. Usage: make enter
+	docker exec -it $(CONTAINER_NAME) /bin/bash
 
 ps: ## List containers. Usage: make ps
 	docker ps -a
@@ -94,9 +95,6 @@ up: ## Docker up containers. Usage: make up
 
 down: ## Docker down containers. Usage: make down
 	docker-compose down
-
-enter: ## Enter the container. Usage: make enter
-	docker exec -it $(CONTAINER_NAME) /bin/bash
 
 migrate: ## Run migrations. Usage: make migrate
 	python scripts/migrate.py

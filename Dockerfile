@@ -1,4 +1,4 @@
-FROM python:3.11.3-slim-buster as base
+FROM python:3.11.3-slim-buster AS base
 
 WORKDIR /code
 
@@ -10,17 +10,17 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Create non-root user
 RUN adduser --disabled-password appuser
 
-# Copy application code and requirements
+# Install uv
+RUN pip install uv
+
+# Copy application code and requirements (assuming requirements.txt is in the same directory)
 COPY . .
 
-# Install dependencies
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# Install dependencies with uv
+RUN uv pip install -r requirements.txt --system
 
 # Switch to non-root user
 USER appuser
 
 # Run the application
 CMD ["bash", "scripts/run.sh"]
-
-
