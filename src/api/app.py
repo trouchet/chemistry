@@ -3,18 +3,29 @@
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
-from src.api.endpoints import setup, recommendation, file, signup
-from src.db.schemas import Base
-from src.db.engine import engine
-from src.db.utils import create_db_and_tables
 from src.core.config import settings
+from src.api.endpoints import setup, recommendation, file, signup
+from src.db.engine import raw_database_connection
+from src.db.engine import async_database_engine
+from src.db.utils import create_db_and_tables
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await raw_database_connection.connect()
+    await create_db_and_tables(async_database_engine)
+    yield
+    await raw_database_connection.disconnect()
 
 def create_app():
+    # Crie uma instância do aplicativo FastAPI
     app_ = FastAPI(
         title=settings.PROJECT_NAME,
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
+        lifespan=lifespan
     )
 
     # Adicione as rotas ao aplicativo
@@ -30,8 +41,3 @@ def create_app():
 
 # Get the number of applications from the environment variable
 app = create_app()
-
-@app.on_event("startup")
-async def create_database_connection():
-  # Crie o banco de dados e as tabelas (Create your database and tables)
-  await Base.metadata.create_all(bind=engine)
