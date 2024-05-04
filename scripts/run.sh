@@ -1,19 +1,17 @@
 #!/bin/bash
 
 # Load environment variables
-source .env
+source .env || { echo "Error loading .env file"; exit 1; }
 
 # Determine worker count based on available CPUs
 NUM_WORKERS=$(nproc)
 
-# Run database migrations
-python src/db/migrate.py
-
 # Launch Uvicorn server
-uvicorn src/api/main:app \
-    --host ${APP_HOST} \
-    --port ${APP_PORT} \
+uvicorn src.main:app \
+    --host ${APP_HOST:-"localhost"} \
+    --port ${APP_PORT:-"8000"} \
     --reload \
-    --workers ${NUM_WORKERS} \
+    --workers ${NUM_WORKERS:-"1"} \
     --loop asyncio \
-    --log-level info
+    --log-level info \
+    || { echo "Error launching Uvicorn server"; exit 1; }
