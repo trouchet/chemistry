@@ -10,7 +10,7 @@ from src.api.core.recommendation.constants import (
     AVAILABLE_METHODS,
     AVAILABLE_METRICS,
     DEFAULT_MIN_SUPPORT,
-    DEFAULT_MIN_THRESHOLD,
+    DEFAULT_MIN_CONFIDENCE,
     N_BEST_NEIGHBORS_DEFAULT,
 )
 from src.api.utils.dataframe import listify_items
@@ -214,7 +214,7 @@ def get_association_rules(
     sets_column: str,
     items_column: str,
     min_support_=DEFAULT_MIN_SUPPORT,
-    min_threshold_=DEFAULT_MIN_THRESHOLD,
+    min_threshold_=DEFAULT_MIN_CONFIDENCE,
 ):
     '''
     Função: get_association_rules
@@ -231,7 +231,7 @@ def get_association_rules(
     - items_column (str): O nome da coluna que contém os IDs dos itens.
     - min_support_ (float): O suporte mínimo para considerar um itemset como frequente. O padrão
     é DEFAULT_MIN_SUPPORT.
-    - min_threshold_ (float): O limiar mínimo para gerar regras de associação. O padrão é DEFAULT_MIN_THRESHOLD.
+    - min_threshold_ (float): O limiar mínimo para gerar regras de associação. O padrão é DEFAULT_MIN_CONFIDENCE.
 
     Retorno:
     - tuple: Uma tupla contendo dois elementos. O primeiro elemento é um DataFrame dos itemsets

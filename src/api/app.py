@@ -7,8 +7,7 @@ from contextlib import asynccontextmanager
 
 from src.core.config import settings
 from src.api.endpoints import setup, recommendation, file, signup
-from src.db.engine import raw_database_connection
-from src.db.engine import async_database_engine
+from src.db.engine import raw_database_connection, async_database_engine
 from src.db.utils import create_db_and_tables
 
 

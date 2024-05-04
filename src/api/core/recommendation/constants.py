@@ -16,8 +16,8 @@ AVAILABLE_METHODS = ['arbitrary', 'random'] + AVAILABLE_METRICS
 RECOMMENDATION_ALGO_DEFAULT = 'support'
 
 # Suporte mínimo padrão e limiar
-DEFAULT_MIN_SUPPORT = 0.001
-DEFAULT_MIN_THRESHOLD = 0.05
+DEFAULT_MIN_SUPPORT = 0.01
+DEFAULT_MIN_CONFIDENCE = 0.05
 
 # Nível de confiança para conjuntos
 MIN_SET_SIZE_CONFIDENCE = 0.95
