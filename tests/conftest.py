@@ -7,8 +7,10 @@ from os import getcwd, path
 
 from src.api.app import app
 from src.api.core.recommendation.models import SVRecommender
-from src.api.core.recommendation.schemas import (\
-    Product, Item, Basket,
+from src.api.core.recommendation.schemas import (
+    Product,
+    Item,
+    Basket,
 )
 
 from src.api.core.recommendation.metrics import (
@@ -40,18 +42,13 @@ def sample_dataframe():
 
 @pytest.fixture
 def simple_dataframe():
-    data = {
-        'order_id': [1, 1, 2, 2, 3], 
-        'item_id': ['A', 'B', 'A', 'B', 'C']
-    }
+    data = {'order_id': [1, 1, 2, 2, 3], 'item_id': ['A', 'B', 'A', 'B', 'C']}
     return pd.DataFrame(data)
 
 
 @pytest.fixture
 def simplest_dataframe():
-    data = {
-        'column_name': ['A', 'B', 'C', 'D', 'E']
-    }
+    data = {'column_name': ['A', 'B', 'C', 'D', 'E']}
     return pd.DataFrame(data)
 
 

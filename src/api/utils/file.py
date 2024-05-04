@@ -1,6 +1,7 @@
 from os import path, makedirs
 import os
 
+
 def get_filename(filename: str) -> str:
     '''
     Retorna o nome do arquivo dado o caminho completo do arquivo.
@@ -34,6 +35,7 @@ def create_folder(directory_name: str) -> str:
         print(f"Directory '{directory_name}' created!")
     else:
         print(f"Directory '{directory_name}' already exists.")
+
 
 def get_file_size(file_path):
     """

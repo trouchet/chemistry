@@ -12,12 +12,10 @@ VALID_AGE_MONTHS = [6, 12, 24, 36]
 
 # Descrição de tipos válidos para leitura de arquivo
 VALID_CONTENT_TYPES = [
-    "text/csv", 
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    "text/csv",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ]
-VALID_FILE_TYPES = [
-    'csv', 'xls', 'xlsx'
-]
+VALID_FILE_TYPES = ['csv', 'xls', 'xlsx']
 
 # Número máximo de arquivos de log
 MAX_LOG_FILES = 10
@@ -29,7 +27,7 @@ MAX_LOG_FOLDER_SIZE_MB = 10
 USERNAME_MIN_LENGTH = 3
 USERNAME_MAX_LENGTH = 20
 
-# Password requirements 
+# Password requirements
 PASSWORD_REQUIREMENTS_DICT = {
     "min_length": 8,
     "min_uppercase": 1,
@@ -37,4 +35,3 @@ PASSWORD_REQUIREMENTS_DICT = {
     "min_digits": 1,
     "min_special_chars": 1,
 }
-

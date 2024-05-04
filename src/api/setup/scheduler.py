@@ -4,14 +4,11 @@ from apscheduler.triggers.cron import CronTrigger
 
 from apscheduler.triggers.interval import IntervalTrigger
 
-from src.api.tasks.recommendation_task import \
-   generate_recommendations
+from src.api.tasks.recommendation_task import generate_recommendations
 
-from src.api.tasks.logs_clean_task import \
-    manage_files_periodically
+from src.api.tasks.logs_clean_task import manage_files_periodically
 
-from src.api.tasks.print_task import \
-    print_statement
+from src.api.tasks.print_task import print_statement
 
 # Initialize the scheduler
 scheduler = BackgroundScheduler()

@@ -19,6 +19,7 @@ def make_json_response(status_: int, content_: dict) -> JSONResponse:
     '''
     return JSONResponse(status_code=status_, content=content_)
 
+
 def make_error_response(content_: dict):
     '''
     Descrição: Retorna uma resposta de erro com o conteúdo especificado.
@@ -30,6 +31,7 @@ def make_error_response(content_: dict):
         JSONResponse: Uma resposta de erro com o conteúdo especificado.
     '''
     return make_json_response(400, content_)
+
 
 def demo_client_data(basket: Basket):
     '''
@@ -83,11 +85,8 @@ def get_client_data(basket: Basket):
     '''
     return demo_client_data(basket) if basket.is_demo else retrieve_data(basket)
 
-def save_client_data(
-    provider_id: str,
-    client_id: str,
-    file: UploadFile
-):
+
+def save_client_data(provider_id: str, client_id: str, file: UploadFile):
     file_path = f"uploads/{provider_id}_{client_id}_{file.filename}"
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)

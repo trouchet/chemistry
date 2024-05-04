@@ -30,7 +30,7 @@ def is_password_strong_dict(password: str) -> bool:
     Returns:
         dict: A dictionary with the requirements and whether they are met.
     """
-    
+
     has_lowercase = search(r"[a-z]", password)
     has_uppercase = search(r"[A-Z]", password)
     has_number = search(r"\d", password)
@@ -41,8 +41,9 @@ def is_password_strong_dict(password: str) -> bool:
         "has_lowercase": bool(has_lowercase),
         "has_uppercase": bool(has_uppercase),
         "has_number": bool(has_number),
-        "has_special_char": bool(has_special_char)
+        "has_special_char": bool(has_special_char),
     }
+
 
 def is_password_strong(password: str) -> bool:
     """
@@ -54,9 +55,11 @@ def is_password_strong(password: str) -> bool:
     Returns:
         bool: True if the password is strong, False otherwise.
     """
-    from functools import reduce 
+    from functools import reduce
+
     and_map = lambda x, y: x and y
     return reduce(and_map, is_password_strong_dict(password).values())
+
 
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     """Creates an access token using PyJWT.
@@ -74,12 +77,14 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     if expires_delta:
         expire = datetime.now() + expires_delta
     else:
-        expire = datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now() + timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
 
     encoded_jwt = encode(
-        { **to_encode, "exp": expire.timestamp() },
+        {**to_encode, "exp": expire.timestamp()},
         settings.SECRET_KEY,
-        algorithm=settings.JWT_ALGORITHM
+        algorithm=settings.JWT_ALGORITHM,
     )
 
     return encoded_jwt

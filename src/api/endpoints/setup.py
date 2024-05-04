@@ -2,9 +2,10 @@
 from fastapi import APIRouter
 import toml
 
-from src.core.config import settings    
+from src.core.config import settings
 
 router = APIRouter(prefix="/api")
+
 
 @router.get('/ping')
 async def pong():

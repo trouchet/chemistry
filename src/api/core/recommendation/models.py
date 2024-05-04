@@ -14,6 +14,7 @@ from src.api.core.recommendation.constants import (
     AVAILABLE_METHODS,
 )
 
+
 class SVRecommender(object):
     """
     Classe para recomendação de itens com base em conjuntos de itens anteriores.

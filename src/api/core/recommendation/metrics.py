@@ -3,8 +3,7 @@
 
 import pandas as pd
 
-from src.api.core.recommendation.extract_transform import \
-    get_sets_count_per_items_dict
+from src.api.core.recommendation.extract_transform import get_sets_count_per_items_dict
 from src.api.utils.dataframe import get_unique_elements
 
 

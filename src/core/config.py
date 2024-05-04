@@ -30,9 +30,11 @@ JWT_ALGORITHM = environ.get("JWT_ALGORITHM", "HS256")
 with open("pyproject.toml", "r") as f:
     config = toml.load(f)
 
+
 # Settings class
 class Settings(BaseSettings):
     """App settings."""
+
     VERSION: str = config["tool"]["poetry"]["version"]
 
     PROJECT_NAME: str = config["tool"]["poetry"]["name"]
@@ -42,7 +44,7 @@ class Settings(BaseSettings):
 
     # Environment information: development, testing, production
     ENVIRONMENT: str = Field(ENVIRONMENT)
- 
+
     POSTGRES_DB: str = Field(POSTGRES_DB)
     POSTGRES_HOST: str = Field(POSTGRES_HOST)
     POSTGRES_PORT: Union[int, str] = Field(POSTGRES_PORT)
@@ -52,36 +54,35 @@ class Settings(BaseSettings):
     POSTGRES_ECHO: bool = Field(POSTGRES_ECHO)
     POSTGRES_POOL_SIZE: int = Field(POSTGRES_POOL_SIZE)
     ASYNC_POSTGRES_URI: Union[None, str] = None
-    
+
     # JWT
     SECRET_KEY: str = Field(SECRET_KEY)
     JWT_ALGORITHM: str = Field(JWT_ALGORITHM)
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 # 60 minutes * 24 hours * 7 days = 7 days
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = (
+        60 * 24 * 7
+    )  # 60 minutes * 24 hours * 7 days = 7 days
 
     @field_validator("ASYNC_POSTGRES_URI")
-    def assemble_db_connection(
-        cls, v: Union[None, str], 
-        values: Dict[str, Any]
-    ) -> Any:
+    def assemble_db_connection(cls, v: Union[None, str], values: Dict[str, Any]) -> Any:
         if isinstance(v, str):
             return v
-        
+
         data = values.data
-        
-        return str(URL.create(
-            drivername="postgresql+asyncpg",
-            username=data.get("POSTGRES_USER"),
-            password=data.get("POSTGRES_PASSWORD"),
-            host=data.get("POSTGRES_HOST"),
-            database=data.get("POSTGRES_DB"),
-            port=int(data.get("POSTGRES_PORT"))
-        ))
+
+        return str(
+            URL.create(
+                drivername="postgresql+asyncpg",
+                username=data.get("POSTGRES_USER"),
+                password=data.get("POSTGRES_PASSWORD"),
+                host=data.get("POSTGRES_HOST"),
+                database=data.get("POSTGRES_DB"),
+                port=int(data.get("POSTGRES_PORT")),
+            )
+        )
 
     class Config(ConfigDict):
         case_sensitive = True
         env_file = ".env"
 
+
 settings = Settings()
-
-
-

@@ -3,12 +3,13 @@ from reprlib import repr
 from pydantic import BaseModel, Field, model_validator
 from typing import Optional, List
 
-from src.api.core.recommendation.constants import   (
-        RECOMMENDATION_ALGO_DEFAULT, \
-        N_BEST_NEIGHBORS_DEFAULT
-    )
+from src.api.core.recommendation.constants import (
+    RECOMMENDATION_ALGO_DEFAULT,
+    N_BEST_NEIGHBORS_DEFAULT,
+)
 
 from src.api.constants import VALID_AGE_MONTHS, DEFAULT_AGE
+
 
 class RecommendationResource(BaseModel):
     company_id: str = Field(default='demo')
@@ -16,7 +17,9 @@ class RecommendationResource(BaseModel):
     neighbors_count: Optional[int] = N_BEST_NEIGHBORS_DEFAULT
     age_months: Optional[int] = DEFAULT_AGE
     is_demo: Optional[bool] = False
-    demo_type: str = Field(default='small', description='One of: small, medium, big, huge')
+    demo_type: str = Field(
+        default='small', description='One of: small, medium, big, huge'
+    )
 
     @model_validator(mode="before")
     @classmethod
@@ -33,6 +36,7 @@ class RecommendationResource(BaseModel):
 
         return values
 
+
 # Produto
 class Product(RecommendationResource):
     """
@@ -42,7 +46,9 @@ class Product(RecommendationResource):
         product_id (str): O ID do produto.
         Os demais atributos são herdados da classe RecommendationResource.
     """
+
     product_id: str
+
 
 # Carrinho
 class Basket(RecommendationResource):
@@ -56,6 +62,7 @@ class Basket(RecommendationResource):
     Methods:
         is_age_valid(): Verifica se age_months está dentro de VALID_AGE_MONTHS.
     """
+
     items: List[str] = Field(default=[])
 
     def is_age_valid(self):
@@ -88,17 +95,19 @@ class Basket(RecommendationResource):
     def __repr__(self) -> None:
         return f"Basket(company_id={self.company_id}, items={repr(self.items)})"
 
+
 # Converte 'Product' para 'Basket'
 def product_to_basket(product: Product) -> Basket:
     return Basket(
-        company_id=product.company_id, 
-        items=[product.product_id], 
+        company_id=product.company_id,
+        items=[product.product_id],
         algorithm=product.algorithm,
         neighbors_count=product.neighbors_count,
         age_months=product.age_months,
         is_demo=product.is_demo,
-        demo_type=product.demo_type
+        demo_type=product.demo_type,
     )
+
 
 # Recomendação
 class Recommendation(BaseModel):
@@ -110,8 +119,10 @@ class Recommendation(BaseModel):
         metadata (Optional[dict]): Metadados opcionais adicionais.
 
     """
+
     items: Optional[List[str]] = []
     metadata: Optional[dict] = {}
+
 
 class Item(BaseModel):
     """
@@ -123,6 +134,7 @@ class Item(BaseModel):
         description (str): A descrição do item (padrão: 'Description of {identifier}').
 
     """
+
     identifier: str
     value: float
     description: str = None

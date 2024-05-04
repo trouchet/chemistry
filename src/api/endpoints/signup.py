@@ -10,12 +10,13 @@ from src.db.session import get_db_session
 
 router = APIRouter(prefix="/api", tags=["auth"])
 
+
 @router.post('/register')
 async def signup(
     form_data: ProviderRequestModel,
     provider_service: ProviderService = Depends(get_provider_service),
-    session: AsyncSession = Depends(get_db_session)
-):    
+    session: AsyncSession = Depends(get_db_session),
+):
     try:
         provider = await provider_service.register(form_data, session)
 

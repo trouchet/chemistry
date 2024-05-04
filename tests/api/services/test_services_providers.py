@@ -1,11 +1,9 @@
 import pytest
 from fastapi import HTTPException
-from unittest.mock import patch  # For mocking functions
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.services.providers import ProviderService
 from src.db.schemas import Provider
-from src.api.models import ProviderRequestModel
 
 
 async def test_register_provider_with_strong_password(mocker):
@@ -15,7 +13,7 @@ async def test_register_provider_with_strong_password(mocker):
 
     # Mock is_password_strong to return True
     mocker.patch("src.api.utils.security.is_password_strong", return_value=True)
-    
+
     # Mock the AsyncSession
     mock_session = mocker.AsyncMock(spec=AsyncSession)
     provider = await ProviderService().register(provider_data, session=mock_session)
@@ -47,7 +45,7 @@ async def test_register_provider_with_missing_username(mocker):
     mock_session = mocker.AsyncMock(spec=AsyncSession)
 
     with pytest.raises(KeyError):
-        await ProviderService().register(provider_data, session= mock_session)
+        await ProviderService().register(provider_data, session=mock_session)
 
 
 async def test_register_provider_with_missing_password(mocker):

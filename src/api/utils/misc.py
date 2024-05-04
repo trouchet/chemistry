@@ -5,7 +5,7 @@ def snake2camel(snake: str, start_lower: bool = False) -> str:
     """
     Converts a snake_case string to camelCase.
     Source: https://github.com/dmontagu/fastapi-utils
-    
+
     Args:
         snake (str): snake_case string to convert.
         start_lower (bool): Whether to start the output string in lowercase.

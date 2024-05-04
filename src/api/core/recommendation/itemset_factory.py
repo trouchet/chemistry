@@ -63,10 +63,7 @@ def generate_items(
 
 
 def generate_item_dict(
-    itemset_id: Union[int, str], 
-    agent_id: str, 
-    item: Item, 
-    quantity: int
+    itemset_id: Union[int, str], agent_id: str, item: Item, quantity: int
 ):
     return {
         'itemset_id': itemset_id,

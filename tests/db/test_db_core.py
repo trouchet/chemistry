@@ -1,6 +1,4 @@
 import pytest
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from unittest.mock import AsyncMock, MagicMock
 
@@ -9,6 +7,7 @@ from src.db.base.repository import (
     SQLRepository,
     RepositoryException,
 )
+
 
 class TestBaseRepository:
     def test_is_abstract(self):
@@ -38,15 +37,15 @@ class TestSQLRepository:
         session = AsyncMock()
         model = MagicMock()
         pk = 1
-        
+
         # Mock session.get to raise exception
         session.get.side_effect = RepositoryException("Mocked exception")
-        
+
         # Create repository and expect exception
         repository = SQLRepository(model)
         with pytest.raises(RepositoryException) as excinfo:
             await repository.find_by_id(pk, session)
-        
+
         # Assertion not needed as exception message is mocked
         session.get.assert_called_once_with(model, pk)
 
@@ -59,7 +58,7 @@ class TestSQLRepository:
 
         # Create repository and call create
         repository = SQLRepository(model)
-        
+
         await repository.save(model, session)
 
         # Assertions

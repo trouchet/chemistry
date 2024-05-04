@@ -6,6 +6,7 @@ from sqlalchemy.orm import declarative_base
 T = TypeVar("T")
 from sqlalchemy import Column
 
+
 def sqlalchemy_to_pydantic(model: DeclarativeMeta) -> Type[T]:
     """
     Convert a SQLAlchemy model to a Pydantic model.
@@ -16,6 +17,7 @@ def sqlalchemy_to_pydantic(model: DeclarativeMeta) -> Type[T]:
     Returns:
         type(BaseModel): Pydantic model equivalent to the SQLAlchemy model.
     """
+
     class PydanticModel(BaseModel):
         class Config(ConfigDict):
             from_attributes = True
@@ -26,6 +28,7 @@ def sqlalchemy_to_pydantic(model: DeclarativeMeta) -> Type[T]:
             PydanticModel.__annotations__[column_name] = (column.type.python_type, None)
 
     return PydanticModel
+
 
 # Create all tables stored in this metadata in the actual file.
 Base = declarative_base()

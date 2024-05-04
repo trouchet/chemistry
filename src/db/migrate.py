@@ -8,6 +8,7 @@ from src.db.schemas import Base
 
 logger = logging.getLogger()
 
+
 async def migrate_tables() -> None:
     logger.info("Starting to migrate")
 

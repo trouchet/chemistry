@@ -7,12 +7,12 @@ from src.db.schemas import (
     Product,
     TransactionHistory,
     TransactionHistoryFile,
-    ProductPrediction
+    ProductPrediction,
 )
 from .base.repository import SQLRepository
 
 # Generic type for model
-ModelType = TypeVar("ModelType", bound=Base)  
+ModelType = TypeVar("ModelType", bound=Base)
 
 # Repositórios
 providers_repository = SQLRepository(Provider)
@@ -21,4 +21,3 @@ products_repository = SQLRepository(Product)
 TransactionHistoryRepository = SQLRepository(TransactionHistory)
 transaction_history_files_repository = SQLRepository(TransactionHistoryFile)
 product_predictions_repository = SQLRepository(ProductPrediction)
-

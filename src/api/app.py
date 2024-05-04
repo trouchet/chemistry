@@ -1,4 +1,4 @@
-# Descrição: Este arquivo é responsável por criar 
+# Descrição: Este arquivo é responsável por criar
 # a instância do aplicativo FastAPI e adicionar as rotas a ele.
 
 from fastapi import FastAPI
@@ -19,13 +19,14 @@ async def lifespan(app: FastAPI):
     yield
     await raw_database_connection.disconnect()
 
+
 def create_app():
     # Crie uma instância do aplicativo FastAPI
     app_ = FastAPI(
         title=settings.PROJECT_NAME,
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
-        lifespan=lifespan
+        lifespan=lifespan,
     )
 
     # Adicione as rotas ao aplicativo
@@ -33,7 +34,7 @@ def create_app():
     app_.include_router(signup.router)
     app_.include_router(recommendation.router)
     app_.include_router(file.router)
-    
+
     app_.add_middleware(CORSMiddleware)
 
     return app_

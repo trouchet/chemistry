@@ -59,4 +59,3 @@ def test_recommend_product_invalid_request(client: TestClient):
     invalid_basket = {"company_id": "acme", "items": "invalid_data"}
     response = client.post(BASKET_ROUTE, json=invalid_basket)
     assert response.status_code == 422
-

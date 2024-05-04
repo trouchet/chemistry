@@ -10,6 +10,7 @@ from src.api.core.recommendation.schemas import (
 from src.api.core.recommendation.constants import AVAILABLE_METHODS as AVA
 from src.api.core.recommendation.metrics import get_association_metrics
 
+
 # We will test the core functionality of the models
 def test_basket_validity():
     basket = Basket(company_id='acme', items=['apple', 'banana'], age_months=42)

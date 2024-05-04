@@ -17,7 +17,7 @@ MEAN_ITEMS_PER_ITEMSET = 5
 DEFAULT_TOKEN_LENGTH = 10
 
 # Tamanho mínimo de um token
-MIN_LENGTH = 8  
+MIN_LENGTH = 8
 
 # Colunas do conjunto de dados
 # NOTE: This is a hardcode list of columns

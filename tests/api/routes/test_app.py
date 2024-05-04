@@ -1,4 +1,3 @@
-
 def test_read_root(client):
     response = client.get("/api/ping")
     assert response.status_code == 200
@@ -20,7 +19,6 @@ def test_health_check(client):
         'status': 'OK',
         'version': '0.0.1',
     }
-
 
 
 def test_info(client):

@@ -1,19 +1,12 @@
-from fastapi import (
-        File, UploadFile, APIRouter, status
-    )
+from fastapi import File, UploadFile, APIRouter, status
 from fastapi.responses import FileResponse
 
-from src.api.utils.routes import (
-    make_json_response, 
-    make_error_response
-)
-from src.api.constants import (
-    VALID_CONTENT_TYPES, 
-    VALID_FILE_TYPES
-)
+from src.api.utils.routes import make_json_response, make_error_response
+from src.api.constants import VALID_CONTENT_TYPES, VALID_FILE_TYPES
 from src.api.utils.routes import save_client_data
 
 router = APIRouter(prefix="/api", tags=["file"])
+
 
 @router.post(
     "/dataset/upload",
@@ -41,6 +34,7 @@ async def upload_file(file: UploadFile = File(...)):
         message = f'Invalid file type. Must be one of: {VALID_FILE_TYPES}'
         content = {"error": message}
         return make_error_response(content)
+
 
 @router.get(
     "/dataset/download",
