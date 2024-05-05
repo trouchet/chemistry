@@ -1,12 +1,13 @@
 # Description: Constants used in the project
+from fastapi import status
 
-#################################### Setup ####################################
+#################################### Routes ####################################
 
-# Time horizon to check for item metrics
-DEFAULT_AGE = 12
-
-# Array with valid age months
-VALID_AGE_MONTHS = [6, 12, 24, 36]
+# Códigos de status HTTP
+OK_200 = status.HTTP_200_OK
+CREATED_201 = status.HTTP_201_CREATED
+BAD_REQUEST_400 = status.HTTP_400_BAD_REQUEST
+INTERNAL_SERVER_ERROR_500 = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 #################################### File #####################################
 
@@ -17,13 +18,28 @@ VALID_CONTENT_TYPES = [
 ]
 VALID_FILE_TYPES = ['csv', 'xls', 'xlsx']
 
-#################################### Security ####################################
+#################################### Security #################################
+
+# Username requirements
+USERNAME_MIN_LENGTH = 3
+USERNAME_MAX_LENGTH = 20
 
 # Password requirements
+MIN_PASSWORD_LENGTH = 8
 PASSWORD_REQUIREMENTS_DICT = {
-    "min_length": 8,
+    "min_length": MIN_PASSWORD_LENGTH,
     "min_uppercase": 1,
     "min_lowercase": 1,
     "min_digits": 1,
     "min_special_chars": 1,
 }
+
+#################################### Logs ####################################
+
+# Número máximo de arquivos de log
+MAX_LOG_FILES = 10
+MAX_LOG_FOLDER_SIZE_MB = 10
+
+#################################### MISC ####################################
+
+DEFAULT_TOKEN_LENGTH = 10

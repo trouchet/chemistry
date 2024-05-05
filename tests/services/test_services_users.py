@@ -2,8 +2,8 @@ import pytest
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.services.models.users import ProviderService
-from src.db.schemas import Provider
+from src.services.users import UserService
+from src.storage.db.schemas import User
 
 
 async def test_register_provider_with_strong_password(mocker):
@@ -20,14 +20,14 @@ async def test_register_provider_with_strong_password(mocker):
     # Set the return value directly (no need to await)
     mock_session.return_value.filter_by_field.return_value = []
 
-    provider = await ProviderService().register(provider_data, session=mock_session)
+    provider = await UserService().register(provider_data, session=mock_session)
 
-    assert isinstance(provider, Provider)
+    assert isinstance(provider, User)
     assert provider.prov_username == provider_data["username"]
     
-    provider = await ProviderService().register(provider_data, session=mock_session)
+    provider = await UserService().register(provider_data, session=mock_session)
 
-    assert isinstance(provider, Provider)
+    assert isinstance(provider, User)
     assert provider.prov_username == provider_data["username"]
     
     # Don't assert password directly (security reasons)
@@ -42,7 +42,7 @@ async def test_register_provider_with_weak_password(mocker):
     mock_session = mocker.AsyncMock(spec=AsyncSession)
 
     with pytest.raises(HTTPException) as excinfo:
-        await ProviderService().register(provider_data, mock_session)
+        await UserService().register(provider_data, mock_session)
 
     assert excinfo.type == HTTPException
 
@@ -55,7 +55,7 @@ async def test_register_provider_with_missing_username(mocker):
     mock_session = mocker.AsyncMock(spec=AsyncSession)
 
     with pytest.raises(KeyError):
-        await ProviderService().register(provider_data, session=mock_session)
+        await UserService().register(provider_data, session=mock_session)
 
 
 async def test_register_provider_with_missing_password(mocker):
@@ -65,4 +65,4 @@ async def test_register_provider_with_missing_password(mocker):
     mock_session = mocker.AsyncMock(spec=AsyncSession)
 
     with pytest.raises(KeyError):
-        await ProviderService().register(provider_data, mock_session)
+        await UserService().register(provider_data, mock_session)

@@ -1,10 +1,10 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field, field_validator, ConfigDict
 from sqlalchemy.engine import URL
-from os import environ
+from typing import Dict, Any, Union
 
 from dotenv import load_dotenv
-from typing import Dict, Any, Union
+from os import environ
 import toml
 
 load_dotenv()
@@ -72,7 +72,7 @@ class Settings(BaseSettings):
 
         return str(
             URL.create(
-                drivername="postgresql",
+                drivername="postgresql+asyncpg",
                 username=data.get("POSTGRES_USER"),
                 password=data.get("POSTGRES_PASSWORD"),
                 host=data.get("POSTGRES_HOST"),

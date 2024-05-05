@@ -2,7 +2,7 @@
 from fastapi import APIRouter
 import toml
 
-from src.setup.config import settings
+from src.config import settings
 
 router = APIRouter(prefix="/api")
 

@@ -3,40 +3,27 @@
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 from prometheus_fastapi_instrumentator import Instrumentator
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import sessionmaker
+from contextlib import asynccontextmanager
 
-from src.setup.config import settings
-from src.routes import setup, file, signup
-from src.db.engine import (
-    create_async_database_engine, 
-    Base
-)
-from src.db.utils import create_db_and_tables
-
-from src.api.scheduler.scheduler import scheduler
+from . import settings
+from src.scheduler.schedule import scheduler
+from src.routes import auth, setup, file
+from src.storage.db.base.manager import session_manager
+from src.storage.db.utils import create_db_and_tables
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with await create_async_database_engine() as engine:
-        # Create tables or perform other database operations
-        await create_db_and_tables(engine)
+    """
+    Function that handles startup and shutdown events.
+    To understand more, read https://fastapi.tiangolo.com/advanced/events/
+    """
+    await create_db_and_tables()
 
-        # Create session factory within transaction for better resource management
-        async_session_local = sessionmaker(
-            autocommit=False,
-            autoflush=False,
-            bind=engine,
-            expire_on_commit=False,
-            class_=AsyncSession,
-        )
-        
-        try:
-            yield async_session_local
-        finally:
-            await async_session_local.close() 
+    yield
+    if session_manager._engine is not None:
+        # Close the DB connection
+        await session_manager.close()
 
 
 def create_app():
@@ -50,7 +37,7 @@ def create_app():
 
     # Add routers here
     app_.include_router(setup.router)
-    app_.include_router(signup.router)
+    app_.include_router(auth.router)
     app_.include_router(file.router)
 
     # Add middlewares here
@@ -59,16 +46,30 @@ def create_app():
     return app_
 
 
-# Get the number of applications from the environment variable
-app = create_app()
+def setup_app(app_):
+    """
+    Setup the application with the necessary configurations.
 
-def setup_app(app):
+    Args:
+        app_ (FastAPI): FastAPI application instance
+
+    Returns:
+        FastAPI: FastAPI application instance with the necessary configurations
+    """
     # Start Prometheus logging metrics
     prometheus_intrumentator=Instrumentator()
-    prometheus_intrumentator.instrument(app)
-    prometheus_intrumentator.expose(app)
+    prometheus_intrumentator.instrument(app_)
+    prometheus_intrumentator.expose(app_)
 
     # Start the scheduler
     scheduler.start()
 
-    return app
+    return app_
+
+
+# Get the number of applications from the environment variable
+app = create_app()
+
+# Setup the application
+app = setup_app(app)
+

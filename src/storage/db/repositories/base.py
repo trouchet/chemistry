@@ -1,25 +1,24 @@
 from abc import ABC, abstractmethod
-from typing import List, Any
+from typing import List, Any, Optional
 from sqlalchemy.exc import SQLAlchemyError
 
-from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from sqlalchemy import select
 
-from src.storage.db.base.exceptions import RepositoryException
-from src.storage.db.base.types import Model, PrimaryKeyType
+from ..dependencies.session import DatabaseSessionDependency
+from ..base.types import ModelType, PrimaryKeyType
+from .exceptions import RepositoryException
 
 class BaseRepository(ABC):
     @abstractmethod
-    def find_all(self) -> List[Model]:
+    def find_all(self) -> List[ModelType]:
         pass
 
     @abstractmethod
-    def find_by_id(self, pk: PrimaryKeyType) -> Model:
+    def find_by_id(self, pk: PrimaryKeyType) -> ModelType:
         pass
 
     @abstractmethod
-    def save(self, entity: Model) -> Model:
+    def save(self, entity: ModelType) -> ModelType:
         pass
 
     @abstractmethod
@@ -35,7 +34,11 @@ def fail_message(action, e):
     return f"Failed to {action}: {e}"
 
 class SQLRepository(BaseRepository):
-    def __init__(self, model: Model, session: AsyncSession) -> None:
+    def __init__(
+        self, 
+        model: ModelType, 
+        session: DatabaseSessionDependency
+    ) -> None:
         self.session = session
         self.model = model
         self.model_name = model.__class__.__name__
@@ -44,7 +47,7 @@ class SQLRepository(BaseRepository):
         fail_message = f"Failed to {action}: {e}"
         raise RepositoryException(fail_message)
 
-    async def find_all(self) -> List[Model]:
+    async def find_all(self) -> List[ModelType]:
         try:
             # Await the coroutine to get the data list
             query_result = await self.session.execute(select(self.model))
@@ -56,7 +59,7 @@ class SQLRepository(BaseRepository):
 
     async def find_by_id(
         self, pk: PrimaryKeyType
-    ) -> Optional[Model]:
+    ) -> Optional[ModelType]:
 
         try:
             data = await self.session.get(self.model, pk)
@@ -83,7 +86,7 @@ class SQLRepository(BaseRepository):
             action = f'delete {self.model_name} by id {pk}'
             await self.__raise_repository_exception(action, e)
 
-    async def save(self, entity: Model) -> Model:
+    async def save(self, entity: ModelType) -> ModelType:
         try:
             await self.session.add(entity)
             await self.session.commit()
@@ -96,7 +99,7 @@ class SQLRepository(BaseRepository):
 
     async def filter_by_field(
         self, field: str, value: Any
-    ) -> Optional[List[Model]]:
+    ) -> Optional[List[ModelType]]:
         try:
             field_value = getattr(self.model, field) == value
             query = select(self.model).filter(field_value)

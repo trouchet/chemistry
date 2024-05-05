@@ -1,11 +1,10 @@
 from re import search
-from src.utils.constants import MIN_LENGTH
-
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from jwt import encode
+from jwt import encode, decode
 
-from src.setup.config import settings
+from src.config import settings
+from src.constants import MIN_PASSWORD_LENGTH
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -18,7 +17,6 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifies a password against a hashed password."""
     return pwd_context.verify(plain_password, hashed_password)
-
 
 def is_password_strong_dict(password: str) -> bool:
     """
@@ -37,7 +35,7 @@ def is_password_strong_dict(password: str) -> bool:
     has_special_char = search(r"[^\w\s]", password)
 
     return {
-        "min_length": len(password) >= MIN_LENGTH,
+        "min_length": len(password) >= MIN_PASSWORD_LENGTH,
         "has_lowercase": bool(has_lowercase),
         "has_uppercase": bool(has_uppercase),
         "has_number": bool(has_number),
@@ -88,3 +86,11 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     )
 
     return encoded_jwt
+
+
+def decode_jwt(token: str):
+    return decode(
+        token, 
+        settings.SECRET_KEY, 
+        algorithms=[settings.JWT_ALGORITHM]
+    )

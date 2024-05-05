@@ -1,2 +1,4 @@
-class RepositoryException(Exception):
+from fastapi import HTTPException
+
+class RepositoryException(HTTPException):
     pass

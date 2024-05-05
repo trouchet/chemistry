@@ -1,3 +1,5 @@
+import toml
+
 def test_pong(client):
     response = client.get("/api/ping")
     assert response.status_code == 200
@@ -5,11 +7,10 @@ def test_pong(client):
 
 
 def test_health_check(client):
-    import toml
+    with open("pyproject.toml", "r") as f:
+        config = toml.load(f)
+        version = config["tool"]["poetry"]["version"]
     
-    with toml.open("pyproject.toml") as f:
-        version = f["tool"]["poetry"]["version"]
-
     response = client.get("/api/health")
     assert response.status_code == 200
     assert response.json() == {

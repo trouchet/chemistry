@@ -1,21 +1,18 @@
 from __future__ import annotations
 
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.dialects.postgresql import UUID, NUMERIC
-from sqlalchemy import (
-    String, 
-    Integer
+from typing_extensions import (
+    Annotated,
+    Union,
+    TypeVar
 )
-from sqlalchemy.types import Union
-from typing import TypeVar
+from sqlalchemy.dialects.postgresql import UUID, NUMERIC
+from uuid import UUID
 
+from .. import Base
 
 # Types
-PrimaryKeyType: Union[str, int, UUID] = Union(String, Integer, UUID(as_uuid=True))
+PrimaryKeyType = Union[str, int, UUID]
 Decimal = NUMERIC(precision=10, scale=2)
 
-Base = declarative_base()
-
-# Repository types
-PrimaryKeyType = Union[int, str, UUID]
-Model = TypeVar("Model", bound=Base)
+# Generic type for model
+ModelType = TypeVar("ModelType", bound=Base)

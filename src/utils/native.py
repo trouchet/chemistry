@@ -7,8 +7,7 @@ from secrets import choice
 from string import ascii_letters, digits
 from collections import defaultdict
 
-from src.utils.constants import DEFAULT_TOKEN_LENGTH
-
+from src.constants import DEFAULT_TOKEN_LENGTH
 
 def remove_duplicates_and_select_max(tuples_list: tuple) -> list:
     # Convert the list of tuples into a dictionary
@@ -106,39 +105,33 @@ def sum_dicts(dict_list) -> dict:
     return result
 
 
-@timer()
 def load_pickle(pkl_filepath: str) -> any:
     with open(pkl_filepath, 'rb') as f:
         return pickle.load(f)
 
 
-@timer()
 def dump_pickle(dump_file: any, pkl_filepath: str) -> None:
     # Dump training data to pickle
     with open(pkl_filepath, 'wb') as f:
         pickle.dump(dump_file, f)
 
 
-@timer()
 def load_dill(dill_filepath: str) -> None:
     with open(dill_filepath, 'rb') as f:
         return dill.load(f)
 
 
-@timer()
 def dump_dill(dump_file: any, dill_filepath: str) -> None:
     # Dump training data to dill
     with open(dill_filepath, 'wb') as f:
         dill.dump(dump_file, f)
 
 
-@timer()
 def load_cloudpickle(pkl_filepath: str) -> None:
     with open(pkl_filepath, 'rb') as f:
         return cloudpickle.load(f)
 
 
-@timer()
 def dump_cloudpickle(dump_file: any, pkl_filepath: str) -> None:
     # Dump training data to cloudpickle
     with open(pkl_filepath, 'wb') as f:
