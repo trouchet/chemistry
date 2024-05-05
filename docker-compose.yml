@@ -1,61 +1,73 @@
-version: "3.9"
+  version: "3.9"
 
-services:
-  postgres:
-    image: postgres:13
-    restart: always
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - pg_isready -U postgres
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    environment:
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  services:
+    postgres:
+      extends:
+        file: docker-compose.base.yml
+        service: database
+      environment:
         POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-    expose:
-      - ${POSTGRES_PORT}
-    volumes:
-      - ./postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - backend
-    
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    env_file: "./.env"
-    ports:
-        - "8000:8000"
-    expose:
-      - 8000
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - ./src:/src
-    networks:
-      - backend
+      ports:
+        - "5432:5432"
 
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--web.enable-lifecycle'
+    postgres-test:
+      extends:
+        file: docker-compose.base.yml
+        service: database
+      environment:
+        POSTGRES_DB: ${POSTGRES_DB}_test
+      ports:
+        - "5433:5433"
 
-volumes:
-  pgdata:
-    driver: local
+    redis:
+      image: redis:6.2-alpine
+      ports:
+        - "6379:6379"
+      restart: always
+      command: ["redis-server", "--appendonly", "yes"]
+      volumes:
+        - redis-data:/data
+      
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      restart: always
+      env_file: "./.env"
+      ports:
+          - "8000:8000"
+      expose:
+        - 8000
+      depends_on:
+        postgres:
+          condition: service_healthy
+      volumes:
+        - ./src:/src
+        - app-logs:/var/log/app
+      
+      networks:
+        - backend
 
-networks:
-  backend:
+    prometheus:
+      image: prom/prometheus
+      volumes:
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        - prometheus-data:/prometheus
+      ports:
+        - "9090:9090"
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--web.enable-lifecycle'
+
+  volumes:
+    pgdata:
+      driver: local
+    app-logs:
+      driver: local
+    prometheus-data:
+      driver: local
+    redis-data:
+      driver: local
+
+  networks:
+    backend:
