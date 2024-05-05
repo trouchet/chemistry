@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fastapi-API"
 version = "0.0.1"
-description = "A minimal repository for a FastAPI app instance"
+description = "A minimal repository for a FastAPI app instance with SQLAlchemy and redis database"
 authors = ["Bruno Peixoto <brunolnetto@gmail.com>"]
 license = "MIT"
 readme = "README.md"
