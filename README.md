@@ -40,4 +40,4 @@ Under construction
 ## API references
 
 FastAPI: https://fastapi.tiangolo.com/
-
+Example: https://github.com/tiangolo/full-stack-fastapi-template
