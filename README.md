@@ -36,6 +36,6 @@ Under construction
 
 ## TODO
 
-[ ] ( Normal ) Validate data insertion on database;
-[ ] (  Hard  ) Create endpoint for data import;
-[ ] (  Hard  ) Create routine for data processing (alternatives: Apscheduler/Celery).
+- [ ] ( Normal ) Validate data insertion on database;
+- [ ] (  Hard  ) Create endpoint for data import;
+- [ ] (  Hard  ) Create routine for data processing (alternatives: Apscheduler/Celery).
