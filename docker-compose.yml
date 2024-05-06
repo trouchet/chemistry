@@ -8,7 +8,7 @@
       environment:
         POSTGRES_DB: ${POSTGRES_DB}
       ports:
-        - "5432:5432"
+        - "${POSTGRES_PORT}:5432"
       volumes:
         - ./postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
         - pgdata:/var/lib/postgresql/data:cached
@@ -18,9 +18,9 @@
         file: docker-compose.base.yml
         service: database
       environment:
-        POSTGRES_DB: ${POSTGRES_DB}_test
+        POSTGRES_DB: ${POSTGRES_DB_TEST}
       ports:
-        - "5434:5432"
+        - "${POSTGRES_PORT_TEST}:5432"
       volumes:
         - ./postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
         - pgdata-test:/var/lib/postgresql/data:cached
