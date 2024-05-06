@@ -110,6 +110,24 @@ class Settings(BaseSettings):
     # Environment information: development, testing, production
     ENVIRONMENT: str = Field(ENVIRONMENT)
 
+    POSTGRES_HOST: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+    POSTGRES_PORT: Union[int, str]
+    
+    POSTGRES_HOST_TEST: str
+    POSTGRES_USER_TEST: str
+    POSTGRES_PASSWORD_TEST: str
+    POSTGRES_DB_TEST: str
+    POSTGRES_PORT_TEST: Union[int, str]
+    
+    POSTGRES_ECHO: bool
+    POSTGRES_POOL_SIZE: int
+    
+    SECRET_KEY: str
+    JWT_ALGORITHM: str
+    
     # Postgres settings
     POSTGRES_APPLICATION_SETTINGS: PostgresSettings = Field(application_db_settings)
     POSTGRES_TEST_SETTINGS: PostgresSettings = Field(test_db_settings)
@@ -123,6 +141,5 @@ class Settings(BaseSettings):
     class Config(ConfigDict):
         case_sensitive = True
         env_file = ".env"
-
 
 settings = Settings()
