@@ -5,4 +5,8 @@ from .logging import logger
 from .exceptions import (
     CredentialsException,
     WeakPasswordException,
+    UserAlreadyExistsException,
+    InvalidUsernameException,
+    NonMatchingPasswordsException,
+    UserRegistrationException
 )
