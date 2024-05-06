@@ -2,9 +2,10 @@ from sqlalchemy.orm import Mapped, mapped_column
 from pydantic import UUID4
 from email_validator import validate_email, EmailNotValidError
 from pydantic.functional_validators import field_validator
-import datetime   
+import datetime
 
-from src.storage.db import Base, InvalidEmailException
+from src.storage.db import Base
+from src.storage.db.exceptions import InvalidEmailException
 
 def get_current_timestamp():
     return datetime.datetime.now()

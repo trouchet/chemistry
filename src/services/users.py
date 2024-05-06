@@ -1,5 +1,6 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 from uuid import uuid4
+from typing_extensions import Annotated
 
 from src import (
     USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH
@@ -8,9 +9,8 @@ from src import (
 from src import logger
 from src.utils.security import hash_password, create_access_token
 from src.storage.db import User
-from src.dependencies import UserServiceDependency
 from src.models import UserRequest
-from src.storage.db.dependencies import UserRepositoryDependency
+from src.storage.db.repositories import UserRepositoryDependency
 from src.exceptions import (
     WeakPasswordException, 
     UserAlreadyExistsException,
@@ -18,6 +18,7 @@ from src.exceptions import (
     UserRegistrationException
 )
 from src.utils.security import is_password_strong
+from src.storage.db.repositories.users import get_users_repository
 
 class UserService:
     def __init__(
@@ -61,7 +62,7 @@ class UserService:
     async def register(
         self, 
         user_request: UserRequest,
-        user_repository: UserServiceDependency
+        user_repository: UserRepositoryDependency
     ) -> UserRequest:
         # Validate the user request
         try:
@@ -94,4 +95,6 @@ class UserService:
             raise 
         
         return UserRequest(**user.dict(exclude={"hashed_password"}))
+
+
 

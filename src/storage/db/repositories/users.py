@@ -1,3 +1,7 @@
+from typing_extensions import Annotated
+
+from fastapi import Depends
+
 from src.storage.db.dependencies import DatabaseSessionDependency
 
 from src.storage.db import (
@@ -5,7 +9,7 @@ from src.storage.db import (
     User,
 )
 
-from . import SQLRepository
+from .base import SQLRepository
 
 # Repositórios
 class UsersRepository(SQLRepository):
@@ -18,5 +22,11 @@ class UsersRepository(SQLRepository):
         except Exception as e:
             action = f'get user by username {username}'
             await self.__raise_repository_exception(action, e)
-        
-        
+
+
+def get_users_repository(): 
+    return UsersRepository()
+
+UserRepositoryDependency = Annotated[
+    UsersRepository, Depends(get_users_repository)
+]

@@ -8,5 +8,10 @@ from .schemas import User
 from .exceptions import (
     InvalidEmailException,
     UserNotFoundException,
-    UserAlreadyExistsException,
+)
+
+from .utils import (
+    create_db_and_tables,
+    drop_db_and_tables,
+    recreate_db_and_tables,
 )
