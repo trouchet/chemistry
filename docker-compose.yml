@@ -1,0 +1,81 @@
+  version: "3.9"
+
+  services:
+    postgres:
+      extends:
+        file: docker-compose.base.yml
+        service: database
+      environment:
+        POSTGRES_DB: ${POSTGRES_DB}
+      ports:
+        - "${POSTGRES_PORT}:5432"
+      volumes:
+        - ./postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+        - pgdata:/var/lib/postgresql/data:cached
+
+    postgres-test:
+      extends:
+        file: docker-compose.base.yml
+        service: database
+      environment:
+        POSTGRES_DB: ${POSTGRES_DB_TEST}
+      ports:
+        - "${POSTGRES_PORT_TEST}:5432"
+      volumes:
+        - ./postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+        - pgdata-test:/var/lib/postgresql/data:cached
+
+    redis:
+      image: redis:6.2-alpine
+      ports:
+        - "6379:6379"
+      restart: always
+      command: ["redis-server", "--appendonly", "yes"]
+      volumes:
+        - redis-data:/data
+      
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      restart: always
+      env_file: "./.env"
+      ports:
+          - "8000:8000"
+      expose:
+        - 8000
+      depends_on:
+        postgres:
+          condition: service_healthy
+      volumes:
+        - ./src:/src
+        - app-logs:/var/log/app
+      
+      networks:
+        - backend
+
+    prometheus:
+      image: prom/prometheus
+      volumes:
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        - prometheus-data:/prometheus
+      ports:
+        - "9090:9090"
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--web.enable-lifecycle'
+
+  volumes:
+    pgdata:
+      driver: local
+    pgdata-test:
+      driver: local
+    app-logs:
+      driver: local
+    prometheus-data:
+      driver: local
+    redis-data:
+      driver: local
+
+  networks:
+    backend:
