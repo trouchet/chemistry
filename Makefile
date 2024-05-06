@@ -40,6 +40,9 @@ env: ## Creates a virtual environment. Usage: make env
 	pip install uv
 	uv venv
 
+install: ## Installs the python requirements. Usage: make install
+	uv pip install -r requirements.txt 
+
 build: sanitize ## Builds the application. Usage: make build
 	docker-compose build --no-cache
 
