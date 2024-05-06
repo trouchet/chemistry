@@ -1,7 +1,7 @@
 from typing import Annotated, Optional 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from jwt import JWTError
+from jwt import PyJWTError
 
 from src.storage.db.schemas import User
 from src.storage.db.repositories import UsersRepository
@@ -25,7 +25,7 @@ async def get_current_user(
         if permissions is None:
             raise CredentialsException()
 
-    except JWTError:
+    except PyJWTError:
         raise CredentialsException()
 
     user = await UsersRepository().get_by_username(username_candidate)
