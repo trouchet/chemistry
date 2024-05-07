@@ -1,4 +1,4 @@
-CONTAINER_NAME := api-app-1
+CONTAINER_NAME := api-backend-1
 
 .PHONY: build run stop ps host
 
