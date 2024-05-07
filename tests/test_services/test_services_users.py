@@ -2,8 +2,8 @@ import pytest
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.services.users import UserService
-from src.storage.db.schemas import User
+from chemistry.services.users import UserService
+from chemistry.storage.db.schemas import User
 
 
 async def test_register_provider_with_strong_password(mocker):
