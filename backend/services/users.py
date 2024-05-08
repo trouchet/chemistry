@@ -2,37 +2,28 @@ from fastapi import HTTPException, Depends
 from uuid import uuid4
 from typing_extensions import Annotated
 
-from app import (
+from backend import (
     USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH
 )
 
-<<<<<<< HEAD:src/services/users.py
-from src import logger
-from src.utils.security import hash_password, create_access_token
-from src.storage.db import User
-from src.models import UserRequest
-from src.storage.db.repositories import UserRepositoryDependency
-from src.exceptions import (
-=======
-from app import logger
-from app.utils.security import hash_password, create_access_token
-from app.storage.db import User
-from app.dependencies import UserServiceDependency
-from app.models import UserRequest
-from app.storage.db.dependencies import UserRepositoryDependency
-from app.exceptions import (
->>>>>>> 72cc561 (hotfix/ big refactor):backend/app/services/users.py
+from backend import logger
+from backend.utils.security import (
+    hash_password, 
+    create_access_token, 
+    is_password_strong
+)
+from backend.storage.db import User
+from backend.storage.db.dependencies.repositories import UserRepositoryDependency
+
+from backend.api.dependencies.services import UserServiceDependency
+from backend.api.models import UserRequest
+
+from backend.exceptions import (
     WeakPasswordException, 
     UserAlreadyExistsException,
     InvalidUsernameException,
     UserRegistrationException
 )
-<<<<<<< HEAD:src/services/users.py
-from src.utils.security import is_password_strong
-from src.storage.db.repositories.users import get_users_repository
-=======
-from app.utils.security import is_password_strong
->>>>>>> 72cc561 (hotfix/ big refactor):backend/app/services/users.py
 
 class UserService:
     def __init__(
