@@ -5,8 +5,7 @@ from unittest.mock import patch
 import pytest
 from os import path
 
-from src.app import app
-from src.config import settings
+from backend import app, settings
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/db
@@ -14,10 +13,7 @@ from src.config import settings
 @pytest.fixture(scope="session")
 def engine():
     """Create a test database engine."""
-    engine = create_engine(
-        settings.ASYNC_POSTGRES_URI_TEST, 
-        echo=settings.POSTGRES_ECHO
-    )
+    engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
     yield engine
     engine.dispose()  # Close the connection after tests
 
@@ -40,11 +36,9 @@ def client():
 
 @pytest.fixture
 def mock_get_client_data(mocker, sample_dataframe):
-    return mocker.patch(
-        'src.routes.recommendation.get_client_data',
-        return_value=('order_id', 'item_id', 'description', sample_dataframe),
-    )
-
+    mock_function = 'src.routes.recommendation.get_client_data'
+    dataframe_info = ('order_id', 'item_id', 'description', sample_dataframe)
+    return mocker.patch(mock_function, return_value=dataframe_info)
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## src/api/utils/native
