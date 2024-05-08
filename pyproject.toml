@@ -7,6 +7,13 @@ license = "MIT"
 readme = "README.md"
 package-mode = false
 
+[tool.poetry.dev-dependencies]
+black = { version = "24.4.1" }
+codecov = { version = "2.1.13" }
+pytest-asyncio = { version = "0.23.6" }
+pytest-mock = { version = "3.14.0" }
+pytest-watch = { version = "4.2.0" }
+
 [tool.poetry.dependencies]
 python = ">=3.9,<3.9.7 || >3.9.7,<4.0"
 a2wsgi = "==1.10.4"

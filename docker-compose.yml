@@ -1,29 +1,43 @@
   version: "3.9"
 
   services:
-    postgres:
-      extends:
-        file: docker-compose.base.yml
-        service: database
-      environment:
-        POSTGRES_DB: ${POSTGRES_DB}
-      ports:
-        - "${POSTGRES_PORT}:5432"
+    db:
+      image: postgres:12
+      restart: always
       volumes:
         - ./postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
         - pgdata:/var/lib/postgresql/data:cached
-
-    postgres-test:
-      extends:
-        file: docker-compose.base.yml
-        service: database
-      environment:
-        POSTGRES_DB: ${POSTGRES_DB_TEST}
+      env_file:
+        - .env
       ports:
-        - "${POSTGRES_PORT_TEST}:5432"
-      volumes:
-        - ./postgres/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
-        - pgdata-test:/var/lib/postgresql/data:cached
+        - "${POSTGRES_PORT}:5432"
+      environment:
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+        - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+        - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+    
+    adminer:
+      image: adminer
+      restart: always
+      networks:
+        - traefik-public
+        - default
+      depends_on:
+        - db
+      environment:
+        - ADMINER_DESIGN=pepa-linha-dark
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.${STACK_NAME?Variable not set}-adminer-http.rule=Host(`adminer.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-adminer-http.entrypoints=http
+        - traefik.http.routers.${STACK_NAME?Variable not set}-adminer-http.middlewares=https-redirect
+        - traefik.http.routers.${STACK_NAME?Variable not set}-adminer-https.rule=Host(`adminer.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-adminer-https.entrypoints=https
+        - traefik.http.routers.${STACK_NAME?Variable not set}-adminer-https.tls=true
+        - traefik.http.routers.${STACK_NAME?Variable not set}-adminer-https.tls.certresolver=le
+        - traefik.http.services.${STACK_NAME?Variable not set}-adminer.loadbalancer.server.port=8080
 
     redis:
       image: redis:6.2-alpine
@@ -34,25 +48,40 @@
       volumes:
         - redis-data:/data
       
-    app:
+    backend:
+      image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+      restart: always
       build:
         context: .
         dockerfile: Dockerfile
-      restart: always
-      env_file: "./.env"
-      ports:
-          - "8000:8000"
-      expose:
-        - 8000
       depends_on:
-        postgres:
+        db:
           condition: service_healthy
+      env_file: ".env"
+      environment:
+        - DOMAIN=${DOMAIN}
+        - ENVIRONMENT=${ENVIRONMENT}
+        - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
+        - SECRET_KEY=${SECRET_KEY?Variable not set}
+        - FIRST_SUPERUSER=${FIRST_SUPERUSER?Variable not set}
+        - FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD?Variable not set}
+        - USERS_OPEN_REGISTRATION=${USERS_OPEN_REGISTRATION}
+        - SMTP_HOST=${SMTP_HOST}
+        - SMTP_USER=${SMTP_USER}
+        - SMTP_PASSWORD=${SMTP_PASSWORD}
+        - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
+        - POSTGRES_SERVER=db
+        - POSTGRES_PORT=${POSTGRES_PORT}
+        - POSTGRES_DB=${POSTGRES_DB}
+        - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+        - SENTRY_DSN=${SENTRY_DSN}
       volumes:
-        - ./src:/src
-        - app-logs:/var/log/app
+        - ./app:/app
       
       networks:
-        - backend
+        - traefik-public
+        - default
 
     prometheus:
       image: prom/prometheus
@@ -67,10 +96,6 @@
 
   volumes:
     pgdata:
-      driver: local
-    pgdata-test:
-      driver: local
-    app-logs:
       driver: local
     prometheus-data:
       driver: local
