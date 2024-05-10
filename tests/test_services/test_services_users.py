@@ -2,8 +2,8 @@ import pytest
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from chemistry.services.users import UserService
-from chemistry.storage.db.schemas import User
+from backend.services.users import UserService
+from backend.storage.db.schemas import User
 
 
 async def test_register_provider_with_strong_password(mocker):
@@ -12,7 +12,7 @@ async def test_register_provider_with_strong_password(mocker):
     provider_data = {"username": "test_user", "password": strong_password}
 
     # Mock is_password_strong to return True
-    mocker.patch("src.utils.security.is_password_strong", return_value=True)
+    mocker.patch("backend.utils.security.is_password_strong", return_value=True)
 
     # Mock providers_repository.filter_by_field to return an empty list
     mock_session = mocker.AsyncMock(spec=AsyncSession)

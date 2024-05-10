@@ -1,7 +1,16 @@
 import toml
 
+from starlette.responses import JSONResponse
+
+from backend.core.app import app
+
 def test_pong(client):
     response = client.get("/api/ping")
+    
+    # Iterate through app.router_registry potentially
+    for route in app.routes:
+        print(f"Path: {route}")
+    
     assert response.status_code == 200
     assert response.json() == {"message": "pong"}
 

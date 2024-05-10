@@ -1,6 +1,6 @@
 import json
 
-from app.utils.routes import make_json_response
+from backend.utils.routes import make_json_response
 
 
 def test_make_json_response():

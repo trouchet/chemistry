@@ -33,6 +33,9 @@ def session(engine):
 def client():
     return TestClient(app)
 
+@pytest.fixture
+def sample_data():
+    return {"data": 42}
 
 @pytest.fixture
 def mock_get_client_data(mocker, sample_dataframe):

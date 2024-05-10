@@ -1,4 +1,4 @@
-from src.utils.security import is_password_strong
+from backend.utils.security import is_password_strong
 
 
 def test_empty_password():
