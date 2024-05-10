@@ -14,8 +14,8 @@ from sqlalchemy.ext.asyncio import (
     create_engine,
 )
 
-from backend.app.db.models.users import User, UserCreate
-from backend.app.api.services.users import create_user 
+from .models.users import User, UserCreate
+from ..api.services.users import create_user 
 from backend.app import settings
 
 # Heavily inspired by 

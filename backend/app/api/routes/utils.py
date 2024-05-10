@@ -6,7 +6,7 @@ from backend.app.api.utils.email import (
     generate_test_email, 
     send_email
 )
-from backend.app.db.models.misc import Message 
+from ...db.models.misc import Message 
 
 router = APIRouter()
 

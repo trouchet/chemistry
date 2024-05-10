@@ -1,12 +1,12 @@
 from fastapi import File, UploadFile, APIRouter, status
 from fastapi.responses import FileResponse
 
-from backend.app.api.utils.routes import (
+from ..utils.routes import (
     make_json_response, 
     make_error_response,
     save_client_data
 )
-from backend.app.api.constants import (
+from ..constants import (
     VALID_CONTENT_TYPES, 
     VALID_FILE_TYPES
 )

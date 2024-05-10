@@ -10,9 +10,9 @@ from fastapi.routing import APIRoute
 from contextlib import asynccontextmanager
 
 from .. import settings
-from backend.app.scheduler.schedule import scheduler
+from ..scheduler.schedule import scheduler
 
-from backend.app.api.main import api_router
+from ..api.main import api_router
 
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
     sentry_sdk.init(dsn=str(settings.SENTRY_DSN), enable_tracing=True)

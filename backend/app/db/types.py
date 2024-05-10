@@ -16,9 +16,6 @@ from datetime import datetime
 # Types
 Decimal = NUMERIC(precision=10, scale=2)
 
-# Generic type for model
-ModelType = TypeVar("ModelType", bound=Base)
-
 # Primary type for primary key
 PrimaryKeyType = Union[UUID4, int, str]
 

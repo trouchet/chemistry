@@ -38,9 +38,9 @@ from ..utils.email import (
     verify_password_reset_token,
 )
 
-from backend.app.db.models.misc import Message
-from backend.app.db.models.token import Token
-from backend.app.db.models.users import NewPassword, UserPublic
+from ...db.models.misc import Message
+from ...db.models.token import Token
+from ...db.models.users import NewPassword, UserPublic
 
 
 router = APIRouter()

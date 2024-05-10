@@ -6,16 +6,16 @@ from ..constants import (
     USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH
 )
 
-from backend.app import logger
-from backend.app.api.utils.security import (
+from ... import logger
+from ..utils.security import (
     get_password_hash, 
     create_access_token, 
     is_password_strong
 )
-from backend.app.db import User
-from backend.app.api.models import UserRequest
+from ...db import User
+from ..models import UserRequest
 
-from backend.app.api.exceptions import (
+from ..exceptions import (
     WeakPasswordException, 
     UserAlreadyExistsException,
     InvalidUsernameException,
@@ -26,11 +26,11 @@ from typing import Any
 
 from sqlmodel import Session, select
 
-from backend.app.api.utils.security import (
+from ..utils.security import (
     get_password_hash, 
     verify_password
 )
-from backend.app.db.models.users import (
+from ...db.models.users import (
     User, 
     UserCreate, 
     UserUpdate

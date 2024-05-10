@@ -9,11 +9,11 @@ from tenacity import (
     stop_after_attempt, 
     wait_fixed,
 )
+from app.db.base import engine
+from app import logger
 
-from backend.storage.db import session_manager
-from backend import logger
-
-max_tries_seconds = 60 * 5  # 5 minutes
+# 5 minutes
+max_tries_seconds = 60 * 5  
 wait_seconds = 1
 
 
@@ -26,7 +26,7 @@ wait_seconds = 1
 def init(db_engine: Engine) -> None:
     try:
         # Try to create session to check if DB is awake
-        with Session(db_engine) as session:
+        with Session(engine) as session:
             session.exec(select(1))
     except Exception as e:
         logger.error(e)
@@ -35,7 +35,7 @@ def init(db_engine: Engine) -> None:
 
 def main() -> None:
     logger.info("Initializing service")
-    init(session_manager.engine)
+    init(engine)
     logger.info("Service finished initializing")
 
 

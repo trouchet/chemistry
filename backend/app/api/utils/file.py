@@ -1,5 +1,4 @@
 from os import path, makedirs
-import os
 
 
 def get_filename(filename: str) -> str:
@@ -51,6 +50,6 @@ def get_file_size(file_path):
         FileNotFoundError: If the file does not exist.
     """
     try:
-        return os.path.getsize(file_path)
+        return path.getsize(file_path)
     except FileNotFoundError:
         raise FileNotFoundError(f"File not found: {file_path}")

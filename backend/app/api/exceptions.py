@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from .utils.security import is_password_strong_dict
 from .constants import USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH
-from backend.app.db.types import PrimaryKeyType
+from ..db.types import PrimaryKeyType
 
 class CredentialsException(HTTPException):
     def __init__(self):

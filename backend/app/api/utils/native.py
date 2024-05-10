@@ -7,7 +7,7 @@ from secrets import choice
 from string import ascii_letters, digits
 from collections import defaultdict
 
-from backend.app.api.constants import DEFAULT_TOKEN_LENGTH
+from ..constants import DEFAULT_TOKEN_LENGTH
 
 def remove_duplicates_and_select_max(tuples_list: tuple) -> list:
     # Convert the list of tuples into a dictionary

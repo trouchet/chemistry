@@ -1,4 +1,4 @@
-from backend import logger
+from ... import logger
 
 # Function to be executed as a scheduled task
 def print_statement():
