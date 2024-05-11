@@ -18,8 +18,8 @@ def get_current_timestamp():
 
 
 class DatetimeTypeMixin:
-    created_at: datetime = Field(index=True, default=get_current_timestamp)
-    updated_at: datetime = Field(index=True, default=get_current_timestamp)
+    created_at: datetime = Field(default=get_current_timestamp)
+    updated_at: datetime = Field(default=get_current_timestamp)
 
     @field_validator("created_at")
     @classmethod

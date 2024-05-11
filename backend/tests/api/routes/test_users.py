@@ -73,6 +73,7 @@ def test_get_existing_user(
     route = f"{settings.API_V1_STR}/users/{user_id}"
     r = client.get(route, headers=superuser_token_headers)
     assert 200 <= r.status_code < 300
+
     api_user = r.json()
     existing_user = get_user_by_email(session=db, email=username)
     assert existing_user
@@ -98,11 +99,9 @@ def test_get_existing_user_current_user(client: TestClient, db: Session) -> None
     headers = {"Authorization": f"Bearer {a_token}"}
 
     route = f"{settings.API_V1_STR}/users/{user_id}"
-    r = client.get(
-        route,
-        headers=headers,
-    )
+    r = client.get(route, headers=headers)
     assert 200 <= r.status_code < 300
+
     api_user = r.json()
     existing_user = get_user_by_email(session=db, email=username)
     assert existing_user
@@ -132,11 +131,7 @@ def test_create_user_existing_username(
 
     route = f"{settings.API_V1_STR}/users/"
     data = {"email": username, "password": password}
-    r = client.post(
-        route,
-        headers=superuser_token_headers,
-        json=data,
-    )
+    r = client.post(route, headers=superuser_token_headers, json=data)
     created_user = r.json()
     assert r.status_code == 400
     assert "_id" not in created_user
@@ -150,11 +145,7 @@ def test_create_user_by_normal_user(
     data = {"email": username, "password": password}
     route = f"{settings.API_V1_STR}/users/"
 
-    r = client.post(
-        route,
-        headers=normal_user_token_headers,
-        json=data,
-    )
+    r = client.post(route, headers=normal_user_token_headers, json=data)
     assert r.status_code == 403
 
 

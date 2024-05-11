@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Tuple, List
 
-from ... import MAX_LOG_FILES, MAX_LOG_FOLDER_SIZE_MB
+from backend.app.api.constants import MAX_LOG_FILES, MAX_LOG_FOLDER_SIZE_MB
 
 
 def get_files_sorted_by_mtime(directory_path: str) -> List[Tuple[float, Path]]:
