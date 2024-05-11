@@ -5,39 +5,28 @@ import sentry_sdk
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
-from contextlib import asynccontextmanager
+from fastapi.routing import APIRoute
 
 from .. import settings
-from chemistry.scheduler.schedule import scheduler
-from chemistry.storage.db.base.manager import session_manager
-from chemistry.storage.db.utils import create_db_and_tables
+from ..scheduler.schedule import scheduler
 
-from chemistry.api.main import api_router
+from ..api.main import api_router
 
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
     sentry_sdk.init(dsn=str(settings.SENTRY_DSN), enable_tracing=True)
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """
-    Function that handles startup and shutdown events.
-    To understand more, read https://fastapi.tiangolo.com/advanced/events/
-    """
-
-    yield
-    if session_manager._engine is not None:
-        # Close the DB connection
-        await session_manager.close()
+def custom_generate_unique_id(route: APIRoute) -> str:
+    return f"{route.tags[0]}-{route.name}"
 
 
 def create_app():
     # Generates the FastAPI application
     app_ = FastAPI(
         title=settings.PROJECT_NAME,
-        docs_url="/api/docs",
-        openapi_url="/api/openapi.json",
-        lifespan=lifespan,
+        docs_url=f"{settings.API_V1_STR}/docs",
+        openapi_url=f"{settings.API_V1_STR}/openapi.json",
+        generate_unique_id_function=custom_generate_unique_id,
     )
 
     return app_
@@ -61,8 +50,7 @@ def setup_app(app_):
         app_.add_middleware(
             CORSMiddleware,
             allow_origins=[
-                str(origin).strip("/") 
-                for origin in settings.BACKEND_CORS_ORIGINS
+                str(origin).strip("/") for origin in settings.BACKEND_CORS_ORIGINS
             ],
             allow_credentials=True,
             allow_methods=["*"],
@@ -70,7 +58,7 @@ def setup_app(app_):
         )
 
     # Start Prometheus logging metrics
-    prometheus_intrumentator=Instrumentator()
+    prometheus_intrumentator = Instrumentator()
     prometheus_intrumentator.instrument(app_)
     prometheus_intrumentator.expose(app_)
 

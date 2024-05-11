@@ -3,14 +3,14 @@ import logging
 from sqlalchemy import Engine
 from sqlmodel import Session, select
 from tenacity import (
-    after_log, 
-    before_log, 
-    retry, 
-    stop_after_attempt, 
+    after_log,
+    before_log,
+    retry,
+    stop_after_attempt,
     wait_fixed,
 )
 
-from app.storage.db import session_manager
+from .db.base import engine
 from app import logger
 
 max_tries_seconds = 60 * 5  # 5 minutes
@@ -35,7 +35,7 @@ def init(db_engine: Engine) -> None:
 
 def main() -> None:
     logger.info("Initializing service")
-    init(session_manager.engine)
+    init(engine)
     logger.info("Service finished initializing")
 
 

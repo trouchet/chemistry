@@ -1,5 +1,8 @@
 from pydantic_core import MultiHostUrl
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict,
+)
 from pydantic import (
     AnyUrl,
     BeforeValidator,
@@ -9,33 +12,33 @@ from pydantic import (
     model_validator,
 )
 
-
-from typing import Literal, Annotated,List, Any
-from typing_extensions import Self
+from typing import Literal, List, Any, Union
+from typing_extensions import Self, Annotated
 
 from warnings import warn
-from dotenv import load_dotenv
-from os import environ
 import toml
 
-def parse_cors(v: Any) -> List[str] | str:
+
+def parse_cors(v: Any) -> Union[List[str], str]:
     if isinstance(v, str) and not v.startswith("["):
         return [i.strip() for i in v.split(",")]
-    elif isinstance(v, list | str):
+    elif isinstance(v, (list, str)):
         return v
     raise ValueError(v)
 
-DEFAULT_PASSWORD = "changethis"
 
-POSTGRES_DSN_SCHEME = "postgresql+asyncpg"
+DEFAULT_PASSWORD = "changethis"
+POSTGRES_DSN_SCHEME = "postgresql+psycopg"
 
 # Project settings
 with open("pyproject.toml", "r") as f:
     config = toml.load(f)
 
+
 # Settings class
 class Settings(BaseSettings):
     """App settings."""
+
     model_config = SettingsConfigDict(
         env_file=".env", env_ignore_empty=True, extra="ignore"
     )
@@ -44,18 +47,21 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = config["tool"]["poetry"]["name"]
     API_V1_STR: str = "/api/v1"
 
-    ENVIRONMENT: Literal['local'] = "development"
+    ENVIRONMENT: Literal["local"] = "development"
     DOMAIN: str = "localhost"
+
+    # 7 days
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 7 * 24 * 60
 
     @computed_field  # type: ignore[misc]
     @property
     def server_host(self) -> str:
         # Use HTTPS for anything other than local development
-        protocol = "http" if self.ENVIRONMENT == "local" else "https" 
+        protocol = "http" if self.ENVIRONMENT == "local" else "https"
         return f"{protocol}://{self.DOMAIN}"
 
-    SENTRY_DSN: HttpUrl | None = None
-    POSTGRES_SERVER: str
+    SENTRY_DSN: Union[HttpUrl, None] = None
+    POSTGRES_HOST: str
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -65,34 +71,37 @@ class Settings(BaseSettings):
     @computed_field  # type: ignore[misc]
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
-        return MultiHostUrl.build(
-            scheme=POSTGRES_DSN_SCHEME,
-            username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
-            host=self.POSTGRES_SERVER,
-            port=self.POSTGRES_PORT,
-            path=self.POSTGRES_DB,
+        return str(
+            MultiHostUrl.build(
+                scheme=POSTGRES_DSN_SCHEME,
+                username=self.POSTGRES_USER,
+                password=self.POSTGRES_PASSWORD,
+                host=self.POSTGRES_HOST,
+                port=self.POSTGRES_PORT,
+                path=self.POSTGRES_DB,
+            )
         )
-    
+
     # JWT
     SECRET_KEY: str
     JWT_ALGORITHM: str
 
     # CORS
     BACKEND_CORS_ORIGINS: Annotated[
-        List[AnyUrl] | str, BeforeValidator(parse_cors)
+        Union[List[AnyUrl], str], BeforeValidator(parse_cors)
     ] = []
 
     # Email settings
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
     SMTP_PORT: int = 587
-    SMTP_HOST: str | None = None
-    SMTP_USER: str | None = None
-    SMTP_PASSWORD: str | None = None
+    SMTP_HOST: Union[str, None] = None
+    SMTP_USER: Union[str, None] = None
+    SMTP_PASSWORD: Union[str, None] = None
+
     # TODO: update type to EmailStr when sqlmodel supports it
-    EMAILS_FROM_EMAIL: str | None = None
-    EMAILS_FROM_NAME: str | None = None
+    EMAILS_FROM_EMAIL: Union[str, None] = None
+    EMAILS_FROM_NAME: Union[str, None] = None
 
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:
@@ -114,7 +123,7 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_PASSWORD: str
     USERS_OPEN_REGISTRATION: bool = False
 
-    def _check_default_secret(self, var_name: str, value: str | None) -> None:
+    def _check_default_secret(self, var_name: str, value: Union[str, None]) -> None:
         if value == DEFAULT_PASSWORD:
             message = (
                 f'The value of {var_name} is "{DEFAULT_PASSWORD}", '
@@ -127,16 +136,13 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _enforce_non_default_secrets(self) -> Self:
-        self._check_default_secret(
-            "SECRET_KEY", self.SECRET_KEY
-        )
-        self._check_default_secret(
-            "POSTGRES_PASSWORD", self.POSTGRES_PASSWORD
-        )
+        self._check_default_secret("SECRET_KEY", self.SECRET_KEY)
+        self._check_default_secret("POSTGRES_PASSWORD", self.POSTGRES_PASSWORD)
         self._check_default_secret(
             "FIRST_SUPERUSER_PASSWORD", self.FIRST_SUPERUSER_PASSWORD
         )
 
         return self
+
 
 settings = Settings()

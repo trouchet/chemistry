@@ -1,7 +1,8 @@
 # Description: Models for the API.
-from . import APIModel
+from pydantic import BaseModel
+
 
 # Providers request model
-class UserRequest(APIModel):
+class UserRequest(BaseModel):
     username: str
     password: str

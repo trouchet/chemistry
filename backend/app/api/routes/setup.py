@@ -2,12 +2,12 @@
 from fastapi import APIRouter
 import toml
 
-from src.config import settings
+from ... import settings
 
-router = APIRouter(prefix="/api")
+router = APIRouter()
 
 
-@router.get('/ping')
+@router.get("/ping")
 async def pong():
     return {"message": "pong"}
 

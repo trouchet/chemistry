@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import Tuple, List
 
-from app import MAX_LOG_FILES, MAX_LOG_FOLDER_SIZE_MB
+from ... import MAX_LOG_FILES, MAX_LOG_FOLDER_SIZE_MB
+
 
 def get_files_sorted_by_mtime(directory_path: str) -> List[Tuple[float, Path]]:
     """
@@ -14,15 +15,18 @@ def get_files_sorted_by_mtime(directory_path: str) -> List[Tuple[float, Path]]:
         List[Tuple[float, Path]]: A list of tuples containing modification time and Path objects.
     """
     files = [
-        (path.getmtime(file_path), Path(file_path))
+        (Path.getmtime(file_path), Path(file_path))
         for file_path in Path(directory_path).iterdir()
         if file_path.is_file()
     ]
     files.sort()
     return files
 
+
 def manage_files(
-    directory_path: str, max_files: int = MAX_LOG_FILES, max_size_mb: int = MAX_LOG_FOLDER_SIZE_MB
+    directory_path: str,
+    max_files: int = MAX_LOG_FILES,
+    max_size_mb: int = MAX_LOG_FOLDER_SIZE_MB,
 ):
     """
     Manages the number and total size of files in a directory, deleting the oldest
@@ -46,10 +50,10 @@ def manage_files(
             oldest_file.unlink()
             total_size -= oldest_file.stat().st_size
 
+
 def manage_files_periodically():
-    logs_path = Path.cwd() / 'logs'
+    logs_path = Path.cwd() / "logs"
 
     # Create the folder if it doesn't exist
     logs_path.mkdir(parents=True, exist_ok=True)
     manage_files(logs_path)
-

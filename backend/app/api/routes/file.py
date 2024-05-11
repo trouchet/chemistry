@@ -1,17 +1,13 @@
 from fastapi import File, UploadFile, APIRouter, status
 from fastapi.responses import FileResponse
 
-from src.utils.routes import (
-    make_json_response, 
+from ..utils.routes import (
+    make_json_response,
     make_error_response,
-    save_client_data
 )
-from src import (
-    VALID_CONTENT_TYPES, 
-    VALID_FILE_TYPES
-)
+from ..constants import VALID_CONTENT_TYPES, VALID_FILE_TYPES
 
-router = APIRouter(prefix="/api", tags=["file"])
+router = APIRouter(tags=["file"])
 
 
 @router.post(
@@ -21,7 +17,6 @@ router = APIRouter(prefix="/api", tags=["file"])
 )
 async def upload_file(
     file: UploadFile = File(...),
-
 ):
     """
     Endpoint para fazer upload de um arquivo.
@@ -34,13 +29,10 @@ async def upload_file(
     """
     # Validate file size and type
     if file.content_type in VALID_CONTENT_TYPES:
-        # Save the file or process it as needed
-        save_client_data(provider_id, client_id, file)
-
         content = {"file": file.filename}
         return make_json_response(200, content)
     else:
-        message = f'Invalid file type. Must be one of: {VALID_FILE_TYPES}'
+        message = f"Invalid file type. Must be one of: {VALID_FILE_TYPES}"
         content = {"error": message}
         return make_error_response(content)
 

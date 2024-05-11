@@ -1,16 +1,15 @@
 from fastapi import Depends
-
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from typing_extensions import Annotated
 
-from .users import CurrentUserDependency
-from chemistry.storage.db.schemas import User
+from ... import settings
 
-async def validate_is_authenticated(
-    current_user: CurrentUserDependency,
-) -> User:
-    """
-    This just returns as the CurrentUserDep dependency already throws if there is an issue with the auth token.
-    """
-    return current_user
+# OAuth2PasswordBearer instance
+tokenUrl = f"{settings.API_V1_STR}/login/access-token"
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=tokenUrl)
 
-AuthenticationDependency = Annotated[User, Depends(validate_is_authenticated)]
+# Dependency to get token
+TokenDependency = Annotated[str, Depends(reusable_oauth2)]
+
+# Dependency to get password form
+PasswordFormDependency = Annotated[OAuth2PasswordRequestForm, Depends()]

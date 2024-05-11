@@ -1,37 +1,59 @@
-from typing import Annotated, Optional 
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
-from jwt import JWTError
+from typing_extensions import Annotated
+from jwt import PyJWTError, decode
+from pydantic import ValidationError
 
-from chemistry.storage.db.schemas import User
-from chemistry.storage.db.repositories import UsersRepository
-from chemistry.exceptions import CredentialsException
-from chemistry.utils.security import decode_jwt
+from ... import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
-TokenDependency = Annotated[str, Depends(oauth2_scheme)]
+from ...models.users import User
 
-async def get_current_user(
-    token: TokenDependency,
-) -> Optional[User]:
+from ..exceptions import (
+    CredentialsException,
+    UserNotFoundException,
+    InactiveUserException,
+    InsufficientPrivilegesException,
+)
+
+from .auth import TokenDependency
+from .session import DatabaseSessionDependency
+
+from ...models.token import TokenPayload
+
+
+def get_current_user(
+    session: DatabaseSessionDependency, token: TokenDependency
+) -> User:
     try:
-        payload = decode_jwt(token)
-        username_candidate: str = payload.get("sub")
+        secret = settings.SECRET_KEY
+        algorithms = [settings.JWT_ALGORITHM]
+        payload = decode(token, secret, algorithms=algorithms)
 
-        if not username_candidate:
-            raise CredentialsException()
-        
-        permissions = payload.get("permissions")
-        if permissions is None:
-            raise CredentialsException()
+        token_data = TokenPayload(**payload)
 
-    except JWTError:
+    except (PyJWTError, ValidationError):
         raise CredentialsException()
 
-    user = await UsersRepository().get_by_username(username_candidate)
+    user = session.get(User, token_data.sub)
+
     if not user:
-        raise CredentialsException()
-    else: 
-        return user
+        raise UserNotFoundException()
 
+    if not user.is_active:
+        raise InactiveUserException()
+
+    return user
+
+
+# Dependency to get the current user
 CurrentUserDependency = Annotated[User, Depends(get_current_user)]
+
+
+def get_current_active_superuser(current_user: CurrentUserDependency) -> User:
+    if not current_user.is_superuser:
+        raise InsufficientPrivilegesException()
+
+    return current_user
+
+
+# Dependency to get the current superuser
+SuperUserDependency = Depends(get_current_active_superuser)

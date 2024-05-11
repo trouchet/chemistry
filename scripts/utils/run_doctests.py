@@ -59,7 +59,8 @@ def run_tests(doctests: List[DocTest]) -> None:
 
 
 if __name__ == "__main__":
-    # Get the root directory from command line argument, defaulting to current working directory
+    # Get the root directory from command line argument, defaulting to current
+    # working directory
     root_directory = sys.argv[1] if len(sys.argv) > 1 else "."
 
     # Find all Python files in the specified root directory

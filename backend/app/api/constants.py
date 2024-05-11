@@ -1,7 +1,7 @@
 # Description: Constants used in the project
 from fastapi import status
 
-#################################### Routes ####################################
+#################################### Routes ##############################
 
 # Códigos de status HTTP
 OK_200 = status.HTTP_200_OK
@@ -16,7 +16,7 @@ VALID_CONTENT_TYPES = [
     "text/csv",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 ]
-VALID_FILE_TYPES = ['csv', 'xls', 'xlsx']
+VALID_FILE_TYPES = ["csv", "xls", "xlsx"]
 
 #################################### Security #################################
 
