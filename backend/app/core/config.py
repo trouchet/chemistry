@@ -86,6 +86,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     JWT_ALGORITHM: str
 
+    # Testing
+    TESTING: bool = False
+
     # CORS
     BACKEND_CORS_ORIGINS: Annotated[
         Union[List[AnyUrl], str], BeforeValidator(parse_cors)

@@ -1,16 +1,12 @@
 import toml
 
 
-from app import app
+from backend.app import settings
 
 
 def test_pong(client):
-    route = app.url_path_for("ping")
+    route = f"{settings.API_V1_STR}/ping"
     response = client.get(route)
-
-    # Iterate through app.router_registry potentially
-    for route in app.routes:
-        print(f"Path: {route}")
 
     assert response.status_code == 200
     assert response.json() == {"message": "pong"}
@@ -21,7 +17,8 @@ def test_health_check(client):
         config = toml.load(f)
         version = config["tool"]["poetry"]["version"]
 
-    route = app.url_path_for("health_check")
+    route = f"{settings.API_V1_STR}/health"
+
     response = client.get(route)
     assert response.status_code == 200
     assert response.json() == {
@@ -33,7 +30,7 @@ def test_health_check(client):
 
 
 def test_info(client):
-    route = app.url_path_for("info")
+    route = f"{settings.API_V1_STR}/info"
     response = client.get(route)
     assert response.status_code == 200
     assert "name" in response.json()

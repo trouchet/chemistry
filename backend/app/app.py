@@ -7,10 +7,10 @@ from starlette.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 from fastapi.routing import APIRoute
 
-from .. import settings
-from ..scheduler.schedule import scheduler
+from . import settings
+from .scheduler.schedule import scheduler
 
-from ..api.main import api_router
+from .api.routes.router_bundler import api_router
 
 # Sentry configuration
 if settings.SENTRY_DSN:
@@ -27,7 +27,11 @@ if settings.SENTRY_DSN:
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
-    return f"{route.tags[0]}-{route.name}"
+    tag = "" if not route.tags else route.tags[0]
+    name = route.name
+    route_label = f"{tag}-{name}" if tag else name
+
+    return route_label
 
 
 def create_app():

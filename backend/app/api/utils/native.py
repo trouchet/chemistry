@@ -1,6 +1,3 @@
-import pickle
-import dill
-import cloudpickle
 import re
 from random import sample
 from secrets import choice
@@ -104,39 +101,6 @@ def sum_dicts(dict_list) -> dict:
             else:
                 result[key] += value
     return result
-
-
-def load_pickle(pkl_filepath: str) -> any:
-    with open(pkl_filepath, "rb") as f:
-        return pickle.load(f)
-
-
-def dump_pickle(dump_file: any, pkl_filepath: str) -> None:
-    # Dump training data to pickle
-    with open(pkl_filepath, "wb") as f:
-        pickle.dump(dump_file, f)
-
-
-def load_dill(dill_filepath: str) -> None:
-    with open(dill_filepath, "rb") as f:
-        return dill.load(f)
-
-
-def dump_dill(dump_file: any, dill_filepath: str) -> None:
-    # Dump training data to dill
-    with open(dill_filepath, "wb") as f:
-        dill.dump(dump_file, f)
-
-
-def load_cloudpickle(pkl_filepath: str) -> None:
-    with open(pkl_filepath, "rb") as f:
-        return cloudpickle.load(f)
-
-
-def dump_cloudpickle(dump_file: any, pkl_filepath: str) -> None:
-    # Dump training data to cloudpickle
-    with open(pkl_filepath, "wb") as f:
-        cloudpickle.dump(dump_file, f)
 
 
 def snake2camel(snake: str, start_lower: bool = False) -> str:

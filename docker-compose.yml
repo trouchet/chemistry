@@ -44,7 +44,7 @@
       restart: always
       build:
         context: .
-        dockerfile: Dockerfile
+        dockerfile: ./backend/Dockerfile
       depends_on:
         db:
           condition: service_healthy

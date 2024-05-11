@@ -10,14 +10,17 @@ from ..dependencies.session import DatabaseSessionDependency
 from ..dependencies.auth import PasswordFormDependency
 
 from ... import settings
-from ..utils.security import get_password_hash, create_access_token
+from ..utils.security import (
+    get_password_hash,
+    create_access_token,
+)
 
 from ..services.users import (
     authenticate,
     get_user_by_email,
 )
 
-from ..exceptions import (
+from backend.app.exceptions import (
     WrongCredentialsException,
     InactiveUserException,
     InvalidTokenException,
@@ -52,6 +55,7 @@ def login_access_token(
 
     if not user:
         raise WrongCredentialsException()
+
     elif not user.is_active:
         raise InactiveUserException()
 
@@ -105,7 +109,9 @@ def reset_password(session: DatabaseSessionDependency, body: NewPassword) -> Mes
     if not user:
         raise InexistentUserByEmailException()
 
-    elif not user.is_active:
+    user = user[0]
+
+    if not user.is_active:
         raise InactiveUserException()
 
     hashed_password = get_password_hash(password=body.new_password)

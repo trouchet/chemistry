@@ -1,6 +1,6 @@
 from fastapi import HTTPException
-from .utils.security import is_password_strong_dict
-from .constants import USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH
+from .api.utils.security import is_password_strong_dict
+from .api.constants import USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH
 
 
 # Custom exceptions
@@ -70,7 +70,7 @@ class UserNotFoundException(HTTPException):
 
 # Users exceptions
 class InactiveUserException(HTTPException):
-    def __init__(self, username: str):
+    def __init__(self):
         self.status_code = 400
         self.detail = "Inactive user"
 
@@ -84,7 +84,7 @@ class UserAlreadyExistsByUsernameException(HTTPException):
 class UserAlreadyExistsByEMailException(HTTPException):
     def __init__(self):
         self.status_code = 409
-        self.detail = "The user with this email already exists in the system."
+        self.detail = "User with this email already exists in the system."
 
 
 class InvalidUsernameException(HTTPException):
@@ -95,6 +95,12 @@ class InvalidUsernameException(HTTPException):
 
         self.status_code = 400
         self.detail = f"Invalid username: {err_msg}."
+
+
+class InvalidEmailException(HTTPException):
+    def __init__(self, email: str):
+        self.status_code = 400
+        self.detail = f"Invalid email: {email}."
 
 
 class UserRegistrationException(HTTPException):
@@ -135,6 +141,6 @@ class SuperUserForbiddenException(HTTPException):
 
 # Token exceptions
 class InvalidTokenException(HTTPException):
-    def __init__(self, e: Exception):
+    def __init__(self):
         self.status_code = 400
         self.detail = "Invalid token"

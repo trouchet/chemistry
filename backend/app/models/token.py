@@ -10,4 +10,4 @@ class Token(SQLModel):
 
 # Contents of JWT token
 class TokenPayload(SQLModel):
-    sub: Union[int, None] = None
+    sub: Union[str, int, None] = None

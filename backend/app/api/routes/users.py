@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter
 from sqlmodel import func, select
 
-from ..exceptions import (
+from backend.app.exceptions import (
     InexistentUserException,
     SuperUserForbiddenException,
     UserAlreadyExistsByEMailException,
@@ -26,6 +26,7 @@ from ..services.users import get_user_by_email
 from ..utils.security import get_password_hash, verify_password
 from ..utils.email import generate_new_account_email, send_email
 from backend.app import settings
+from ..services.users import create_user, update_user
 
 from ...models.users import (
     UpdatePassword,
@@ -64,7 +65,7 @@ def read_users(
 
 
 @router.post("/", dependencies=[SuperUserDependency], response_model=UserPublic)
-def create_user(*, session: DatabaseSessionDependency, user_in: UserCreate) -> Any:
+def create_user_(*, session: DatabaseSessionDependency, user_in: UserCreate) -> Any:
     """
     Create new user.
     """
@@ -100,8 +101,10 @@ def update_user_me(
 
     if user_in.email:
         existing_user = get_user_by_email(session=session, email=user_in.email)
-        if existing_user and existing_user.id != current_user.id:
-            raise UserAlreadyExistsByEMailException()
+        if existing_user:
+            existing_user = existing_user[0]
+            if existing_user.id != current_user.id:
+                raise UserAlreadyExistsByEMailException()
 
     user_data = user_in.model_dump(exclude_unset=True)
     current_user.sqlmodel_update(user_data)
@@ -174,6 +177,7 @@ def register_user(session: DatabaseSessionDependency, user_in: UserRegister) -> 
         raise UserAlreadyExistsByEMailException()
 
     user_create = UserCreate.model_validate(user_in)
+
     user = create_user(session=session, user_create=user_create)
     return user
 
@@ -188,6 +192,7 @@ def read_user_by_id(
     Get a specific user by id.
     """
     user = session.get(User, user_id)
+
     if user == current_user:
         return user
 
@@ -202,7 +207,7 @@ def read_user_by_id(
     dependencies=[SuperUserDependency],
     response_model=UserPublic,
 )
-def update_user(
+def update_user_(
     *,
     session: DatabaseSessionDependency,
     user_id: int,

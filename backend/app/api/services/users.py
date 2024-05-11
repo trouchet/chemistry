@@ -1,13 +1,32 @@
 from typing import Any, Union
+from uuid import uuid4
 
 from sqlmodel import Session, select
 
 from ..utils.security import get_password_hash, verify_password
 from ...models.users import User, UserCreate, UserUpdate
 
+from typing import List
+
+
+def get_all_superusers(*, session: Session) -> List[User]:
+    statement = select(User).where(User.is_superuser)
+    superusers = session.exec(statement).all()
+    return superusers
+
+
+def get_all_users(*, session: Session) -> List[User]:
+    statement = select(User)
+    users = session.exec(statement).all()
+    return users
+
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
-    password_dict = {"hashed_password": get_password_hash(user_create.password)}
+    password_dict = {
+        "id": uuid4(),
+        "hashed_password": get_password_hash(user_create.password),
+    }
+
     db_obj = User.model_validate(user_create, update=password_dict)
 
     session.add(db_obj)
@@ -46,6 +65,7 @@ def authenticate(*, session: Session, email: str, password: str) -> Union[User, 
     if not db_user:
         return None
 
+    db_user = db_user[0]
     if not verify_password(password, db_user.hashed_password):
         return None
 

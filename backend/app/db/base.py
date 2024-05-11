@@ -1,5 +1,6 @@
 from sqlmodel import Session, create_engine, select
 from typing import Generator
+from sqlmodel import SQLModel
 
 from ..models.users import User, UserCreate
 from ..api.services.users import create_user
@@ -17,11 +18,8 @@ def init_db(session: Session) -> None:
     # Tables should be created with Alembic migrations
     # But if you don't want to use migrations, create
     # the tables un-commenting the next lines
-    # from sqlmodel import SQLModel
-
-    # from app.core.engine import engine
-    # This works because the models are already imported and registered from app.models
-    # SQLModel.metadata.create_all(engine)
+    if settings.TESTING:
+        SQLModel.metadata.create_all(engine)
 
     query = select(User).where(User.email == settings.FIRST_SUPERUSER)
     user = session.exec(query).first()

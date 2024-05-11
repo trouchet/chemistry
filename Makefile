@@ -41,13 +41,13 @@ env: ## Creates a virtual environment. Usage: make env
 	uv venv
 
 install: ## Installs the python requirements. Usage: make install
-	uv pip install -r requirements.txt 
+	uv pip install -r requirements.txt
 
 build: sanitize ## Builds the application. Usage: make build
 	docker-compose build --no-cache
 
 run: ## Run the application. Usage: make run
-	uvicorn src.server:app --reload --workers 1 --host 0.0.0.0 --port 8000
+	uvicorn backend.app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
 
 search: ## Searchs for a token in the code. Usage: make search token=your_token
 	grep -rnw . \
@@ -103,4 +103,3 @@ migrate: ## Run migrations. Usage: make migrate
 	python scripts/migrate.py
 
 restart: down build up ## Add a rule to docker restart containers. Usage: make restart
-

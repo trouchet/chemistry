@@ -2,14 +2,14 @@ from unittest.mock import MagicMock, patch
 
 from sqlmodel import select
 
-from app.tests_pre_start import init, logger
+from backend.tests_pre_start import init, logger
 
 
 def test_init_successful_connection() -> None:
     engine_mock = MagicMock()
 
     session_mock = MagicMock()
-    exec_mock = MagicMock(return_value=True)
+    exec_mock = MagicMock(return_value=[1])
     session_mock.configure_mock(**{"exec.return_value": exec_mock})
 
     with (
@@ -18,11 +18,8 @@ def test_init_successful_connection() -> None:
         patch.object(logger, "error"),
         patch.object(logger, "warn"),
     ):
-        try:
-            init(engine_mock)
-            connection_successful = True
-        except Exception:
-            connection_successful = False
+        init(engine_mock)
+        connection_successful = True
 
         assert (
             connection_successful

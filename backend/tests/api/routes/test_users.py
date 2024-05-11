@@ -4,12 +4,14 @@ from fastapi.testclient import TestClient
 from typing import Dict
 from sqlmodel import Session, select
 
-from app.api.services.users import create_user, get_user_by_email
+from backend.app.api.services.users import create_user, get_user_by_email
 from backend.app import settings
 from backend.app.api.utils.security import verify_password
-from backend.app.models import User, UserCreate
+from backend.app.models.users import User, UserCreate
 
 from backend.tests.utils import random_email, random_lower_string
+
+from uuid import uuid4
 
 
 def test_get_users_superuser_me(
@@ -40,9 +42,9 @@ def test_create_user_new_email(
     client: TestClient, superuser_token_headers: Dict[str, str], db: Session
 ) -> None:
     with (
-        patch("app.utils.send_email", return_value=None),
-        patch("app.core.config.settings.SMTP_HOST", "smtp.example.com"),
-        patch("app.core.config.settings.SMTP_USER", "admin@example.com"),
+        patch("backend.app.utils.email.send_email", return_value=None),
+        patch("backend.app.core.config.settings.SMTP_HOST", "smtp.example.com"),
+        patch("backend.app.core.config.settings.SMTP_USER", "admin@example.com"),
     ):
         username = random_email()
         password = random_lower_string()
@@ -66,7 +68,9 @@ def test_get_existing_user(
 ) -> None:
     username = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=username, password=password)
+    id_ = uuid4()
+
+    user_in = UserCreate(id=id_, email=username, password=password)
     user = create_user(session=db, user_create=user_in)
     user_id = user.id
 
@@ -83,7 +87,10 @@ def test_get_existing_user(
 def test_get_existing_user_current_user(client: TestClient, db: Session) -> None:
     username = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=username, password=password)
+    id_ = uuid4()
+
+    user_in = UserCreate(id=id_, email=username, password=password)
+
     user = create_user(session=db, user_create=user_in)
     user_id = user.id
 
@@ -111,7 +118,10 @@ def test_get_existing_user_current_user(client: TestClient, db: Session) -> None
 def test_get_existing_user_permissions_error(
     client: TestClient, normal_user_token_headers: Dict[str, str]
 ) -> None:
-    route = f"{settings.API_V1_STR}/users/999999"
+    test_id = uuid4()
+    route = f"{settings.API_V1_STR}/users/{test_id}"
+    print(route)
+
     r = client.get(
         route,
         headers=normal_user_token_headers,
@@ -124,9 +134,11 @@ def test_create_user_existing_username(
     client: TestClient, superuser_token_headers: Dict[str, str], db: Session
 ) -> None:
     username = random_email()
-    # username = email
     password = random_lower_string()
-    user_in = UserCreate(email=username, password=password)
+    id_ = uuid4()
+
+    user_in = UserCreate(id=id_, email=username, password=password)
+
     create_user(session=db, user_create=user_in)
 
     route = f"{settings.API_V1_STR}/users/"
@@ -154,12 +166,17 @@ def test_retrieve_users(
 ) -> None:
     username = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=username, password=password)
+    id_ = uuid4()
+
+    user_in = UserCreate(id=id_, email=username, password=password)
     create_user(session=db, user_create=user_in)
 
     username2 = random_email()
     password2 = random_lower_string()
-    user_in2 = UserCreate(email=username2, password=password2)
+    id2 = uuid4()
+
+    user_in2 = UserCreate(id=id2, email=username2, password=password2)
+
     create_user(session=db, user_create=user_in2)
 
     route = f"{settings.API_V1_STR}/users/"
@@ -264,6 +281,7 @@ def test_update_user_me_email_exists(
 ) -> None:
     username = random_email()
     password = random_lower_string()
+
     user_in = UserCreate(email=username, password=password)
     user = create_user(session=db, user_create=user_in)
 
@@ -274,8 +292,10 @@ def test_update_user_me_email_exists(
         headers=normal_user_token_headers,
         json=data,
     )
+
+    msg = "User with this email already exists in the system."
     assert r.status_code == 409
-    assert r.json()["detail"] == "User with this email already exists"
+    assert r.json()["detail"] == msg
 
 
 def test_update_password_me_same_password_error(
@@ -300,18 +320,16 @@ def test_update_password_me_same_password_error(
 
 
 def test_register_user(client: TestClient, db: Session) -> None:
-    with patch("app.core.config.settings.USERS_OPEN_REGISTRATION", True):
+    with patch("backend.app.core.config.settings.USERS_OPEN_REGISTRATION", True):
         username = random_email()
         password = random_lower_string()
         full_name = random_lower_string()
 
         route = f"{settings.API_V1_STR}/users/signup"
+
         data = {"email": username, "password": password, "full_name": full_name}
 
-        r = client.post(
-            route,
-            json=data,
-        )
+        r = client.post(route, json=data)
         assert r.status_code == 200
 
         created_user = r.json()
@@ -327,7 +345,7 @@ def test_register_user(client: TestClient, db: Session) -> None:
 
 
 def test_register_user_forbidden_error(client: TestClient) -> None:
-    with patch("app.core.config.settings.USERS_OPEN_REGISTRATION", False):
+    with patch("backend.app.core.config.settings.USERS_OPEN_REGISTRATION", False):
         username = random_email()
         password = random_lower_string()
         full_name = random_lower_string()
@@ -346,7 +364,7 @@ def test_register_user_forbidden_error(client: TestClient) -> None:
 
 
 def test_register_user_already_exists_error(client: TestClient) -> None:
-    with patch("app.core.config.settings.USERS_OPEN_REGISTRATION", True):
+    with patch("backend.app.core.config.settings.USERS_OPEN_REGISTRATION", True):
         password = random_lower_string()
         full_name = random_lower_string()
 
@@ -356,15 +374,11 @@ def test_register_user_already_exists_error(client: TestClient) -> None:
             "password": password,
             "full_name": full_name,
         }
-        r = client.post(
-            route,
-            json=data,
-        )
-        assert r.status_code == 400
-        assert (
-            r.json()["detail"]
-            == "The user with this email already exists in the system"
-        )
+        r = client.post(route, json=data)
+        msg = "User with this email already exists in the system."
+
+        assert r.status_code == 409
+        assert r.json()["detail"] == msg
 
 
 def test_update_user(
@@ -372,6 +386,7 @@ def test_update_user(
 ) -> None:
     username = random_email()
     password = random_lower_string()
+
     user_in = UserCreate(email=username, password=password)
     user = create_user(session=db, user_create=user_in)
 
@@ -400,7 +415,8 @@ def test_update_user_not_exists(
 ) -> None:
     data = {"full_name": "Updated_full_name"}
 
-    route = f"{settings.API_V1_STR}/users/99999999"
+    test_uuid = uuid4()
+    route = f"{settings.API_V1_STR}/users/{test_uuid}"
     r = client.patch(
         route,
         headers=superuser_token_headers,
@@ -417,12 +433,14 @@ def test_update_user_email_exists(
 ) -> None:
     username = random_email()
     password = random_lower_string()
+
     user_in = UserCreate(email=username, password=password)
     user = create_user(session=db, user_create=user_in)
 
     username2 = random_email()
     password2 = random_lower_string()
-    user_in2 = UserCreate(email=username2, password=password2)
+    id2 = uuid4()
+    user_in2 = UserCreate(id=id2, email=username2, password=password2)
     user2 = create_user(session=db, user_create=user_in2)
 
     route = f"{settings.API_V1_STR}/users/{user.id}"
@@ -471,7 +489,7 @@ def test_delete_user_me(client: TestClient, db: Session) -> None:
     assert result is None
 
     user_query = select(User).where(User.id == user_id)
-    user_db = db.execute(user_query).first()
+    user_db = db.exec(user_query).first()
     assert user_db is None
 
 
@@ -495,11 +513,14 @@ def test_delete_user_super_user(
 ) -> None:
     username = random_email()
     password = random_lower_string()
+
     user_in = UserCreate(email=username, password=password)
     user = create_user(session=db, user_create=user_in)
     user_id = user.id
+    route = f"{settings.API_V1_STR}/users/{user_id}"
+
     r = client.delete(
-        f"{settings.API_V1_STR}/users/{user_id}",
+        route,
         headers=superuser_token_headers,
     )
     assert r.status_code == 200
@@ -515,8 +536,10 @@ def test_delete_user_super_user(
 def test_delete_user_not_found(
     client: TestClient, superuser_token_headers: Dict[str, str]
 ) -> None:
+    test_id = uuid4()
+    route = f"{settings.API_V1_STR}/users/{test_id}"
     r = client.delete(
-        f"{settings.API_V1_STR}/users/99999999",
+        route,
         headers=superuser_token_headers,
     )
 
@@ -532,8 +555,9 @@ def test_delete_user_current_super_user_error(
     assert super_user
     user_id = super_user.id
 
+    route = f"{settings.API_V1_STR}/users/{user_id}"
     r = client.delete(
-        f"{settings.API_V1_STR}/users/{user_id}",
+        route,
         headers=superuser_token_headers,
     )
 
@@ -551,8 +575,9 @@ def test_delete_user_without_privileges(
     user_in = UserCreate(email=username, password=password)
     user = create_user(session=db, user_create=user_in)
 
+    route = f"{settings.API_V1_STR}/users/{user.id}"
     r = client.delete(
-        f"{settings.API_V1_STR}/users/{user.id}",
+        route,
         headers=normal_user_token_headers,
     )
 

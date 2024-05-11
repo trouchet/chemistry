@@ -1,4 +1,4 @@
-from ... import logger
+from backend.app.core.logging import logger
 
 
 # Function to be executed as a scheduled task

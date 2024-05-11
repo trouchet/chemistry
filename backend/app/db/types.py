@@ -34,3 +34,12 @@ class DatetimeTypeMixin:
     @classmethod
     def get_current_timestamp(cls):
         return get_current_timestamp()
+
+
+class IDModelMixin:
+    id: PrimaryKeyType = Field(default=None, primary_key=True)
+
+    @field_validator("id")
+    @classmethod
+    def validate_id(cls, id):
+        return id

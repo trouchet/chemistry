@@ -7,7 +7,7 @@ from ... import settings
 
 from ...models.users import User
 
-from ..exceptions import (
+from ...exceptions import (
     CredentialsException,
     UserNotFoundException,
     InactiveUserException,
