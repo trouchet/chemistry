@@ -63,7 +63,7 @@ replace: ## Replaces a token in the code. Usage: make replace token=your_token
 		--exclude=poetry.lock)
 
 test: ## Test the application. Usage: make test
-	poetry run coverage run --rcfile=.coveragerc -m pytest
+	poetry run coverage run --rcfile=.coveragerc -m pytest backend/
 
 minimal-requirements: ## Generates minimal requirements. Usage: make requirements
 	python3 scripts/clean_packages.py requirements.txt requirements.txt
