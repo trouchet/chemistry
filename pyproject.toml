@@ -15,7 +15,7 @@ pytest-mock = { version = "3.14.0" }
 pytest-watch = { version = "4.2.0" }
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.9.7 || >3.9.7,<4.0"
+python = ">=3.9,<3.9.7 || >3.9.7,<4.0"
 a2wsgi = "==1.10.4"
 alembic = "==1.13.1"
 bcrypt = "4.0.1"
