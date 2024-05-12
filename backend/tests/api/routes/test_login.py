@@ -94,6 +94,15 @@ def test_reset_password(
     assert user
     assert verify_password(data["new_password"], user.hashed_password)
 
+    token = generate_password_reset_token(email=settings.FIRST_SUPERUSER)
+    data = {"new_password": settings.FIRST_SUPERUSER_PASSWORD, "token": token}
+    route = f"{settings.API_V1_STR}/reset-password/"
+    r = client.post(
+        route,
+        headers=superuser_token_headers,
+        json=data,
+    )
+
 
 def test_reset_password_invalid_token(
     client: TestClient, superuser_token_headers: Dict[str, str]

@@ -69,6 +69,7 @@ def authenticate(*, session: Session, email: str, password: str) -> Union[User, 
     if not db_user:
         return None
 
+    print(verify_password("changethis", db_user.hashed_password))
     if not verify_password(password, db_user.hashed_password):
         return None
 
