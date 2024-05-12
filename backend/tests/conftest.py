@@ -4,10 +4,14 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, delete
 from os import path
 
-from backend.app import settings, app
+from backend.app import settings
+from backend.app.app import app
 from backend.app.db.base import engine, init_db
 from backend.app.models.users import User
-from .utils import authentication_token_from_email, get_superuser_token_headers
+from .utils import (
+    authentication_token_from_email,
+    get_superuser_token_headers,
+)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -17,7 +21,7 @@ def db() -> Generator[Session, None, None]:
         yield session
 
         statement = delete(User)
-        session.execute(statement)
+        session.exec(statement)
         session.commit()
 
 

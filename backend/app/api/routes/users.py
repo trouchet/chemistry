@@ -25,7 +25,7 @@ from ..services.users import get_user_by_email
 
 from ..utils.security import get_password_hash, verify_password
 from ..utils.email import generate_new_account_email, send_email
-from backend.app import settings
+from backend.app.core.config import settings
 from ..services.users import create_user, update_user
 
 from ...models.users import (

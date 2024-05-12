@@ -2,7 +2,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from typing_extensions import Annotated
 
-from ... import settings
+from backend.app.core.config import settings
 
 # OAuth2PasswordBearer instance
 tokenUrl = f"{settings.API_V1_STR}/login/access-token"

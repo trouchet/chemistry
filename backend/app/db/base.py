@@ -4,7 +4,7 @@ from sqlmodel import SQLModel
 
 from ..models.users import User, UserCreate
 from ..api.services.users import create_user
-from ...app import settings
+from backend.app.core.config import settings
 
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
 

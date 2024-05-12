@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from jwt import encode
 from typing import Any, Union
 
-from ... import settings
+from backend.app.core.config import settings
 from ..constants import MIN_PASSWORD_LENGTH
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

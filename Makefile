@@ -2,7 +2,7 @@ CONTAINER_NAME := api-backend-1
 
 .PHONY: build run stop ps host
 
-OMIT_PATHS := "tests/*,src/main.py,src/app.py,*/__init__.py,*/constants.py"
+OMIT_PATHS := "backend/tests/*"
 
 define PRINT_HELP_PYSCRIPT
 import re, sys

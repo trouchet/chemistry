@@ -1,6 +1,8 @@
 from uvicorn import run
 
-from backend.app import app, settings, logger
+from backend.app.app import app
+from backend.app.core.config import settings
+from backend.app.core.logging import logger
 
 # Run the applications
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ from starlette.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 from fastapi.routing import APIRoute
 
-from . import settings
+from .core.config import settings
 from .scheduler.schedule import scheduler
 
 from .api.routes.router_bundler import api_router

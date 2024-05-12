@@ -109,7 +109,6 @@ def test_get_existing_user_current_user(client: TestClient, db: Session) -> None
 
     route = f"{settings.API_V1_STR}/users/{user_id}"
     r = client.get(route, headers=headers)
-    print(r.json())
 
     assert 200 <= r.status_code < 300
 

@@ -6,7 +6,6 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from backend.app import settings
-
 from backend.app.api.services.users import (
     create_user,
     get_user_by_email,
@@ -34,21 +33,6 @@ def create_random_user(db: Session) -> User:
     return user
 
 
-def get_superuser_token_headers(client: TestClient) -> Dict[str, str]:
-    login_data = {
-        "username": settings.FIRST_SUPERUSER,
-        "password": settings.FIRST_SUPERUSER_PASSWORD,
-    }
-
-    route = f"{settings.API_V1_STR}/login/access-token"
-    r = client.post(route, data=login_data)
-    tokens = r.json()
-
-    a_token = tokens["access_token"]
-    headers = {"Authorization": f"Bearer {a_token}"}
-    return headers
-
-
 def user_authentication_headers(
     *, client: TestClient, email: str, password: str
 ) -> Dict[str, str]:
@@ -60,6 +44,14 @@ def user_authentication_headers(
     auth_token = response["access_token"]
     headers = {"Authorization": f"Bearer {auth_token}"}
     return headers
+
+
+def get_superuser_token_headers(client: TestClient) -> Dict[str, str]:
+    return user_authentication_headers(
+        client=client,
+        email=settings.FIRST_SUPERUSER,
+        password=settings.FIRST_SUPERUSER_PASSWORD,
+    )
 
 
 def authentication_token_from_email(

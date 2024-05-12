@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Union, List
 from uuid import uuid4
 
 from sqlmodel import Session, select
@@ -6,7 +6,11 @@ from sqlmodel import Session, select
 from ..utils.security import get_password_hash, verify_password
 from ...models.users import User, UserCreate, UserUpdate
 
-from typing import List
+
+def get_all_active_users(*, session: Session) -> List[User]:
+    statement = select(User).where(User.is_active)
+    active_users = session.exec(statement).all()
+    return active_users
 
 
 def get_all_superusers(*, session: Session) -> List[User]:

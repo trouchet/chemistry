@@ -9,7 +9,7 @@ import logging
 from jinja2 import Template
 from jwt import decode, encode, PyJWTError
 
-from backend.app import settings
+from backend.app.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
