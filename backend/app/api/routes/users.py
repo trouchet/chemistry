@@ -2,6 +2,7 @@ from typing import Any
 
 from fastapi import APIRouter
 from sqlmodel import func, select
+from pydantic import UUID4
 
 from backend.app.exceptions import (
     InexistentUserException,
@@ -11,7 +12,6 @@ from backend.app.exceptions import (
     SamePreviousPasswordException,
     OpenRegistrationForbiddenException,
     InsufficientPrivilegesException,
-    InexistentUserByEmailException,
     InexistentUserByIDException,
 )
 
@@ -102,7 +102,6 @@ def update_user_me(
     if user_in.email:
         existing_user = get_user_by_email(session=session, email=user_in.email)
         if existing_user:
-            existing_user = existing_user[0]
             if existing_user.id != current_user.id:
                 raise UserAlreadyExistsByEMailException()
 
@@ -184,7 +183,7 @@ def register_user(session: DatabaseSessionDependency, user_in: UserRegister) -> 
 
 @router.get("/{user_id}", response_model=UserPublic)
 def read_user_by_id(
-    user_id: int,
+    user_id: UUID4,
     session: DatabaseSessionDependency,
     current_user: CurrentUserDependency,
 ) -> Any:
@@ -210,7 +209,7 @@ def read_user_by_id(
 def update_user_(
     *,
     session: DatabaseSessionDependency,
-    user_id: int,
+    user_id: UUID4,
     user_in: UserUpdate,
 ) -> Any:
     """
@@ -224,7 +223,7 @@ def update_user_(
     if user_in.email:
         existing_user = get_user_by_email(session=session, email=user_in.email)
         if existing_user and existing_user.id != user_id:
-            raise InexistentUserByEmailException()
+            raise UserAlreadyExistsByEMailException()
 
     db_user = update_user(session=session, db_user=db_user, user_in=user_in)
     return db_user
@@ -234,7 +233,7 @@ def update_user_(
 def delete_user(
     session: DatabaseSessionDependency,
     current_user: CurrentUserDependency,
-    user_id: int,
+    user_id: UUID4,
 ) -> Message:
     """
     Delete a user.

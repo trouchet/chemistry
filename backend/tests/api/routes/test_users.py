@@ -3,6 +3,7 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 from typing import Dict
 from sqlmodel import Session, select
+from uuid import uuid4
 
 from backend.app.api.services.users import create_user, get_user_by_email
 from backend.app import settings
@@ -10,8 +11,6 @@ from backend.app.api.utils.security import verify_password
 from backend.app.models.users import User, UserCreate
 
 from backend.tests.utils import random_email, random_lower_string
-
-from uuid import uuid4
 
 
 def test_get_users_superuser_me(
@@ -41,22 +40,26 @@ def test_get_users_normal_user_me(
 def test_create_user_new_email(
     client: TestClient, superuser_token_headers: Dict[str, str], db: Session
 ) -> None:
-    with (
-        patch("backend.app.utils.email.send_email", return_value=None),
-        patch("backend.app.core.config.settings.SMTP_HOST", "smtp.example.com"),
-        patch("backend.app.core.config.settings.SMTP_USER", "admin@example.com"),
-    ):
+    smtp_callback_path = "backend.app.api.utils.email.send_email"
+    smtp_callback = None
+
+    smtp_domain_path = "backend.app.core.config.settings.SMTP_HOST"
+    smtp_domain = "smtp.example.com"
+
+    smtp_user_path = "backend.app.core.config.settings.SMTP_USER"
+    smtp_user = "admin@example.com"
+
+    with patch(smtp_callback_path, return_value=smtp_callback), patch(
+        smtp_domain_path, smtp_domain
+    ), patch(smtp_user_path, smtp_user):
         username = random_email()
         password = random_lower_string()
 
         route = f"{settings.API_V1_STR}/users/"
         data = {"email": username, "password": password}
-        r = client.post(
-            route,
-            headers=superuser_token_headers,
-            json=data,
-        )
+        r = client.post(route, headers=superuser_token_headers, json=data)
         assert 200 <= r.status_code < 300
+
         created_user = r.json()
         user = get_user_by_email(session=db, email=username)
         assert user
@@ -68,9 +71,8 @@ def test_get_existing_user(
 ) -> None:
     username = random_email()
     password = random_lower_string()
-    id_ = uuid4()
 
-    user_in = UserCreate(id=id_, email=username, password=password)
+    user_in = UserCreate(email=username, password=password)
     user = create_user(session=db, user_create=user_in)
     user_id = user.id
 
@@ -87,9 +89,8 @@ def test_get_existing_user(
 def test_get_existing_user_current_user(client: TestClient, db: Session) -> None:
     username = random_email()
     password = random_lower_string()
-    id_ = uuid4()
 
-    user_in = UserCreate(id=id_, email=username, password=password)
+    user_in = UserCreate(email=username, password=password)
 
     user = create_user(session=db, user_create=user_in)
     user_id = user.id
@@ -102,11 +103,14 @@ def test_get_existing_user_current_user(client: TestClient, db: Session) -> None
     route = f"{settings.API_V1_STR}/login/access-token"
     r = client.post(route, data=login_data)
     tokens = r.json()
+
     a_token = tokens["access_token"]
     headers = {"Authorization": f"Bearer {a_token}"}
 
     route = f"{settings.API_V1_STR}/users/{user_id}"
     r = client.get(route, headers=headers)
+    print(r.json())
+
     assert 200 <= r.status_code < 300
 
     api_user = r.json()
@@ -135,9 +139,8 @@ def test_create_user_existing_username(
 ) -> None:
     username = random_email()
     password = random_lower_string()
-    id_ = uuid4()
 
-    user_in = UserCreate(id=id_, email=username, password=password)
+    user_in = UserCreate(email=username, password=password)
 
     create_user(session=db, user_create=user_in)
 
@@ -145,7 +148,7 @@ def test_create_user_existing_username(
     data = {"email": username, "password": password}
     r = client.post(route, headers=superuser_token_headers, json=data)
     created_user = r.json()
-    assert r.status_code == 400
+    assert r.status_code == 409
     assert "_id" not in created_user
 
 
@@ -155,9 +158,10 @@ def test_create_user_by_normal_user(
     username = random_email()
     password = random_lower_string()
     data = {"email": username, "password": password}
-    route = f"{settings.API_V1_STR}/users/"
 
+    route = f"{settings.API_V1_STR}/users/"
     r = client.post(route, headers=normal_user_token_headers, json=data)
+
     assert r.status_code == 403
 
 
@@ -166,16 +170,14 @@ def test_retrieve_users(
 ) -> None:
     username = random_email()
     password = random_lower_string()
-    id_ = uuid4()
 
-    user_in = UserCreate(id=id_, email=username, password=password)
+    user_in = UserCreate(email=username, password=password)
     create_user(session=db, user_create=user_in)
 
     username2 = random_email()
     password2 = random_lower_string()
-    id2 = uuid4()
 
-    user_in2 = UserCreate(id=id2, email=username2, password=password2)
+    user_in2 = UserCreate(email=username2, password=password2)
 
     create_user(session=db, user_create=user_in2)
 
@@ -439,8 +441,8 @@ def test_update_user_email_exists(
 
     username2 = random_email()
     password2 = random_lower_string()
-    id2 = uuid4()
-    user_in2 = UserCreate(id=id2, email=username2, password=password2)
+
+    user_in2 = UserCreate(email=username2, password=password2)
     user2 = create_user(session=db, user_create=user_in2)
 
     route = f"{settings.API_V1_STR}/users/{user.id}"
@@ -450,7 +452,7 @@ def test_update_user_email_exists(
         headers=superuser_token_headers,
         json=data,
     )
-    expected_message = "User with this email already exists"
+    expected_message = "User with this email already exists in the system."
 
     assert r.status_code == 409
     assert r.json()["detail"] == expected_message

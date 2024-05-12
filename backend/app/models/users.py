@@ -9,7 +9,15 @@ class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)
     is_active: bool = True
     is_superuser: bool = False
-    full_name: Union[str, None] = None
+    full_name: str = Field(default="")
+
+
+# Database model, database table inferred from class name
+class User(UserBase, table=True):
+    __tablename__ = "users"
+
+    id: UUID4 = Field(default=None, primary_key=True)
+    hashed_password: str
 
 
 # Properties to receive via API on creation
@@ -45,12 +53,6 @@ class UserPublic(UserBase):
 class UsersPublic(SQLModel):
     data: List[UserPublic]
     count: int
-
-
-# Database model, database table inferred from class name
-class User(UserBase, table=True):
-    id: UUID4 = Field(default=None, primary_key=True)
-    hashed_password: str
 
 
 class UpdatePassword(SQLModel):

@@ -65,7 +65,6 @@ def authenticate(*, session: Session, email: str, password: str) -> Union[User, 
     if not db_user:
         return None
 
-    db_user = db_user[0]
     if not verify_password(password, db_user.hashed_password):
         return None
 

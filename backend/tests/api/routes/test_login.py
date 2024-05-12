@@ -46,16 +46,19 @@ def test_use_access_token(
 def test_recovery_password(
     client: TestClient, normal_user_token_headers: Dict[str, str]
 ) -> None:
-    with (
-        patch("app.core.config.settings.SMTP_HOST", "smtp.example.com"),
-        patch("app.core.config.settings.SMTP_USER", "admin@example.com"),
-    ):
+    host_info = (
+        "backend.app.core.config.settings.SMTP_HOST",
+        "smtp.example.com",
+    )
+    user_info = (
+        "backend.app.core.config.settings.SMTP_USER",
+        "admin@example.com",
+    )
+
+    with patch(host_info[0], host_info[1]), patch(user_info[0], user_info[1]):
         email = "test@example.com"
         route = f"{settings.API_V1_STR}/password-recovery/{email}"
-        r = client.post(
-            route,
-            headers=normal_user_token_headers,
-        )
+        r = client.post(route, headers=normal_user_token_headers)
         assert r.status_code == 200
         assert r.json() == {"message": "Password recovery email sent"}
 

@@ -109,8 +109,6 @@ def reset_password(session: DatabaseSessionDependency, body: NewPassword) -> Mes
     if not user:
         raise InexistentUserByEmailException()
 
-    user = user[0]
-
     if not user.is_active:
         raise InactiveUserException()
 
