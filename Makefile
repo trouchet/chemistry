@@ -69,9 +69,7 @@ minimal-requirements: ## Generates minimal requirements. Usage: make requirement
 	python3 scripts/clean_packages.py requirements.txt requirements.txt
 
 lint: ## perform inplace lint fixes
-	black --skip-string-normalization .
 	ruff check --fix .
-	find . -name "*.py" -exec autopep8 --in-place --aggressive --aggressive {} \;
 
 ptw-watch: ## Run tests on watchdog mode. Usage: make ptw-watch
 	ptw --quiet --spool 200 --clear --nobeep \
