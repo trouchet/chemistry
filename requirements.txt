@@ -6,7 +6,7 @@ alembic==1.13.1
 apscheduler==3.10.4
 argcomplete==3.2.3
 asyncpg==0.29.0
-black==24.4.1
+black==24.4.2
 cloudpickle==3.0.0
 codecov==2.1.13
 connexion==2.14.2
