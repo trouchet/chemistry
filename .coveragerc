@@ -1,0 +1,8 @@
+[run]
+source = backend
+omit =
+    # Omit coverage from these paths (optional)
+    */initial_data.py
+    */__init__.py
+    */venv/*
+    */site-packages/*
