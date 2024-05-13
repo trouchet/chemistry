@@ -27,7 +27,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       #----------------------------------------------
-      #       install & configure poetry  -----
+      #       install & configure poetry
       #----------------------------------------------
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
@@ -63,7 +63,7 @@ jobs:
       #----------------------------------------------
       - name: Run tests and generate coverage
         run: |
-          poetry run pytest --cov=chemistry tests/
+          poetry run pytest --cov=chemistry backend/tests/
           # Uncomment when achieve sufficient coverage threshold
           poetry run coverage report -m
       #----------------------------------------------

@@ -35,7 +35,7 @@ sentry-sdk = {extras = ["fastapi"], version = "^1.40.6"}
 SQLAlchemy = "^2.0.0"
 SQLAlchemy-JSONField = "==1.0.2"
 SQLAlchemy-Utils = "==0.41.2"
-starlette = "==0.36.3"
+starlette = "==0.37.2"
 
 
 [tool.poetry.group.dev.dependencies]
