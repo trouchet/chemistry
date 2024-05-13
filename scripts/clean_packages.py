@@ -37,7 +37,7 @@ def find_packages_with_comment(
     """
     Encontra pacores com comentario '# via -r requirements.in' em formato específico.
     """
-    splitted_file = requirements_file.split(".")
+    splitted_file = requirements_file.split('.')
     name = splitted_file[0]
     extension = splitted_file[1]
     pattern = (
@@ -56,7 +56,7 @@ def find_packages_with_comment(
                 version = match.group(2)
 
                 # Write to file
-                out_file.write(package_name + "==" + version + "\n")
+                out_file.write(package_name + '==' + version + "\n")
 
     # Get package count after operation
     with open(requirements_output_file, "r") as file:
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         package_count_before = len(lines)
 
     # Temporary file for pip-compile output
-    tmp_file = "tmp.in"
+    tmp_file = 'tmp.in'
     run_pip_compile(args.requirements_file, tmp_file)
 
     # Get package count after operation
