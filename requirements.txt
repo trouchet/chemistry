@@ -44,7 +44,7 @@ pytest-watch==4.2.0
 python-daemon==3.0.1
 python-jose==3.3.0
 python-multipart==0.0.9
-python-nvd3==0.15.0
+python-nvd3==0.16.0
 rfc3339-validator==0.1.4
 rich-argparse==1.4.0
 sentry-sdk==2.1.1
