@@ -39,7 +39,7 @@ starlette = "==0.36.3"
 
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.4.3"
+pytest = "^8.0.0"
 ruff = "^0.2.2"
 pre-commit = "^3.6.2"
 types-passlib = "^1.7.7.20240106"
