@@ -15,7 +15,7 @@ dill==0.3.8
 email-validator==2.1.2
 emails==0.6
 execnet==2.1.1
-fastapi==0.111.0
+fastapi==0.111.1
 flask-caching==2.3.0
 flask-session==0.8.0
 gunicorn==22.0.0
