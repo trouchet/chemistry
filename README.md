@@ -1,7 +1,7 @@
 # ApI
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-3.7%20|%203.8%20|%203.9-blue)](https://www.python.org/downloads/)
-
+[![codecov](https://codecov.io/gh/trouchet/chemistry/graph/badge.svg?token=Q27S5NWSAX)](https://codecov.io/gh/trouchet/chemistry)
 
 This is a minimal repository for a FastAPI app instance with:
 
