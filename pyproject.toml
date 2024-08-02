@@ -10,7 +10,7 @@ package-mode = false
 [tool.poetry.dev-dependencies]
 black = { version = "24.4.2" }
 codecov = { version = "2.1.13" }
-pytest-asyncio = { version = "0.23.7" }
+pytest-asyncio = { version = "0.23.8" }
 pytest-mock = { version = "3.14.0" }
 pytest-watch = { version = "4.2.0" }
 
