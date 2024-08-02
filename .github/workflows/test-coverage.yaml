@@ -69,7 +69,7 @@ jobs:
         run: |
           poetry run pytest backend/tests/
           # Uncomment when achieve sufficient coverage threshold
-          poetry run coverage report -m
+          poetry run coverage xml
 
       - run: docker compose -f docker-compose.db.yml down -v --remove-orphans
 
