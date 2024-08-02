@@ -54,7 +54,6 @@ tenacity = "==8.5.0"
 toml = "==0.10.2"
 prometheus-fastapi-instrumentator = "7.0.0"
 psycopg = {extras = ["binary"], version = "^3.1.13"}
-passlib = "==1.7.4"
 PyJWT = "==2.8.0"
 python-decouple = "==3.8"
 sqlmodel = "^0.0.19"
