@@ -31,7 +31,7 @@ psycopg = {extras = ["binary"], version = "^3.1.13"}
 prometheus-fastapi-instrumentator = "7.0.0"
 PyJWT = "2.8.0"
 python-decouple = "==3.8"
-sqlmodel = "^0.0.19"
+sqlmodel = "^0.0.21"
 pydantic = "^2.3.0"
 pydantic-settings = "^2.2.1"
 sentry-sdk = {extras = ["fastapi"], version = "^2.0.0"}
