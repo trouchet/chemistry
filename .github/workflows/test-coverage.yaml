@@ -58,6 +58,10 @@ jobs:
       - name: Install project
         run: poetry install --verbose --no-interaction
 
+      - run: docker compose -f docker-compose.db.yml build
+      - run: docker compose -f docker-compose.db.yml down -v --remove-orphans
+      - run: docker compose -f docker-compose.db.yml up -d
+
       #----------------------------------------------
       #       Test coverage
       #----------------------------------------------
@@ -66,6 +70,9 @@ jobs:
           poetry run pytest backend/tests/
           # Uncomment when achieve sufficient coverage threshold
           poetry run coverage report -m
+
+      - run: docker compose -f docker-compose.db.yml down -v --remove-orphans
+
       #----------------------------------------------
       #       Update codecov coverage
       #----------------------------------------------
