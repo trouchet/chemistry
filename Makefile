@@ -18,7 +18,7 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+	@python3 -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 clean-logs: # Removes log info. Usage: make clean-logs
 	rm -fr build/ dist/ .eggs/
@@ -44,7 +44,7 @@ install: ## Installs the python requirements. Usage: make install
 	uv pip install -r requirements.txt
 
 build: sanitize ## Builds the application. Usage: make build
-	docker-compose build --no-cache
+	docker-compose -f docker-compose.yml build --no-cache
 
 run: ## Run the application. Usage: make run
 	uvicorn backend.app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
@@ -66,7 +66,7 @@ test: ## Test the application. Usage: make test
 	poetry run coverage run --rcfile=.coveragerc -m pytest backend/
 
 minimal-requirements: ## Generates minimal requirements. Usage: make requirements
-	python3 scripts/clean_packages.py requirements.txt requirements.txt
+	python3 scripts/clean_packages.py requirements.txt requirements-in.txt
 
 lint: ## perform inplace lint fixes
 	ruff check --fix .
@@ -92,10 +92,10 @@ ps: ## List containers. Usage: make ps
 	docker ps -a
 
 up: ## Docker up containers. Usage: make up
-	docker-compose up -d
+	docker-compose -f docker-compose.yml up -d
 
 down: ## Docker down containers. Usage: make down
-	docker-compose down
+	docker-compose -f docker-compose.yml down
 
 migrate: ## Run migrations. Usage: make migrate
 	python scripts/migrate.py
