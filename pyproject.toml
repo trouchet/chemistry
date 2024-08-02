@@ -10,7 +10,7 @@ package-mode = false
 [tool.poetry.dev-dependencies]
 black = { version = "24.4.2" }
 codecov = { version = "2.1.13" }
-pytest-asyncio = { version = "0.23.7" }
+pytest-asyncio = { version = "0.23.8" }
 pytest-mock = { version = "3.14.0" }
 pytest-watch = { version = "4.2.0" }
 
@@ -55,7 +55,7 @@ prometheus-fastapi-instrumentator = "7.0.0"
 psycopg = {extras = ["binary"], version = "^3.1.13"}
 PyJWT = "==2.8.0"
 python-decouple = "==3.8"
-sqlmodel = "^0.0.19"
+sqlmodel = "^0.0.21"
 pydantic = "^2.3.0"
 pydantic-settings = "^2.2.1"
 rfc3339-validator = "==0.1.4"
