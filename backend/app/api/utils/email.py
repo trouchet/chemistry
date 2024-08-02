@@ -23,7 +23,7 @@ class EmailData:
 
 def render_email_template(*, template_name: str, context: Dict[str, Any]) -> str:
     template_root = (
-        Path(__file__).parent / ".." / "email-templates" / "build" / template_name
+        Path(__file__).parent / ".." / "email-templates" / template_name
     )
 
     template_str = template_root.read_text()
@@ -83,7 +83,7 @@ def generate_reset_password_email(email_to: str, email: str, token: str) -> Emai
         "link": link,
     }
     html_content = render_email_template(
-        template_name="reset_password.html",
+        template_name="reset_password.mjml",
         context=metadata,
     )
     return EmailData(html_content=html_content, subject=subject)
@@ -103,7 +103,7 @@ def generate_new_account_email(
     }
 
     html_content = render_email_template(
-        template_name="new_account.html", context=metadata
+        template_name="new_account.mjml", context=metadata
     )
     return EmailData(html_content=html_content, subject=subject)
 

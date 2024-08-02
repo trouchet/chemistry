@@ -3,7 +3,7 @@ FROM python:3.11.4-slim-buster AS base
 WORKDIR /app/
 
 # Copy poetry.lock* in case it doesn't exist in the repo
-COPY ./pyproject.toml ./poetry.lock* /app/
+COPY pyproject.toml poetry.lock* /app/
 
 ENV PYTHONPATH=/app
 
@@ -39,7 +39,7 @@ COPY ./prestart.sh /app/
 
 COPY ./tests-start.sh /app/
 
-COPY ./app /app/app
+COPY ./backend /app/backend
 
 # Run the application
 CMD ["bash", "scripts/run.sh"]
