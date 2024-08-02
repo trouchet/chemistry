@@ -71,6 +71,9 @@ jobs:
           # Uncomment when achieve sufficient coverage threshold
           poetry run coverage xml
 
+      - name: Check coverage files
+        run: ls -la | grep coverage.xml
+
       - run: docker compose -f docker-compose.db.yml down -v --remove-orphans
 
       #----------------------------------------------
