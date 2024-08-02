@@ -68,8 +68,10 @@ jobs:
       - name: Run tests and generate coverage
         run: |
           poetry run pytest backend/tests/
-          # Uncomment when achieve sufficient coverage threshold
-          poetry run coverage report -m
+          poetry run coverage xml
+
+      - name: Check coverage files
+        run: ls -la | grep coverage.xml
 
       - run: docker compose -f docker-compose.db.yml down -v --remove-orphans
 

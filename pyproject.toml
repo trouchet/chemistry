@@ -67,7 +67,7 @@ rich-argparse = "==1.5.2"
 sentry-sdk = {extras = ["fastapi"], version = "^2.0.0"}
 SQLAlchemy = "^2.0.0"
 SQLAlchemy-JSONField = "==1.0.2"
-sqlparse = "==0.5.0"
+sqlparse = "==0.5.1"
 unicodecsv = "==0.14.1"
 uvicorn = "==0.30.5"
 SQLAlchemy-Utils = "==0.41.2"
