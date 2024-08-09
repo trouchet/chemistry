@@ -29,7 +29,7 @@ mlxtend==0.23.1
 openpyxl==3.1.5
 passlib==1.7.4
 pendulum==3.0.0
-polars==0.20.31
+polars==1.4.1
 prometheus-fastapi-instrumentator==7.0.0
 psutil==6.0.0
 psycopg==3.2.1
