@@ -53,7 +53,7 @@ openpyxl = "3.1.5"
 passlib = "1.7.4"
 pendulum = "3.0.0"
 polars = "0.20.31"
-tenacity = "==8.5.0"
+tenacity = "==9.0.0"
 toml = "==0.10.2"
 prometheus-fastapi-instrumentator = "7.0.0"
 psycopg = {extras = ["binary"], version = "^3.1.13"}
