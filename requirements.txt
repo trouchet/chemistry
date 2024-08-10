@@ -18,7 +18,7 @@ execnet==2.1.1
 fastapi==0.112.0
 flask-caching==2.3.0
 flask-session==0.8.0
-gunicorn==22.0.0
+gunicorn==23.0.0
 lazy-object-proxy==1.10.0
 linkify-it-py==2.0.3
 loguru==0.7.2
