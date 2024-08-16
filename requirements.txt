@@ -22,7 +22,7 @@ gunicorn==22.0.0
 lazy-object-proxy==1.10.0
 linkify-it-py==2.0.3
 loguru==0.7.2
-markdown==3.6
+markdown==3.7
 marshmallow-oneofschema==3.1.1
 mdit-py-plugins==0.4.1
 mlxtend==0.23.1
