@@ -24,7 +24,7 @@ linkify-it-py==2.0.3
 loguru==0.7.2
 markdown==3.7
 marshmallow-oneofschema==3.1.1
-mdit-py-plugins==0.4.1
+mdit-py-plugins==0.4.2
 mlxtend==0.23.1
 openpyxl==3.1.5
 passlib==1.7.4
