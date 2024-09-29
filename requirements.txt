@@ -33,7 +33,7 @@ polars==1.8.2
 prometheus-fastapi-instrumentator==7.0.0
 psutil==6.0.0
 psycopg==3.2.2
-psycopg-binary==3.2.2
+psycopg-binary==3.2.3
 psycopg2-binary==2.9.9
 pydantic-settings==2.5.2
 pyjwt==2.9.0
