@@ -4,7 +4,7 @@ aiohttp==3.10.6
 aioredis==2.0.1
 alembic==1.13.3
 apscheduler==3.10.4
-argcomplete==3.5.0
+argcomplete==3.5.1
 asyncpg==0.29.0
 black==24.8.0
 cloudpickle==3.0.0
