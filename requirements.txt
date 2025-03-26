@@ -30,7 +30,7 @@ openpyxl==3.1.5
 passlib==1.7.4
 pendulum==3.0.0
 polars==1.24.0
-prometheus-fastapi-instrumentator==7.0.2
+prometheus-fastapi-instrumentator==7.1.0
 psutil==7.0.0
 psycopg==3.2.6
 psycopg-binary==3.2.6
