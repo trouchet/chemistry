@@ -1,6 +1,6 @@
 a2wsgi==1.10.8
 about-time==4.2.1
-aiohttp==3.11.14
+aiohttp==3.11.15
 aioredis==2.0.1
 alembic==1.15.2
 apscheduler==3.11.0
